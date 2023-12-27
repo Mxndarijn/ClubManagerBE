@@ -1,0 +1,178 @@
+type Query {
+    test : Boolean
+    greeting(name: String! = "Merijn"): String!
+}
+
+type Mutation {
+    register(input: RegisterInput): User
+}
+
+input RegisterInput {
+    username: String!
+    password: String!
+    # Andere vereiste velden voor registratie
+}
+
+
+type User {
+    id: ID!
+    userName: String!
+    password: String!
+    email: String!
+    firstName: String!
+    lastName: String!
+    initials: String!
+    knsaMembershipNumber: Int
+    knsaMemberSince: String
+    image: Image
+    associations: [UserAssociation]
+    presences: [UserPresence]
+    reservations: [Reservation]
+    roles: [AccountRole]
+    associationUserRoles: [AssociationUserRole]
+}
+type Association {
+    id: ID!
+    name: String!
+    image: Image
+    welcomeMessage: String
+    contactEmail: String
+    active: Boolean!
+    users: [UserAssociation]
+    associationUserRoles: [AssociationUserRole]
+}
+
+type UserAssociation {
+    id: UserAssociationId!
+    user: User!
+    association: Association!
+    contributionPrice: Int
+    memberSince: String
+}
+
+type UserAssociationId {
+    userId: ID!
+    associationId: ID!
+}
+
+
+type Image {
+    id: ID!
+    encoded: String!
+}
+type AccountPermission {
+    id: ID!
+    name: String!
+    description: String
+    roles: [AccountRole]
+}
+type AccountRole {
+    id: ID!
+    name: String!
+    users: [User]
+    permissions: [AccountPermission]
+}
+
+type AssociationPermission {
+    id: ID!
+    name: String!
+    description: String
+    roles: [AssociationRole]
+}
+type AssociationRole {
+    id: ID!
+    name: String!
+    permissions: [AssociationPermission]
+    associationUserRoles: [AssociationUserRole]
+}
+type AssociationUserRole {
+    id: AssociationUserRoleId!
+    user: User!
+    role: AssociationRole!
+    association: Association!
+}
+
+type AssociationUserRoleId {
+    userId: ID!
+    roleId: ID!
+    associationId: ID!
+}
+type Competition {
+    id: ID!
+    name: String!
+    description: String
+    association: Association
+    startDate: String
+    endDate: String
+    competitionUsers: [CompetitionUser]
+}
+type CompetitionUser {
+    id: CompetitionUserId!
+    user: User!
+    competition: Competition!
+    date: String
+}
+
+type CompetitionUserId {
+    userId: ID!
+    competitionId: ID!
+}
+type CompetitionUserScore {
+    id: ID!
+    competitionUser: CompetitionUser!
+    score: Int!
+}
+type Reservation {
+    id: ID!
+    association: Association
+    date: String
+    title: String
+    description: String
+    status: ReservationStatus
+    maxSize: Int
+    users: [User]
+    reservationSerie: ReservationSeries
+}
+
+enum ReservationStatus {
+    IDK
+    # Voeg hier de andere enum waarden toe
+}
+
+type ReservationSeries {
+    id: ID!
+    reservations: [Reservation]
+}
+type Track {
+    id: ID!
+    name: String
+    description: String
+    association: Association
+    allowedWeaponTypes: [WeaponType]
+}
+type UserPresence {
+    id: ID!
+    user: User
+    association: Association
+    date: String
+}
+
+type Weapon {
+    id: ID!
+    name: String
+    association: Association
+    type: WeaponType
+    status: WeaponStatus
+}
+
+enum WeaponStatus {
+    ACTIVE
+    INACTIVE
+    MAINTENANCE
+}
+
+type WeaponType {
+    id: ID!
+    name: String
+    tracks: [Track]
+}

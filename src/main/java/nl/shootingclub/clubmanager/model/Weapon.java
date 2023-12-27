@@ -1,0 +1,35 @@
+package nl.shootingclub.clubmanager.model;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.util.UUID;
+
+@Getter
+@Setter
+@Entity
+@Table(name = "weapon")
+public class Weapon {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(columnDefinition = "BINARY(16)")
+    private UUID id;
+
+    @Column(length = 255)
+    private String name;
+
+    @ManyToOne
+    @JoinColumn(name = "association_id", referencedColumnName = "id")
+    private Association association;
+
+    @ManyToOne
+    @JoinColumn(name = "type_id", referencedColumnName = "id")
+    private WeaponType type;
+
+    @Enumerated(EnumType.STRING)
+    private WeaponStatus status;
+
+}
+
