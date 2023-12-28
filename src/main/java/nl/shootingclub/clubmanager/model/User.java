@@ -20,9 +20,6 @@ public class User {
     private UUID id;
 
     @Column(nullable = false)
-    private String userName;
-
-    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false, unique = true)

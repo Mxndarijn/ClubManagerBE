@@ -2,6 +2,8 @@ package nl.shootingclub.clubmanager.service;
 
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.UserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -11,6 +13,8 @@ import java.util.UUID;
 @Service
 public class UserService {
 
+    @Autowired
+    private PasswordEncoder encoder;
     private final UserRepository userRepository;
 
     public UserService(UserRepository userRepository) {
@@ -31,11 +35,11 @@ public class UserService {
     }
 
 
-    public boolean authenticate(String name, String password) {
-        Optional<User> user = userRepository.findByUserNameEquals(name);
+    public boolean authenticate(String email, String password) {
+        Optional<User> user = userRepository.findByEmailEquals(email);
         if (user.isPresent()) {
             // Assuming the password field is present in the User model and is called password
-            return user.get().getPassword().equals(password);
+            return encoder.matches(password, user.get().getPassword());
         }
         return false;
     }
