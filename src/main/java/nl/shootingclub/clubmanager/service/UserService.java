@@ -49,17 +49,4 @@ public class UserService {
         return false;
     }
 
-    public String generateToken(User userDetails) {
-        long nowMillis = System.currentTimeMillis();
-        long expMillis = nowMillis + 3600000; // Token validity 1 hour
-        Date exp = new Date(expMillis);
-
-        return "test";
-//        return Jwts.builder()
-//                .setSubject(userDetails.getEmail())
-//                .setIssuedAt(new java.util.Date())
-//                .setExpiration(exp)
-//                .signWith(SignatureAlgorithm.HS512, "YourSecretKey") // Use a strong secret key
-//                .compact();
-    }
 }

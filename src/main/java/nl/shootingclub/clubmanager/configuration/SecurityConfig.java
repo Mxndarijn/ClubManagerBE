@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configurers.LogoutConf
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -25,6 +26,9 @@ public class SecurityConfig {
 
     @Autowired
     private CustomAuthenticationProvider authProvider;
+
+    @Autowired
+    private UserAuthProvider userAuthProvider;
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
@@ -55,9 +59,10 @@ public class SecurityConfig {
 
                     httpSecurityCorsConfigurer.configurationSource(source);
                 })
+                .addFilterBefore(new JwtAuthFilter(userAuthProvider), BasicAuthenticationFilter.class)
             .authorizeHttpRequests(r -> {
-                r.requestMatchers("/", "/home", "/login**", "/api/**", "/api/login").permitAll()
-                .anyRequest().permitAll();
+                r.requestMatchers("/", "/home", "/auth/**").permitAll()
+                .anyRequest().authenticated();
         }).formLogin(httpSecurityFormLoginConfigurer -> {
                 httpSecurityFormLoginConfigurer.loginPage("/login").defaultSuccessUrl("/home").permitAll();
                 })

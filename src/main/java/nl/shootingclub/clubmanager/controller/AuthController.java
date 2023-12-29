@@ -1,11 +1,11 @@
 package nl.shootingclub.clubmanager.controller;
 
+import nl.shootingclub.clubmanager.configuration.UserAuthProvider;
 import nl.shootingclub.clubmanager.dto.LoginDTO;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.UserRepository;
 import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -18,9 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -28,8 +25,8 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
-public class APIController {
+@RequestMapping("/auth")
+public class AuthController {
 
     @Autowired
     private UserService userService;
@@ -42,6 +39,9 @@ public class APIController {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private UserAuthProvider userAuthProvider;
 
 
     @PostMapping("/login")
@@ -61,7 +61,7 @@ public class APIController {
                 return getNotLoggedIn();
             }
 
-            final String token = userService.generateToken(optionalUser.get());
+            final String token = userAuthProvider.createToken(optionalUser.get());
             Map<String, String> tokenMap = new HashMap<>();
             tokenMap.put("token", token);
             tokenMap.put("loggedIn", "true");
