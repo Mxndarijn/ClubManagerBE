@@ -1,6 +1,8 @@
- package nl.shootingclub.clubmanager.controller;
+package nl.shootingclub.clubmanager.controller;
 
 import nl.shootingclub.clubmanager.dto.LoginDTO;
+import nl.shootingclub.clubmanager.model.User;
+import nl.shootingclub.clubmanager.repository.UserRepository;
 import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
@@ -16,6 +18,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api")
@@ -23,21 +33,50 @@ public class APIController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Autowired
     private AuthenticationManager authenticationManager;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+
     @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody LoginDTO loginRequest) {
+    public ResponseEntity<Map<String,String>> login(@RequestBody LoginDTO loginRequest) {
         try {
-            Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+            System.out.println("LoginRequest" + LocalDateTime.now().toString());
+            Authentication auth = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(
+                            loginRequest.getEmail(), loginRequest.getPassword()
+                    ));
+
             SecurityContextHolder.getContext().setAuthentication(auth);
-            return new ResponseEntity<>("User login successfully!", HttpStatus.OK);
+
+            Optional<User> optionalUser = userRepository.findByEmailEquals(loginRequest.getEmail());
+
+            if(optionalUser.isEmpty()) {
+                return getNotLoggedIn();
+            }
+
+            final String token = userService.generateToken(optionalUser.get());
+            Map<String, String> tokenMap = new HashMap<>();
+            tokenMap.put("token", token);
+            tokenMap.put("loggedIn", "true");
+            return new ResponseEntity<>(tokenMap, HttpStatus.OK);
+
         } catch (AuthenticationException e) {
-            return new ResponseEntity<>("Authentication failed.", HttpStatus.UNAUTHORIZED);
+            return getNotLoggedIn();
         }
     }
+
+    private ResponseEntity<Map<String,String>> getNotLoggedIn() {
+        Map<String, String> tokenMap = new HashMap<>();
+        tokenMap.put("loggedIn", "false");
+        return new ResponseEntity<>(tokenMap, HttpStatus.OK);
+    }
+
 
 }

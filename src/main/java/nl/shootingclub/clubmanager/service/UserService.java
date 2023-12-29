@@ -1,11 +1,16 @@
 package nl.shootingclub.clubmanager.service;
 
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,5 +47,19 @@ public class UserService {
             return encoder.matches(password, user.get().getPassword());
         }
         return false;
+    }
+
+    public String generateToken(User userDetails) {
+        long nowMillis = System.currentTimeMillis();
+        long expMillis = nowMillis + 3600000; // Token validity 1 hour
+        Date exp = new Date(expMillis);
+
+        return "test";
+//        return Jwts.builder()
+//                .setSubject(userDetails.getEmail())
+//                .setIssuedAt(new java.util.Date())
+//                .setExpiration(exp)
+//                .signWith(SignatureAlgorithm.HS512, "YourSecretKey") // Use a strong secret key
+//                .compact();
     }
 }
