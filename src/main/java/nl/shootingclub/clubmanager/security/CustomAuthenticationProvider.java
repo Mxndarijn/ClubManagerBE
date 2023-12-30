@@ -1,5 +1,6 @@
 package nl.shootingclub.clubmanager.security;
 
+import nl.shootingclub.clubmanager.exceptions.AccountBadCredentialsException;
 import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
@@ -28,7 +29,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
             return authentication;
         } else {
-            throw new BadCredentialsException("");
+            throw new AccountBadCredentialsException("account-bad-credentials");
         }
     }
 

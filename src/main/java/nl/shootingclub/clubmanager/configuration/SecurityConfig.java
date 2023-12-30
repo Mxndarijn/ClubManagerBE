@@ -63,10 +63,7 @@ public class SecurityConfig {
             .authorizeHttpRequests(r -> {
                 r.requestMatchers("/", "/home", "/auth/**").permitAll()
                 .anyRequest().authenticated();
-        }).formLogin(httpSecurityFormLoginConfigurer -> {
-                httpSecurityFormLoginConfigurer.loginPage("/login").defaultSuccessUrl("/home").permitAll();
-                })
-                .logout(LogoutConfigurer::permitAll);
+        });
 
         return http.build();
     }

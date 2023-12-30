@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import nl.shootingclub.clubmanager.configuration.UserAuthProvider;
 import nl.shootingclub.clubmanager.dto.LoginDTO;
 import nl.shootingclub.clubmanager.dto.RegisterDTO;
+import nl.shootingclub.clubmanager.exceptions.AccountBadCredentialsException;
 import nl.shootingclub.clubmanager.exceptions.AccountNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.AccountValidationException;
 import nl.shootingclub.clubmanager.exceptions.EmailAlreadyUsedException;
@@ -51,7 +52,6 @@ public class AuthController {
 
     @PostMapping("/login")
     public ResponseEntity<Map<String,Object>> login(@RequestBody @Valid LoginDTO loginRequest) {
-        try {
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(), loginRequest.getPassword()
@@ -72,10 +72,6 @@ public class AuthController {
             response.put("message", token);
 
             return ResponseEntity.ok(response);
-
-        } catch (AuthenticationException e) {
-            throw new AccountValidationException("Could not validate account");
-        }
     }
 
     @PostMapping("/register")

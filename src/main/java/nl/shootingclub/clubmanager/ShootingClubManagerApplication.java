@@ -20,11 +20,6 @@ public class ShootingClubManagerApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShootingClubManagerApplication.class, args);
-
-//		UserModel model = new UserModel();
-
-//
-//		System.out.println(model.getId());
 	}
 
 	@Bean
@@ -33,15 +28,12 @@ public class ShootingClubManagerApplication {
 			User newUser = new User();
 			Image newImage = new Image();
 			newImage.setEncoded("a");
-		// Stel de eigenschappen van de nieuwe gebruiker in
+
 			newUser.setFirstName("Merijn");
 			newUser.setLastName("Gommeren");
 			newUser.setEmail("merijn.gommeren@hotmail.com");
 			newUser.setPassword(encoder.encode("easy"));
 			newUser.setImage(newImage);
-
-
-			// ... meer eigenschappen ...
 
 			User savedUser = userService.createUser(newUser);
 			System.out.println("Nieuwe gebruiker aangemaakt met ID: " + savedUser.getId());

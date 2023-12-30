@@ -66,4 +66,15 @@ public class GlobalRequestExceptionHandler {
         return response;
     }
 
+    @ExceptionHandler(AccountBadCredentialsException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public Map<String, Object> handleAccountBadCredentialsException(AccountBadCredentialsException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", ex.getMessage());
+        response.put("error", "account-bad-credentials");
+        return response;
+    }
+
 }
