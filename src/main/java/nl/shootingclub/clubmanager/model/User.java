@@ -31,9 +31,6 @@ public class User {
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(nullable = false)
-    private String initials;
-
     @Column(name = "knsa_membership_number")
     private Integer knsaMembershipNumber;
 

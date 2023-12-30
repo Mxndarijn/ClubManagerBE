@@ -1,7 +1,12 @@
 package nl.shootingclub.clubmanager.controller;
 
+import jakarta.validation.Valid;
 import nl.shootingclub.clubmanager.configuration.UserAuthProvider;
 import nl.shootingclub.clubmanager.dto.LoginDTO;
+import nl.shootingclub.clubmanager.dto.RegisterDTO;
+import nl.shootingclub.clubmanager.exceptions.AccountNotFoundException;
+import nl.shootingclub.clubmanager.exceptions.AccountValidationException;
+import nl.shootingclub.clubmanager.exceptions.EmailAlreadyUsedException;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.UserRepository;
 import nl.shootingclub.clubmanager.service.UserService;
@@ -45,9 +50,8 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public ResponseEntity<Map<String,String>> login(@RequestBody LoginDTO loginRequest) {
+    public ResponseEntity<Map<String,Object>> login(@RequestBody @Valid LoginDTO loginRequest) {
         try {
-            System.out.println("LoginRequest" + LocalDateTime.now().toString());
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(), loginRequest.getPassword()
@@ -58,24 +62,52 @@ public class AuthController {
             Optional<User> optionalUser = userRepository.findByEmailEquals(loginRequest.getEmail());
 
             if(optionalUser.isEmpty()) {
-                return getNotLoggedIn();
+                throw new AccountNotFoundException("Account not found");
             }
 
             final String token = userAuthProvider.createToken(optionalUser.get());
-            Map<String, String> tokenMap = new HashMap<>();
-            tokenMap.put("token", token);
-            tokenMap.put("loggedIn", "true");
-            return new ResponseEntity<>(tokenMap, HttpStatus.OK);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", token);
+
+            return ResponseEntity.ok(response);
 
         } catch (AuthenticationException e) {
-            return getNotLoggedIn();
+            throw new AccountValidationException("Could not validate account");
         }
     }
 
-    private ResponseEntity<Map<String,String>> getNotLoggedIn() {
-        Map<String, String> tokenMap = new HashMap<>();
-        tokenMap.put("loggedIn", "false");
-        return new ResponseEntity<>(tokenMap, HttpStatus.OK);
+    @PostMapping("/register")
+    public ResponseEntity<Map<String,Object>> register(@RequestBody @Valid RegisterDTO registerRequest) {
+        try {
+
+            Optional<User> optionalUser = userRepository.findByEmailEquals(registerRequest.getEmail().toLowerCase());
+
+            if(optionalUser.isPresent()) {
+                throw new EmailAlreadyUsedException("Email already has an account");
+            }
+
+            User user = new User();
+            user.setFirstName(registerRequest.getFirstName());
+            user.setLastName(registerRequest.getLastName());
+            user.setEmail(registerRequest.getEmail());
+            user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
+            userService.createUser(user);
+
+
+            final String token = userAuthProvider.createToken(user);
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("success", true);
+            response.put("message", token);
+
+            return ResponseEntity.ok(response);
+
+        } catch (AuthenticationException e) {
+            throw new AccountValidationException("Could not validate account");
+        }
     }
 
 

@@ -6,15 +6,10 @@ import lombok.Getter;
 import lombok.Setter;
 import nl.shootingclub.clubmanager.configuration.password.ValidPassword;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Getter
 @Setter
-@ControllerAdvice
-public class LoginDTO {
-
+public class RegisterDTO {
     @NotBlank(message = "empty")
     @Email(message = "not-mail")
     @Length(max = 255, message = "length-max-exceeded")
@@ -22,5 +17,14 @@ public class LoginDTO {
 
     @NotBlank(message = "empty")
     @Length(max = 255, message = "length-max-exceeded")
+    @ValidPassword(message = "not-valid")
     private String password;
+
+    @NotBlank(message = "empty")
+    @Length(max = 255, min = 2, message = "length-wrong")
+    private String firstName;
+
+    @Length(max = 255, min = 2, message = "length-wrong")
+    @NotBlank(message = "empty")
+    private String lastName;
 }

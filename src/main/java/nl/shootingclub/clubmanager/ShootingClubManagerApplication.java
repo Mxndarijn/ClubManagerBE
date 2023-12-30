@@ -37,7 +37,6 @@ public class ShootingClubManagerApplication {
 			newUser.setFirstName("Merijn");
 			newUser.setLastName("Gommeren");
 			newUser.setEmail("merijn.gommeren@hotmail.com");
-			newUser.setInitials("M.F.G.");
 			newUser.setPassword(encoder.encode("easy"));
 			newUser.setImage(newImage);
 
