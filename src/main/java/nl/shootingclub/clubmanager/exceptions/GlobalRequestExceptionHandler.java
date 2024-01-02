@@ -15,7 +15,7 @@ import java.util.Map;
 public class GlobalRequestExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Map<String, Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, Object> errors = new HashMap<>();
@@ -34,7 +34,7 @@ public class GlobalRequestExceptionHandler {
     }
 
     @ExceptionHandler(EmailAlreadyUsedException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Map<String, Object> handleEmailAlreadyUsedException(EmailAlreadyUsedException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -45,7 +45,7 @@ public class GlobalRequestExceptionHandler {
     }
 
     @ExceptionHandler(AccountNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Map<String, Object> handleAccountNotFoundException(AccountNotFoundException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -56,7 +56,7 @@ public class GlobalRequestExceptionHandler {
     }
 
     @ExceptionHandler(AccountValidationException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Map<String, Object> handleAccountValidationException(AccountValidationException ex) {
         Map<String, Object> response = new HashMap<>();
@@ -67,7 +67,7 @@ public class GlobalRequestExceptionHandler {
     }
 
     @ExceptionHandler(AccountBadCredentialsException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Map<String, Object> handleAccountBadCredentialsException(AccountBadCredentialsException ex) {
         Map<String, Object> response = new HashMap<>();
