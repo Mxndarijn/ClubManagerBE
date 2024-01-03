@@ -17,8 +17,8 @@ public class Image {
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Lob
-    @Column(nullable = false)
+    @Lob()
+    @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String encoded;
 
 }
