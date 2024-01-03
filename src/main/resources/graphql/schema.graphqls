@@ -1,6 +1,5 @@
 type Query {
-    test : Boolean
-    greeting(name: String! = "Merijn"): String!
+    getMyAssociations: [Association]
 }
 
 type Mutation {

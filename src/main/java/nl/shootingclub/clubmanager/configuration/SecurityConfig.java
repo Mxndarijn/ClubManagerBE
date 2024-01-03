@@ -61,9 +61,10 @@ public class SecurityConfig {
                 })
                 .addFilterBefore(new JwtAuthFilter(userAuthProvider), BasicAuthenticationFilter.class)
             .authorizeHttpRequests(r -> {
-                r.requestMatchers("/", "/home", "/auth/**").permitAll()
+                r.requestMatchers("/", "/home", "/auth/**", "/graphiql", "/graphql").permitAll()
                 .anyRequest().authenticated();
-        });
+        })
+                .formLogin(Customizer.withDefaults());
 
         return http.build();
     }

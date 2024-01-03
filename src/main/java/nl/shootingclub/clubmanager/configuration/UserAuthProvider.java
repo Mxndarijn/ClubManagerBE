@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.security.core.Authentication;
 
@@ -51,6 +52,20 @@ public class UserAuthProvider {
             return new UsernamePasswordAuthenticationToken(userId, null, Collections.emptyList());
         } catch (JwtException | IllegalArgumentException e) {
             return null;
+        }
+    }
+
+    public Optional<User> getUserFromAuthentication() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated())
+            return Optional.empty();
+
+        try {
+            UUID userID = UUID.fromString((String) authentication.getPrincipal());
+
+            return userService.getUserById(userID);
+        } catch (IllegalArgumentException e) {
+            return Optional.empty();
         }
     }
 }
