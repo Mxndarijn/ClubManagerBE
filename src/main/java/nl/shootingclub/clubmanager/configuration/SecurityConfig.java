@@ -1,24 +1,25 @@
 package nl.shootingclub.clubmanager.configuration;
 
+import nl.shootingclub.clubmanager.filter.JwtAuthFilter;
+import nl.shootingclub.clubmanager.service.JwtService;
 import nl.shootingclub.clubmanager.security.CustomAuthenticationProvider;
+import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -28,7 +29,7 @@ public class SecurityConfig {
     private CustomAuthenticationProvider authProvider;
 
     @Autowired
-    private UserAuthProvider userAuthProvider;
+    private JwtAuthFilter jwtAuthFilter;
 
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
@@ -39,32 +40,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    public static PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
-                .cors(httpSecurityCorsConfigurer -> {
-                    CorsConfiguration config = new CorsConfiguration();
-                    config.setAllowCredentials(false); // You might want to adjust this to your needs
-                    config.addAllowedOrigin("*"); // Use '*' to allow all origins
-                    config.addAllowedHeader("*"); // Use '*' to allow all headers
-                    config.addAllowedMethod("*"); // Use '*' to allow all methods
-
-                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-                    source.registerCorsConfiguration("/**", config); // Apply this configuration to all paths
-
-                    httpSecurityCorsConfigurer.configurationSource(source);
-                })
-                .addFilterBefore(new JwtAuthFilter(userAuthProvider), BasicAuthenticationFilter.class)
-            .authorizeHttpRequests(r -> {
-                r.requestMatchers("/", "/home", "/auth/**", "/graphiql", "/graphql").permitAll()
-                .anyRequest().authenticated();
-        })
-                .formLogin(Customizer.withDefaults());
+            .cors(AbstractHttpConfigurer::disable)
+            .httpBasic(AbstractHttpConfigurer::disable)
+            .anonymous(AbstractHttpConfigurer::disable)
+            .authorizeHttpRequests(requestCustomizer -> {
+                requestCustomizer
+                    .requestMatchers("/", "/home", "/auth/**", "/graphql").permitAll()
+                    .anyRequest().permitAll();
+             })
+            .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

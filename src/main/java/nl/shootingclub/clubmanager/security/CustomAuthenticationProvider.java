@@ -21,15 +21,15 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
 
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+        System.out.println(authentication);  // added code
 
         String email = authentication.getName();
         String password = authentication.getCredentials().toString();
 
         if (userService.authenticate(email, password)) {
-
             return authentication;
         } else {
-            throw new AccountBadCredentialsException("account-bad-credentials");
+            throw new BadCredentialsException("Credentials are wrong");
         }
     }
 

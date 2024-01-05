@@ -1,12 +1,13 @@
 package nl.shootingclub.clubmanager.service;
 
 import kotlin.collections.ArrayDeque;
-import nl.shootingclub.clubmanager.configuration.UserAuthProvider;
+import nl.shootingclub.clubmanager.UserInfoDetails;
 import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.AssociationRepository;
 import nl.shootingclub.clubmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -18,17 +19,17 @@ import java.util.Optional;
 @Service
 public class AssociationService {
 
-    private final AssociationRepository associationRepository;
+    @Autowired
+    private AssociationRepository associationRepository;
 
-    private final UserAuthProvider userAuthProvider;
+    @Autowired
+    private UserRepository userRepository;
 
-    public AssociationService(AssociationRepository associationrepository, UserAuthProvider userAuthProvider) {
-        this.associationRepository = associationrepository;
-        this.userAuthProvider = userAuthProvider;
-    }
 
     public List<Association> getMyAssociations() {
-        Optional<User> optionalUser = userAuthProvider.getUserFromAuthentication();
+        UserInfoDetails userInfoDetails = (UserInfoDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> optionalUser =  userRepository.findByEmailEquals(userInfoDetails.getUsername());
+        System.out.println("info: " + userInfoDetails);
         if(optionalUser.isEmpty()) {
             return new ArrayList<>();
         }

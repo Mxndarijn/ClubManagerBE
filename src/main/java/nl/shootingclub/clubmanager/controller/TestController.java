@@ -13,7 +13,6 @@ import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -30,8 +29,8 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/auth")
-public class AuthController {
+@RequestMapping("/test")
+public class TestController {
 
     @Autowired
     private UserService userService;
@@ -49,29 +48,11 @@ public class AuthController {
     private JwtService userAuthProvider;
 
 
-    @PostMapping("/login")
-    public ResponseEntity<Map<String,Object>> login(@RequestBody @Valid LoginDTO loginRequest) {
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(), loginRequest.getPassword(), new ArrayList<>()
-                    ));
-            SecurityContextHolder.getContext().setAuthentication(auth);
-
-            Optional<User> optionalUser = userRepository.findByEmailEquals(loginRequest.getEmail());
-
-            if(optionalUser.isEmpty()) { // not needed because authentication handles this.
-                throw new AccountNotFoundException("Account not found");
-            }
-
-            final String token = userAuthProvider.createToken(new HashMap<>(), optionalUser.get().getEmail());
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", token);
-
+    @PostMapping("/test2")
+    public ResponseEntity<Map<String,Object>> login() {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", true);
             return ResponseEntity.ok(response);
-
-
     }
 
     @PostMapping("/register")
