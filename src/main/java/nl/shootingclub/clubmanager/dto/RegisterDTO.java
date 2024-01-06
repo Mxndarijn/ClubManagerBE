@@ -4,7 +4,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Getter;
 import lombok.Setter;
-import nl.shootingclub.clubmanager.configuration.password.ValidPassword;
+import nl.shootingclub.clubmanager.configuration.validator.ValidName;
+import nl.shootingclub.clubmanager.configuration.validator.ValidPassword;
 import org.hibernate.validator.constraints.Length;
 
 @Getter
@@ -21,10 +22,12 @@ public class RegisterDTO {
     private String password;
 
     @NotBlank(message = "empty")
-    @Length(max = 255, min = 2, message = "length-wrong")
+    @Length(max = 64, min = 2, message = "length-wrong")
+    @ValidName(message = "invalid-characters")
     private String firstName;
 
-    @Length(max = 255, min = 2, message = "length-wrong")
+    @Length(max = 64, min = 2, message = "length-wrong")
     @NotBlank(message = "empty")
+    @ValidName(message = "invalid-characters", spaces = true)
     private String lastName;
 }

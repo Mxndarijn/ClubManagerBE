@@ -59,7 +59,7 @@ public class AuthController {
 
             Optional<User> optionalUser = userRepository.findByEmailEquals(loginRequest.getEmail());
 
-            if(optionalUser.isEmpty()) { // not needed because authentication handles this.
+            if(optionalUser.isEmpty()) {
                 throw new AccountNotFoundException("Account not found");
             }
 

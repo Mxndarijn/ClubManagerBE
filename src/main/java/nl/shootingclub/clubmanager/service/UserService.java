@@ -57,4 +57,8 @@ public class UserService implements UserDetailsService {
             throw new UsernameNotFoundException("User not found");
         }
     }
+
+    public Optional<User> loadUserByEmail(String email) {
+        return userRepository.findByEmailEquals(email);
+    }
 }

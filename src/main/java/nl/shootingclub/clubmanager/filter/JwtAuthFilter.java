@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.service.JwtService;
 import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Optional;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
@@ -38,12 +41,14 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 String token = authElements[1];
                 String email = jwtService.extractUsername(token);
                 if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-                    if(jwtService.validateToken(token, userDetails)) {
-                        UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                        System.out.println(authToken);
-                        SecurityContextHolder.getContext().setAuthentication(authToken);
+                    Optional<User> userDetails = userDetailsService.loadUserByEmail(email);
+                    if(userDetails.isPresent()) {
+                        if(jwtService.validateToken(token, userDetails.get())) {
+                            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails.get(), null, new ArrayList<>());
+                            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                            System.out.println(authToken);
+                            SecurityContextHolder.getContext().setAuthentication(authToken);
+                        }
                     }
                 }
 

@@ -1,8 +1,7 @@
-package nl.shootingclub.clubmanager.configuration.password;
+package nl.shootingclub.clubmanager.configuration.validator;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
-import nl.shootingclub.clubmanager.configuration.password.PasswordConstraintValidator;
 
 import java.lang.annotation.*;
 

@@ -1,3 +1,4 @@
+
 package nl.shootingclub.clubmanager.service;
 
 import kotlin.collections.ArrayDeque;
@@ -7,6 +8,7 @@ import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.AssociationRepository;
 import nl.shootingclub.clubmanager.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -22,23 +24,8 @@ public class AssociationService {
     @Autowired
     private AssociationRepository associationRepository;
 
-    @Autowired
-    private UserRepository userRepository;
-
-
-    public List<Association> getMyAssociations() {
-        UserInfoDetails userInfoDetails = (UserInfoDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<User> optionalUser =  userRepository.findByEmailEquals(userInfoDetails.getUsername());
-        System.out.println("info: " + userInfoDetails);
-        if(optionalUser.isEmpty()) {
-            return new ArrayList<>();
-        }
-        List<Association> list = associationRepository.findByUser(optionalUser.get());
-        list.forEach(a -> {
-            a.setAssociationUserRoles(null);
-            a.setUsers(null);
-        });
-
+    public List<Association> getMyAssociations(User user) {
+        List<Association> list = associationRepository.findByUser(user);
         return list;
     }
 
