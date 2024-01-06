@@ -1,6 +1,7 @@
 package nl.shootingclub.clubmanager.exceptions;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -44,17 +45,6 @@ public class GlobalRequestExceptionHandler {
         return response;
     }
 
-    @ExceptionHandler(AccountNotFoundException.class)
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public Map<String, Object> handleAccountNotFoundException(AccountNotFoundException ex) {
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", false);
-        response.put("message", ex.getMessage());
-        response.put("error", "account-not-found");
-        return response;
-    }
-
     @ExceptionHandler(AccountValidationException.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -66,10 +56,10 @@ public class GlobalRequestExceptionHandler {
         return response;
     }
 
-    @ExceptionHandler(AccountBadCredentialsException.class)
+    @ExceptionHandler(BadCredentialsException.class)
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Map<String, Object> handleAccountBadCredentialsException(AccountBadCredentialsException ex) {
+    public Map<String, Object> handleAccountBadCredentialsException(BadCredentialsException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", false);
         response.put("message", ex.getMessage());

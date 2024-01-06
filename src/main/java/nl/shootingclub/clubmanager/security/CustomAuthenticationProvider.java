@@ -1,17 +1,13 @@
 package nl.shootingclub.clubmanager.security;
 
-import nl.shootingclub.clubmanager.exceptions.AccountBadCredentialsException;
 import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
-
-import java.util.ArrayList;
 
 @Component
 public class CustomAuthenticationProvider implements AuthenticationProvider {
@@ -29,6 +25,7 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (userService.authenticate(email, password)) {
             return authentication;
         } else {
+            System.out.println("throw");
             throw new BadCredentialsException("Credentials are wrong");
         }
     }

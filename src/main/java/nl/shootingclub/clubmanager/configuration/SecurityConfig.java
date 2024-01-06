@@ -21,6 +21,8 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 @Configuration
 @EnableWebSecurity
@@ -45,12 +47,23 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http.csrf(AbstractHttpConfigurer::disable)
-            .cors(AbstractHttpConfigurer::disable)
+                .cors(httpSecurityCorsConfigurer -> {
+                    CorsConfiguration config = new CorsConfiguration();
+                    config.setAllowCredentials(false); // You might want to adjust this to your needs
+                    config.addAllowedOrigin("*"); // Use '*' to allow all origins
+                    config.addAllowedHeader("*"); // Use '*' to allow all headers
+                    config.addAllowedMethod("*"); // Use '*' to allow all methods
+
+                    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+                    source.registerCorsConfiguration("/**", config); // Apply this configuration to all paths
+
+                    httpSecurityCorsConfigurer.configurationSource(source);
+                })
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(requestCustomizer -> {
                 requestCustomizer
-                    .requestMatchers("/auth/**", "/graphql").permitAll()
-                    .anyRequest().permitAll();
+                    .requestMatchers("/","/auth/**", "/graphql").permitAll()
+                    .anyRequest().authenticated();
              })
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 

@@ -60,7 +60,7 @@ public class AuthController {
             Optional<User> optionalUser = userRepository.findByEmailEquals(loginRequest.getEmail());
 
             if(optionalUser.isEmpty()) {
-                throw new AccountNotFoundException("Account not found");
+                throw new BadCredentialsException("credentials wrong");
             }
 
             final String token = userAuthProvider.createToken(new HashMap<>(), optionalUser.get().getEmail());
