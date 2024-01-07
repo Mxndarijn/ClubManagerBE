@@ -1,6 +1,8 @@
 package nl.shootingclub.clubmanager.model;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -27,5 +29,9 @@ public class AccountRole {
     @ManyToMany
     @JoinTable()
     private Set<AccountPermission> permissions;
+
+
+    @Column(name = "canBeDeleted", nullable = false)
+    private boolean canBeDeleted = true;
 
 }

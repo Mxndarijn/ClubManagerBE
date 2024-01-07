@@ -21,7 +21,7 @@ public class AssociationController {
     private AssociationService associationService;
 
     @QueryMapping
-   // @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).DEFAULT_GET_MY_ASSOCIATIONS)")
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).DEFAULT_GET_MY_ASSOCIATIONS)")
     public List<Association> getMyAssociations() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         List<Association> list = associationService.getMyAssociations(user);

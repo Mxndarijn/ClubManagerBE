@@ -3,9 +3,7 @@
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.Collection;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -59,6 +57,14 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private Set<AssociationUserRole> associationUserRoles;
+
+     public User() {
+         this.associations = new HashSet<>();
+         this.presences = new HashSet<>();
+         this.reservations = new HashSet<>();
+         this.roles = new HashSet<>();
+         this.associationUserRoles = new HashSet<>();
+     }
 
  }
 

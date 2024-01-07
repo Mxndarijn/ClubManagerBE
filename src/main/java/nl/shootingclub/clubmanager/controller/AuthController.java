@@ -1,12 +1,15 @@
 package nl.shootingclub.clubmanager.controller;
 
 import jakarta.validation.Valid;
+import nl.shootingclub.clubmanager.configuration.role.DefaultRole;
 import nl.shootingclub.clubmanager.dto.LoginDTO;
 import nl.shootingclub.clubmanager.dto.RegisterDTO;
 import nl.shootingclub.clubmanager.exceptions.AccountNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.AccountValidationException;
 import nl.shootingclub.clubmanager.exceptions.EmailAlreadyUsedException;
+import nl.shootingclub.clubmanager.model.AccountRole;
 import nl.shootingclub.clubmanager.model.User;
+import nl.shootingclub.clubmanager.repository.AccountRoleRepository;
 import nl.shootingclub.clubmanager.repository.UserRepository;
 import nl.shootingclub.clubmanager.service.JwtService;
 import nl.shootingclub.clubmanager.service.UserService;
@@ -47,6 +50,9 @@ public class AuthController {
 
     @Autowired
     private JwtService userAuthProvider;
+
+    @Autowired
+    private AccountRoleRepository accountRoleRepository;
 
 
     @PostMapping("/login")
@@ -91,6 +97,12 @@ public class AuthController {
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
             userService.createUser(user);
+
+            Optional<AccountRole> optionalAccountRole = accountRoleRepository.findByName(DefaultRole.USER.getName());
+            if(optionalAccountRole.isPresent()) {
+                user.getRoles().add(optionalAccountRole.get());
+                userRepository.save(user);
+            }
 
 
             final String token = userAuthProvider.createToken(new HashMap<>(), user.getEmail());

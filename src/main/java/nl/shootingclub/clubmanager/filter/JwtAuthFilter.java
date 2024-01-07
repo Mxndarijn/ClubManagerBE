@@ -1,5 +1,6 @@
 package nl.shootingclub.clubmanager.filter;
 
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -10,7 +11,6 @@ import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -39,17 +39,22 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             if(authElements.length == 2 && "Bearer".equals(authElements[0])) {
                 String token = authElements[1];
-                String email = jwtService.extractUsername(token);
-                if(email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    Optional<User> userDetails = userDetailsService.loadUserByEmail(email);
-                    if(userDetails.isPresent()) {
-                        if(jwtService.validateToken(token, userDetails.get())) {
-                            UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails.get(), null, new ArrayList<>());
-                            authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                            System.out.println(authToken);
-                            SecurityContextHolder.getContext().setAuthentication(authToken);
+                try {
+                    String email = jwtService.extractUsername(token);
+                    if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                        Optional<User> userDetails = userDetailsService.loadUserByEmail(email);
+                        if (userDetails.isPresent()) {
+                            if (jwtService.validateToken(token, userDetails.get())) {
+                                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails.get(), null, new ArrayList<>());
+                                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                                System.out.println(authToken);
+                                SecurityContextHolder.getContext().setAuthentication(authToken);
+                            }
                         }
                     }
+                } catch (JwtException ignored) {
+                    ignored.printStackTrace();
+                    // continue without auth, will be denied eventually, if the user needs to be authenticated
                 }
 
             }

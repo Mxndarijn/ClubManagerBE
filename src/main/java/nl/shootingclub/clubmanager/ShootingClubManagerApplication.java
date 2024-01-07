@@ -1,8 +1,10 @@
 package nl.shootingclub.clubmanager;
 
 import nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData;
+import nl.shootingclub.clubmanager.configuration.role.DefaultRole;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.AccountPermissionRepository;
+import nl.shootingclub.clubmanager.repository.AccountRoleRepository;
 import nl.shootingclub.clubmanager.service.AssociationService;
 import nl.shootingclub.clubmanager.service.UserAssociationService;
 import nl.shootingclub.clubmanager.service.UserService;
@@ -26,6 +28,9 @@ public class ShootingClubManagerApplication {
 
 	@Autowired
 	private AccountPermissionRepository accountPermissionRepository;
+
+	@Autowired
+	private AccountRoleRepository accountRoleRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(ShootingClubManagerApplication.class, args);
@@ -75,6 +80,16 @@ public class ShootingClubManagerApplication {
                     permission.setName(perm.getName());
                     permission.setDescription(perm.getDescription());
                     accountPermissionRepository.save(permission);
+				}
+			}
+
+			for (DefaultRole role : DefaultRole.values()) {
+				Optional<AccountRole> optionalAccountRole = accountRoleRepository.findByName(role.getName());
+				if(optionalAccountRole.isEmpty()) {
+					AccountRole accountRole = new AccountRole();
+					accountRole.setName(role.getName());
+					accountRole.setCanBeDeleted(false);
+					accountRoleRepository.save(accountRole);
 				}
 			}
 		};

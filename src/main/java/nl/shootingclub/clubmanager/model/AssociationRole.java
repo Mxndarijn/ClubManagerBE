@@ -10,7 +10,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "account_role")
+@Table(name = "association_role")
 public class AssociationRole {
 
     @Id
