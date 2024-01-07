@@ -54,21 +54,22 @@ public class ShootingClubManagerApplication {
 //            association.setContactEmail("nielszndiscord");
 //			association.setActive(true);
 //			association.setWelcomeMessage("Welkom, het werkt :D");
+////
+////
+////
+//			User u = userService.loadUserByEmail("merijn.gommeren@hotmail.com").get();
 //
-//
-//
-//			User savedUser = userService.createUser(newUser);
 //			Association savedAssociation = associationService.createAssociation(association);
 //			UserAssociation userAssociation = new UserAssociation();
 //			userAssociation.setAssociation(savedAssociation);
-//			userAssociation.setUser(savedUser);
+//			userAssociation.setUser(u);
 //			userAssociation.setContributionPrice(10);
 //
 //			UserAssociationId id = new UserAssociationId();
 //			id.setAssociationId(savedAssociation.getId());
-//			id.setUserId(savedUser.getId());
+//			id.setUserId(u.getId());
 //			userAssociation.setId(id);
-//
+
 //			userAssociationService.createUserAssociation(userAssociation);
 
 

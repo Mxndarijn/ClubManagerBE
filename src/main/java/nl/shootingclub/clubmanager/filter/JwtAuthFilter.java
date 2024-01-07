@@ -52,7 +52,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         }
                     }
                 } catch (JwtException ignored) {
-                    ignored.printStackTrace();
+
                     // continue without auth, will be denied eventually, if the user needs to be authenticated
                 }
 
