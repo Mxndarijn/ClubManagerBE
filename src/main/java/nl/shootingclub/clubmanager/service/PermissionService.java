@@ -23,7 +23,9 @@ public class PermissionService {
 
     public boolean validatePermission(AccountPermissionData accountPermissionData) {
         try {
-            System.out.println(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+            if(!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User)) {
+                return false;
+            }
             User tempUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
             Optional<User> optionalUser = userRepository.findById(tempUser.getId());
             if(optionalUser.isPresent()) {
@@ -37,7 +39,6 @@ public class PermissionService {
 
                 for (AccountRole role : user.getRoles()) {
                     if (role.getPermissions().contains(perm.get())) {
-                        System.out.println("Permission found");
                         return true;
                     }
                 }
