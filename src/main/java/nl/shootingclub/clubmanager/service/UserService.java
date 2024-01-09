@@ -61,4 +61,8 @@ public class UserService implements UserDetailsService {
     public Optional<User> loadUserByEmail(String email) {
         return userRepository.findByEmailEquals(email);
     }
+
+    public Optional<User> getUser(User user) {
+        return userRepository.findById(user.getId());
+    }
 }

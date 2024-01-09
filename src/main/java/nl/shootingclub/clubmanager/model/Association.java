@@ -38,7 +38,5 @@ public class Association {
     @OneToMany(mappedBy = "association")
     private Set<UserAssociation> users;
 
-    @OneToMany(mappedBy = "association")
-    private Set<AssociationUserRole> associationUserRoles;
 
 }

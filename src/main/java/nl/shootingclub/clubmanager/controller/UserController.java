@@ -3,31 +3,36 @@ package nl.shootingclub.clubmanager.controller;
 
 import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.model.User;
-import nl.shootingclub.clubmanager.repository.AssociationRepository;
 import nl.shootingclub.clubmanager.service.AssociationService;
+import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Controller
-public class AssociationController {
+public class UserController {
 
     @Autowired
-    private AssociationService associationService;
+    private UserService userService;
 
     @QueryMapping
-    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_ASSOCIATIONS)")
-    public List<Association> getMyAssociations() {
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
+    public User getMyProfile() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Association> list = associationService.getMyAssociations(user);
-        list.forEach(a -> {
-            a.setUsers(null);
-        });
-        return list;
+        Optional<User> optionalUser = userService.getUser(user);
+        if(optionalUser.isPresent()) {
+            User u = optionalUser.get();
+            u.setAssociations(null);
+            u.setPresences(null);
+            u.setReservations(null);
+            u.setRoles(null);
+            return u;
+        }
+        return null;
     }
 }

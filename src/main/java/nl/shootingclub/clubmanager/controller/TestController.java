@@ -66,8 +66,7 @@ public class TestController {
             }
 
             User user = new User();
-            user.setFirstName(registerRequest.getFirstName());
-            user.setLastName(registerRequest.getLastName());
+            user.setFullName(registerRequest.getFullName());
             user.setEmail(registerRequest.getEmail());
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 

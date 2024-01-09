@@ -32,6 +32,7 @@ public class ShootingClubManagerApplication {
 	@Autowired
 	private AccountRoleRepository accountRoleRepository;
 
+
 	public static void main(String[] args) {
 		SpringApplication.run(ShootingClubManagerApplication.class, args);
 	}
@@ -43,11 +44,13 @@ public class ShootingClubManagerApplication {
 //			Image newImage = new Image();
 //			newImage.setEncoded("a");
 //
-//			newUser.setFirstName("Merijn");
-//			newUser.setLastName("Gommeren");
-//			newUser.setEmail("merijn.gommeren@hotmail.com");
+////
+//			newUser.setFullName("jappie");
+//			newUser.setEmail("merijn.gommereeeen@hotmail.com");
 //			newUser.setPassword(encoder.encode("easy"));
 //			newUser.setImage(newImage);
+//
+//			userService.createUser(newUser);
 //
 //			Association association = new Association();
 //			association.setName("Shooting Club");

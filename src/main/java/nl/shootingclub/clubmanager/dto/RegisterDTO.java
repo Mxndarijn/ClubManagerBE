@@ -23,11 +23,6 @@ public class RegisterDTO {
 
     @NotBlank(message = "empty")
     @Length(max = 64, min = 2, message = "length-wrong")
-    @ValidName(message = "invalid-characters")
-    private String firstName;
-
-    @Length(max = 64, min = 2, message = "length-wrong")
-    @NotBlank(message = "empty")
-    @ValidName(message = "invalid-characters", spaces = true)
-    private String lastName;
+    @ValidName(spaces = true, message = "invalid-characters")
+    private String fullName;
 }

@@ -25,7 +25,5 @@ public class AssociationRole {
     @JoinTable()
     private Set<AssociationPermission> permissions;
 
-    @OneToMany(mappedBy = "role")
-    private Set<AssociationUserRole> associationUserRoles;
 
 }

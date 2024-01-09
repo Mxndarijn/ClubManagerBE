@@ -1,5 +1,8 @@
 type Query {
     getMyAssociations: [Association]
+    getMyPermissions: [AccountPermission]
+    getMyAssociationPermissions: [AssociationPermissionDTO]
+    getMyProfile: User
 }
 
 type Mutation {
@@ -18,9 +21,7 @@ type User {
     userName: String!
     password: String!
     email: String!
-    firstName: String!
-    lastName: String!
-    initials: String!
+    fullName: String!
     knsaMembershipNumber: Int
     knsaMemberSince: String
     image: Image
@@ -174,4 +175,11 @@ type WeaponType {
     id: ID!
     name: String
     tracks: [Track]
+}
+
+
+type AssociationPermissionDTO {
+    permissions: [String]
+    associationUUID: ID
+    associationName: String
 }

@@ -32,6 +32,14 @@ public class UserAssociation {
     @Column(name = "member_since")
     private LocalDateTime memberSince;
 
+
+    @ManyToOne
+    @JoinColumn(name = "association_role_id")
+    private AssociationRole associationRole;
+
+    public UserAssociation() {
+    }
+
 }
 
 

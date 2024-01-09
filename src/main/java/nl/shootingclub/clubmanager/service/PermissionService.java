@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -49,4 +51,11 @@ public class PermissionService {
         }
         return false;
     }
+
+    public List<AccountPermission> getMyPermissions(User user) {
+        return new ArrayList<>(user.getRoles().stream()
+                .flatMap(role -> role.getPermissions().stream())
+                .toList());
+    }
+
 }

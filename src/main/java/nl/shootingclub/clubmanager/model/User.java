@@ -26,11 +26,8 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(name = "first_name", nullable = false)
-    private String firstName;
-
-    @Column(name = "last_name", nullable = false)
-    private String lastName;
+    @Column(name = "full_name", nullable = false)
+    private String fullName;
 
     @Column(name = "knsa_membership_number")
     private Integer knsaMembershipNumber;
@@ -55,15 +52,11 @@ public class User {
     @JoinTable()
     private Set<AccountRole> roles;
 
-    @OneToMany(mappedBy = "user")
-    private Set<AssociationUserRole> associationUserRoles;
-
      public User() {
          this.associations = new HashSet<>();
          this.presences = new HashSet<>();
          this.reservations = new HashSet<>();
          this.roles = new HashSet<>();
-         this.associationUserRoles = new HashSet<>();
      }
 
  }
