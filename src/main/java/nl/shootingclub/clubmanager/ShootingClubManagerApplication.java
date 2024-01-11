@@ -1,10 +1,12 @@
 package nl.shootingclub.clubmanager;
 
+import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
 import nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData;
 import nl.shootingclub.clubmanager.configuration.role.DefaultRole;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.AccountPermissionRepository;
 import nl.shootingclub.clubmanager.repository.AccountRoleRepository;
+import nl.shootingclub.clubmanager.repository.DefaultImageRepository;
 import nl.shootingclub.clubmanager.service.AssociationService;
 import nl.shootingclub.clubmanager.service.UserAssociationService;
 import nl.shootingclub.clubmanager.service.UserService;
@@ -14,8 +16,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
@@ -31,6 +31,9 @@ public class ShootingClubManagerApplication {
 
 	@Autowired
 	private AccountRoleRepository accountRoleRepository;
+
+	@Autowired
+	private DefaultImageRepository defaultImageRepository;
 
 
 	public static void main(String[] args) {
@@ -75,6 +78,20 @@ public class ShootingClubManagerApplication {
 
 //			userAssociationService.createUserAssociation(userAssociation);
 
+			//Load images into database
+			for (DefaultImageData defaultImage : DefaultImageData.values()) {
+				Optional<DefaultImage> image = defaultImageRepository.findByName(defaultImage.getName());
+				if(image.isPresent()) {
+					continue;
+				}
+				DefaultImage newDefaultImage = new DefaultImage();
+				newDefaultImage.setName(defaultImage.getName());
+
+				Image i = new Image();
+				i.setEncoded("data:image/" + defaultImage.getFileType() +",base64," + defaultImage.getBase64EncodedImage());
+				newDefaultImage.setImage(i);
+                defaultImageRepository.save(newDefaultImage);
+			}
 
 			// Load permissions into database
 			for (AccountPermissionData perm : AccountPermissionData.values()) {
