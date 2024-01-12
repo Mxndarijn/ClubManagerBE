@@ -1,15 +1,14 @@
 package nl.shootingclub.clubmanager.configuration.role;
 
 import lombok.Getter;
-import lombok.Setter;
 
 @Getter
-public enum DefaultRole {
+public enum DefaultRoleAccount {
     ADMIN("Admin"),
     USER("User");
 
     private final String name;
-    DefaultRole(String name) {
+    DefaultRoleAccount(String name) {
         this.name = name;
     }
 }

@@ -32,7 +32,6 @@ public class PermissionService {
             Optional<User> optionalUser = userRepository.findById(tempUser.getId());
             if(optionalUser.isPresent()) {
                 User user = optionalUser.get();
-                System.out.println(user);
                 Optional<AccountPermission> perm = accountPermissionRepository.findByNameEquals(accountPermissionData.getName());
                 if(perm.isEmpty()) {
                     System.out.println("Permission not found");

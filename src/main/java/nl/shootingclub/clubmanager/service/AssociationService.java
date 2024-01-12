@@ -25,8 +25,7 @@ public class AssociationService {
     private AssociationRepository associationRepository;
 
     public List<Association> getMyAssociations(User user) {
-        List<Association> list = associationRepository.findByUser(user);
-        return list;
+        return associationRepository.findByUser(user);
     }
 
     public Association createAssociation(Association association) {

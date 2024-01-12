@@ -25,5 +25,8 @@ public class AssociationRole {
     @JoinTable()
     private Set<AssociationPermission> permissions;
 
+    @Column(name = "canBeDeleted", nullable = false)
+    private boolean canBeDeleted = true;
+
 
 }

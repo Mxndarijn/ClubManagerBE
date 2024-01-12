@@ -2,7 +2,7 @@ package nl.shootingclub.clubmanager.controller;
 
 import jakarta.validation.Valid;
 import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
-import nl.shootingclub.clubmanager.configuration.role.DefaultRole;
+import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAccount;
 import nl.shootingclub.clubmanager.dto.LoginDTO;
 import nl.shootingclub.clubmanager.dto.RegisterDTO;
 import nl.shootingclub.clubmanager.exceptions.AccountValidationException;
@@ -128,7 +128,7 @@ public class AuthController {
 
             userService.createUser(user);
 
-            Optional<AccountRole> optionalAccountRole = accountRoleRepository.findByName(DefaultRole.USER.getName());
+            Optional<AccountRole> optionalAccountRole = accountRoleRepository.findByName(DefaultRoleAccount.USER.getName());
             if(optionalAccountRole.isPresent()) {
                 user.getRoles().add(optionalAccountRole.get());
                 userRepository.save(user);

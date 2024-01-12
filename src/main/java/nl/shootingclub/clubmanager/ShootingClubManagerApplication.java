@@ -2,11 +2,11 @@ package nl.shootingclub.clubmanager;
 
 import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
 import nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData;
-import nl.shootingclub.clubmanager.configuration.role.DefaultRole;
+import nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData;
+import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAccount;
+import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAssociation;
 import nl.shootingclub.clubmanager.model.*;
-import nl.shootingclub.clubmanager.repository.AccountPermissionRepository;
-import nl.shootingclub.clubmanager.repository.AccountRoleRepository;
-import nl.shootingclub.clubmanager.repository.DefaultImageRepository;
+import nl.shootingclub.clubmanager.repository.*;
 import nl.shootingclub.clubmanager.service.AssociationService;
 import nl.shootingclub.clubmanager.service.UserAssociationService;
 import nl.shootingclub.clubmanager.service.UserService;
@@ -28,6 +28,12 @@ public class ShootingClubManagerApplication {
 
 	@Autowired
 	private AccountPermissionRepository accountPermissionRepository;
+
+	@Autowired
+	private AssociationPermissionRepository associationPermissionRepository;
+
+	@Autowired
+	private AssociationRoleRepository associationRoleRepository;
 
 	@Autowired
 	private AccountRoleRepository accountRoleRepository;
@@ -56,10 +62,10 @@ public class ShootingClubManagerApplication {
 //			userService.createUser(newUser);
 //
 //			Association association = new Association();
-//			association.setName("Shooting Club");
-//            association.setContactEmail("nielszndiscord");
+//			association.setName("Test Associatie");
+//            association.setContactEmail("merijnzndiscord");
 //			association.setActive(true);
-//			association.setWelcomeMessage("Welkom, het werkt :D");
+//			association.setWelcomeMessage("Halloooo");
 ////
 ////
 ////
@@ -104,13 +110,35 @@ public class ShootingClubManagerApplication {
 				}
 			}
 
-			for (DefaultRole role : DefaultRole.values()) {
+			//Account roles
+			for (DefaultRoleAccount role : DefaultRoleAccount.values()) {
 				Optional<AccountRole> optionalAccountRole = accountRoleRepository.findByName(role.getName());
 				if(optionalAccountRole.isEmpty()) {
 					AccountRole accountRole = new AccountRole();
 					accountRole.setName(role.getName());
 					accountRole.setCanBeDeleted(false);
 					accountRoleRepository.save(accountRole);
+				}
+			}
+
+			//Association Roles
+			for (DefaultRoleAssociation role : DefaultRoleAssociation.values()) {
+				Optional<AssociationRole> optionalAccountRole = associationRoleRepository.findByName(role.getName());
+				if(optionalAccountRole.isEmpty()) {
+					AssociationRole associationRole = new AssociationRole();
+					associationRole.setName(role.getName());
+					associationRole.setCanBeDeleted(false);
+					associationRoleRepository.save(associationRole);
+				}
+			}
+			// Load permissions for associations into database
+			for (AssociationPermissionData perm : AssociationPermissionData.values()) {
+				Optional<AssociationPermission> optionalAccountPermission = associationPermissionRepository.findByName(perm.getName());
+				if(optionalAccountPermission.isEmpty()) {
+					AssociationPermission permission = new AssociationPermission();
+					permission.setName(perm.getName());
+					permission.setDescription(perm.getDescription());
+					associationPermissionRepository.save(permission);
 				}
 			}
 		};
