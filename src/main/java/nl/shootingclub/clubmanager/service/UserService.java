@@ -1,7 +1,5 @@
 package nl.shootingclub.clubmanager.service;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import nl.shootingclub.clubmanager.UserInfoDetails;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.UserRepository;
@@ -12,8 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,5 +60,9 @@ public class UserService implements UserDetailsService {
 
     public Optional<User> getUser(User user) {
         return userRepository.findById(user.getId());
+    }
+
+    public User saveUser(User user) {
+        return userRepository.save(user);
     }
 }

@@ -23,7 +23,7 @@ public class AccountRole {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany(mappedBy = "roles")
+    @OneToMany(mappedBy = "role")
     private Set<User> users;
 
     @ManyToMany

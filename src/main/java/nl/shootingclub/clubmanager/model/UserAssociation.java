@@ -26,9 +26,6 @@ public class UserAssociation {
     @JoinColumn(name = "association_id")
     private Association association;
 
-    @Column(name = "contribution_price")
-    private Integer contributionPrice;
-
     @Column(name = "member_since")
     private LocalDateTime memberSince;
 
@@ -38,6 +35,15 @@ public class UserAssociation {
     private AssociationRole associationRole;
 
     public UserAssociation() {
+    }
+
+    public void createID() {
+        if(id != null)
+            return;
+        UserAssociationId id = new UserAssociationId();
+        id.setAssociationId(association.getId());
+        id.setUserId(user.getId());
+        setId(id);
     }
 
 }

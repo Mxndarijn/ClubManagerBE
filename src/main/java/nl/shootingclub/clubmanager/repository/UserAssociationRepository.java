@@ -9,4 +9,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface UserAssociationRepository extends JpaRepository<UserAssociation, UserAssociationId> {
+
+    Optional<UserAssociation> findByUserIdAndAssociationId(UUID userId, UUID associationId);
+
 }

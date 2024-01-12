@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AssociationService {
@@ -30,5 +31,9 @@ public class AssociationService {
 
     public Association createAssociation(Association association) {
         return associationRepository.save(association);
+    }
+
+    public Optional<Association> getByID(UUID associationUUID) {
+        return associationRepository.findById(associationUUID);
     }
 }

@@ -6,15 +6,16 @@ type Query {
 }
 
 type Mutation {
-    register(input: RegisterInput): User
+    createAssociation: Association
+    sendAssociationInvite(input: CreateAssociationInviteInput!): AssociationInvite
+
 }
 
-input RegisterInput {
-    username: String!
-    password: String!
-    # Andere vereiste velden voor registratie
+input CreateAssociationInviteInput {
+    userUUID: ID!
+    associationUUID: ID!
+    associationRoleUUID: ID!
 }
-
 
 type User {
     id: ID!
@@ -45,8 +46,7 @@ type Association {
 type UserAssociation {
     id: UserAssociationId!
     user: User!
-    association: Association!
-    contributionPrice: Int
+    association: Association
     memberSince: String
 }
 
@@ -182,4 +182,16 @@ type AssociationPermissionDTO {
     permissions: [String]
     associationUUID: ID
     associationName: String
+}
+
+type AssociationInvite {
+    id: AssociationInviteId!
+    user: User!
+    association: Association!
+    associationRole: AssociationRole
+}
+
+type AssociationInviteId {
+    userId: ID!
+    associationId: ID!
 }

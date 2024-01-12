@@ -123,16 +123,17 @@ public class AuthController {
                 Image i = new Image();
                 i.setEncoded(image.get().getImage().getEncoded());
                 user.setImage(i);
+            }
 
+            Optional<AccountRole> optionalAccountRole = accountRoleRepository.findByName(DefaultRoleAccount.USER.getName());
+            if(optionalAccountRole.isPresent()) {
+                user.setRole(optionalAccountRole.get());
+            } else {
+                throw new AccountValidationException("Could not create account");
             }
 
             userService.createUser(user);
 
-            Optional<AccountRole> optionalAccountRole = accountRoleRepository.findByName(DefaultRoleAccount.USER.getName());
-            if(optionalAccountRole.isPresent()) {
-                user.getRoles().add(optionalAccountRole.get());
-                userRepository.save(user);
-            }
 
 
             final String token = userAuthProvider.createToken(new HashMap<>(), user.getEmail());

@@ -48,15 +48,14 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private Set<Reservation> reservations;
 
-    @ManyToMany
-    @JoinTable()
-    private Set<AccountRole> roles;
+    @ManyToOne
+    @JoinColumn(name = "role_id", nullable = false, referencedColumnName = "id")
+    private AccountRole role;
 
      public User() {
          this.associations = new HashSet<>();
          this.presences = new HashSet<>();
          this.reservations = new HashSet<>();
-         this.roles = new HashSet<>();
      }
 
  }

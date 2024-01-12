@@ -30,7 +30,7 @@ public class UserController {
             u.setAssociations(null);
             u.setPresences(null);
             u.setReservations(null);
-            u.setRoles(null);
+            u.setRole(null);
             return u;
         }
         return null;
