@@ -94,7 +94,7 @@ public class ShootingClubManagerApplication {
 				newDefaultImage.setName(defaultImage.getName());
 
 				Image i = new Image();
-				i.setEncoded("data:image/" + defaultImage.getFileType() +",base64," + defaultImage.getBase64EncodedImage());
+				i.setEncoded(defaultImage.getBase64EncodedImage());
 				newDefaultImage.setImage(i);
                 defaultImageRepository.save(newDefaultImage);
 			}

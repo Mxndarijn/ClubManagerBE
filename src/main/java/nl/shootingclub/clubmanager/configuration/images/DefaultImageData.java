@@ -7,7 +7,8 @@ import java.util.Base64;
 
 @Getter
 public enum DefaultImageData {
-    PROFILE_PICTURE("defaultProfilePicture.jpeg", "DefaultProfilePicture");
+    PROFILE_PICTURE("defaultProfilePicture.jpeg", "DefaultProfilePicture"),
+    ASSOCIATION_PICTURE("defaultAssociationPicture.png", "DefaultAssociationPicture");
 
     private final String location;
     private final String name;
@@ -22,8 +23,9 @@ public enum DefaultImageData {
     }
 
     public String getBase64EncodedImage() throws IOException {
-        return encodeToBase64(readInputStream(getImageFile()));
-
+        String base64Image = encodeToBase64(readInputStream(getImageFile()));
+        String imageType = getFileType();
+        return "data:image/" + imageType + ";base64," + base64Image;
     }
 
     private byte[] readInputStream(InputStream inputStream) throws IOException {
