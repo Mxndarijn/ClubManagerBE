@@ -1,0 +1,27 @@
+type Track {
+    id: ID!
+    name: String
+    description: String
+    association: Association
+    allowedWeaponTypes: [WeaponType]
+}
+
+type Weapon {
+    id: ID!
+    name: String
+    association: Association
+    type: WeaponType
+    status: WeaponStatus
+}
+
+enum WeaponStatus {
+    ACTIVE
+    INACTIVE
+    MAINTENANCE
+}
+
+type WeaponType {
+    id: ID!
+    name: String
+    tracks: [Track]
+}

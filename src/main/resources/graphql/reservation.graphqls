@@ -1,0 +1,21 @@
+type Reservation {
+    id: ID!
+    association: Association
+    date: String
+    title: String
+    description: String
+    status: ReservationStatus
+    maxSize: Int
+    users: [User]
+    reservationSerie: ReservationSeries
+}
+
+enum ReservationStatus {
+    IDK
+    # Voeg hier de andere enum waarden toe
+}
+
+type ReservationSeries {
+    id: ID!
+    reservations: [Reservation]
+}

@@ -1,0 +1,17 @@
+extend type Query {
+    getMyAssociations: [Association]
+    getMyPermissions: [AccountPermission]
+    getMyAssociationPermissions: [AssociationPermissionDTO]
+    getMyProfile: User
+}
+
+type Mutation {
+    createAssociation: Association
+    sendAssociationInvite(input: CreateAssociationInviteInput!): AssociationInvite
+}
+
+input CreateAssociationInviteInput {
+    userUUID: ID!
+    associationUUID: ID!
+    associationRoleUUID: ID!
+}

@@ -1,0 +1,27 @@
+type AccountPermission {
+    id: ID!
+    name: String!
+    description: String
+    roles: [AccountRole]
+}
+
+type AccountRole {
+    id: ID!
+    name: String!
+    users: [User]
+    permissions: [AccountPermission]
+}
+
+type AssociationPermission {
+    id: ID!
+    name: String!
+    description: String
+    roles: [AssociationRole]
+}
+
+type AssociationRole {
+    id: ID!
+    name: String!
+    permissions: [AssociationPermission]
+    associationUserRoles: [AssociationUserRole]
+}

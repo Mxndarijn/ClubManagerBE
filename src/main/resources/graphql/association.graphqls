@@ -1,0 +1,41 @@
+type Association {
+    id: ID!
+    name: String!
+    image: Image
+    welcomeMessage: String
+    contactEmail: String
+    active: Boolean!
+    users: [UserAssociation]
+    associationUserRoles: [AssociationUserRole]
+}
+
+type AssociationUserRole {
+    id: AssociationUserRoleId!
+    user: User!
+    role: AssociationRole!
+    association: Association!
+}
+
+type AssociationUserRoleId {
+    userId: ID!
+    roleId: ID!
+    associationId: ID!
+}
+
+type AssociationPermissionDTO {
+    permissions: [String]
+    associationUUID: ID
+    associationName: String
+}
+
+type AssociationInvite {
+    id: AssociationInviteId!
+    user: User!
+    association: Association!
+    associationRole: AssociationRole
+}
+
+type AssociationInviteId {
+    userId: ID!
+    associationId: ID!
+}

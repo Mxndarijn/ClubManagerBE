@@ -1,0 +1,33 @@
+type User {
+    id: ID!
+    password: String!
+    email: String!
+    fullName: String!
+    knsaMembershipNumber: Int
+    knsaMemberSince: String
+    image: Image
+    associations: [UserAssociation]
+    presences: [UserPresence]
+    reservations: [Reservation]
+    role: AccountRole
+}
+
+type UserAssociation {
+    id: UserAssociationId!
+    user: User!
+    association: Association!
+    memberSince: String!
+    associationRole: AssociationRole!
+}
+
+type UserAssociationId {
+    userId: ID!
+    associationId: ID!
+}
+
+type UserPresence {
+    id: ID!
+    user: User
+    association: Association
+    date: String
+}
