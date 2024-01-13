@@ -27,10 +27,9 @@ public class UserController {
         Optional<User> optionalUser = userService.getUser(user);
         if(optionalUser.isPresent()) {
             User u = optionalUser.get();
-            u.setAssociations(null);
-            u.setPresences(null);
-            u.setReservations(null);
-            u.setRole(null);
+            u.getAssociations().forEach(a -> {
+                a.getAssociation().setUsers(null);
+            });
             return u;
         }
         return null;

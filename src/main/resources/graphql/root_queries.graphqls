@@ -1,7 +1,4 @@
 extend type Query {
-    getMyAssociations: [Association]
-    getMyPermissions: [AccountPermission]
-    getMyAssociationPermissions: [AssociationPermissionDTO]
     getMyProfile: User
 }
 

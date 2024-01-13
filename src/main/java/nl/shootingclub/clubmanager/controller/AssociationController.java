@@ -54,17 +54,6 @@ public class AssociationController {
     @Autowired
     private AssociationInviteService associationInviteService;
 
-    @QueryMapping
-    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_ASSOCIATIONS)")
-    public List<Association> getMyAssociations() {
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        List<Association> list = associationService.getMyAssociations(user);
-        list.forEach(a -> {
-            a.setUsers(null);
-        });
-        return list;
-    }
-
     @MutationMapping
     @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).CREATE_ASSOCIATION)")
     public Association createAssociation() {

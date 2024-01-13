@@ -10,11 +10,13 @@ import org.springframework.context.annotation.Configuration;
 public class GraphQLConfiguration {
 
 
-    @Value("${graphql.maxQueryDepth}")
+    @Value("${graphql.maxQueryDepth:10}")
     private int maxQueryDepth;
 
     @Bean
     public Instrumentation maxQueryDepthInstrumentation() {
+        if(maxQueryDepth < 0 || maxQueryDepth > 100)
+            maxQueryDepth = 10;
         return new MaxQueryDepthInstrumentation(maxQueryDepth);
     }
 }
