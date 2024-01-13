@@ -15,13 +15,12 @@ type AccountRole {
 type AssociationPermission {
     id: ID!
     name: String!
-    description: String
-    roles: [AssociationRole]
+    description: String!
+    roles: [AssociationRole]!
 }
 
 type AssociationRole {
     id: ID!
     name: String!
-    permissions: [AssociationPermission]
-    associationUserRoles: [AssociationUserRole]
+    permissions: [AssociationPermission]!
 }

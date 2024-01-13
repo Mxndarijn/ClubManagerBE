@@ -30,6 +30,7 @@ public class UserController {
             u.getAssociations().forEach(a -> {
                 a.getAssociation().setUsers(null);
             });
+            u.getRole().setUsers(null);
             return u;
         }
         return null;

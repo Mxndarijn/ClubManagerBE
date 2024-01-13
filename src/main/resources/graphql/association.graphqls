@@ -6,20 +6,6 @@ type Association {
     contactEmail: String
     active: Boolean!
     users: [UserAssociation]
-    associationUserRoles: [AssociationUserRole]
-}
-
-type AssociationUserRole {
-    id: AssociationUserRoleId!
-    user: User!
-    role: AssociationRole!
-    association: Association!
-}
-
-type AssociationUserRoleId {
-    userId: ID!
-    roleId: ID!
-    associationId: ID!
 }
 
 type AssociationPermissionDTO {
