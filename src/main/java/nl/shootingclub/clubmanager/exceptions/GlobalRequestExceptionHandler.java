@@ -67,4 +67,15 @@ public class GlobalRequestExceptionHandler {
         return response;
     }
 
+    @ExceptionHandler(TooManyRequestsException.class)
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Map<String, Object> handleException(TooManyRequestsException ex) {
+        Map<String, Object> response = new HashMap<>();
+        response.put("success", false);
+        response.put("message", ex.getMessage());
+        response.put("error", "too-many-requests");
+        return response;
+    }
+
 }

@@ -18,7 +18,7 @@ configurations {
 	}
 	all {
 		resolutionStrategy {
-			force 'org.antlr:antlr4-runtime:4.10.1', 'org.antlr:antlr4-tool:4.10.1'
+//			force 'org.antlr:antlr4-runtime:4.10.1', 'org.antlr:antlr4-tool:4.10.1'
 		}
 	}
 }
@@ -47,6 +47,8 @@ dependencies {
 	testImplementation 'org.springframework:spring-webflux'
 	testImplementation 'org.springframework.graphql:spring-graphql-test'
 	testImplementation 'org.springframework.security:spring-security-test'
+	implementation 'com.bucket4j:bucket4j-core:8.1.0'
+	implementation 'com.github.ben-manes.caffeine:caffeine:2.7.0'
 }
 
 tasks.named('test') {

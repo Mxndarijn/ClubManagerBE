@@ -1,5 +1,11 @@
 package nl.shootingclub.clubmanager.controller;
 
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import io.github.bucket4j.Bandwidth;
+import io.github.bucket4j.Bucket;
+import io.github.bucket4j.Refill;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
 import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAccount;
@@ -7,6 +13,7 @@ import nl.shootingclub.clubmanager.dto.LoginDTO;
 import nl.shootingclub.clubmanager.dto.RegisterDTO;
 import nl.shootingclub.clubmanager.exceptions.AccountValidationException;
 import nl.shootingclub.clubmanager.exceptions.EmailAlreadyUsedException;
+import nl.shootingclub.clubmanager.exceptions.TooManyRequestsException;
 import nl.shootingclub.clubmanager.model.AccountRole;
 import nl.shootingclub.clubmanager.model.DefaultImage;
 import nl.shootingclub.clubmanager.model.Image;
@@ -25,11 +32,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -61,8 +66,28 @@ public class AuthController {
     private DefaultImageRepository defaultImageRepository;
 
 
+    private Cache<String, Bucket> ipBucketCache;
+
+    public AuthController() {
+        ipBucketCache = Caffeine.newBuilder()
+                .expireAfterWrite(Duration.ofMinutes(15)) // Adjust the duration as needed
+                .build();
+    }
+
+    private static Bucket createBucketForIp(String ip) {
+        return Bucket.builder()
+                .addLimit(Bandwidth.classic(10, Refill.greedy(10, Duration.ofMinutes(1))))
+                .build();
+    }
+
+
     @PostMapping("/login")
-    public ResponseEntity<Map<String,Object>> login(@RequestBody @Valid LoginDTO loginRequest) {
+    public ResponseEntity<Map<String,Object>> login(HttpServletRequest request, @RequestBody @Valid LoginDTO loginRequest) {
+        Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthController::createBucketForIp);
+        if (bucket == null || !bucket.tryConsume(1)) {
+            throw new TooManyRequestsException("too many requests for login");
+        }
+
             Authentication auth = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
                             loginRequest.getEmail(), loginRequest.getPassword(), new ArrayList<>()
@@ -87,7 +112,11 @@ public class AuthController {
     }
 
     @PostMapping("/validateToken")
-    public ResponseEntity<Map<String, Object>> validateToken() {
+    public ResponseEntity<Map<String, Object>> validateToken(HttpServletRequest request) {
+        Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthController::createBucketForIp);
+        if (bucket == null || !bucket.tryConsume(1)) {
+            throw new TooManyRequestsException("too many requests for login");
+        }
 
         if(!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User)) {
             Map<String, Object> response = new HashMap<>();
@@ -104,8 +133,12 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<Map<String,Object>> register(@RequestBody @Valid RegisterDTO registerRequest) {
+    public ResponseEntity<Map<String,Object>> register(HttpServletRequest request, @RequestBody @Valid RegisterDTO registerRequest) {
         try {
+            Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthController::createBucketForIp);
+            if (bucket == null || !bucket.tryConsume(1)) {
+                throw new TooManyRequestsException("too many requests for login");
+            }
 
             Optional<User> optionalUser = userRepository.findByEmailEquals(registerRequest.getEmail().toLowerCase());
 

@@ -2,20 +2,16 @@
 package nl.shootingclub.clubmanager.controller;
 
 import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
+import nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData;
 import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAssociation;
 import nl.shootingclub.clubmanager.dto.AssociationInviteDTO;
 import nl.shootingclub.clubmanager.exceptions.AssociationNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.AssociationRoleNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.UserNotFoundException;
 import nl.shootingclub.clubmanager.model.*;
-import nl.shootingclub.clubmanager.repository.AssociationRepository;
-import nl.shootingclub.clubmanager.repository.AssociationRoleRepository;
-import nl.shootingclub.clubmanager.repository.DefaultImageRepository;
-import nl.shootingclub.clubmanager.repository.UserRepository;
-import nl.shootingclub.clubmanager.service.AssociationInviteService;
-import nl.shootingclub.clubmanager.service.AssociationService;
-import nl.shootingclub.clubmanager.service.UserAssociationService;
-import nl.shootingclub.clubmanager.service.UserService;
+import nl.shootingclub.clubmanager.repository.*;
+import nl.shootingclub.clubmanager.service.*;
+import org.checkerframework.checker.nullness.Opt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -54,6 +50,12 @@ public class AssociationController {
     @Autowired
     private AssociationInviteService associationInviteService;
 
+    @Autowired
+    private UserAssociationRepository userAssociationRepository;
+
+    @Autowired
+    private PermissionService permissionService;
+
     @MutationMapping
     @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).CREATE_ASSOCIATION)")
     public Association createAssociation() {
@@ -87,6 +89,32 @@ public class AssociationController {
         });
 
         return a;
+    }
+
+    @QueryMapping
+    public Association getAssociationDetails(UUID associationID) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> optionalUser = userRepository.findByEmailEquals(user.getEmail());
+        if (optionalUser.isEmpty()) {
+            throw new UserNotFoundException("user-not-found");
+        }
+        User u = optionalUser.get();
+        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(u.getId(), associationID);
+        if(optionalUserAssociation.isEmpty())
+            return null;
+        UserAssociation userAssociation = optionalUserAssociation.get();
+        Association association = userAssociation.getAssociation();
+        if(permissionService.validateAssociationPermission(associationID, AssociationPermissionData.MANAGE_MEMBERS)) {
+            association.getUsers().forEach(ui -> {
+                ui.getUser().setAssociations(null);
+                ui.getUser().setPresences(null);
+            });
+        } else {
+            association.setUsers(null);
+        }
+        //TODO security filters
+
+        return association;
     }
 
     @MutationMapping
