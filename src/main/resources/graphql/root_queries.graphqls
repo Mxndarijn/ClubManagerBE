@@ -1,12 +1,13 @@
 extend type Query {
     getMyProfile: User
-    getAssociationDetails(associationID: String!): Association
+    getAssociationDetails(associationID: ID!): Association
     getAssociationRoles: [AssociationRole]!
 }
 
 type Mutation {
     createAssociation: Association
-    sendAssociationInvite(dto: CreateAssociationInviteInput!): AssociationInvite
+    sendAssociationInvite(dto: CreateAssociationInviteInput!): SendAssociationInviteResponseDTO
+    removeAssociationInvite(inviteID: ID!): DefaultBooleanResponseDTO
     changeUserAssociation(changeUserAssociationDTO: ChangeUserAssociationDTO!): ChangeUserAssociationResponse
     removeUserAssociation(deleteUserAssociationDTO: DeleteUserAssociationDTO!): DefaultBooleanResponseDTO
 }
@@ -35,5 +36,12 @@ type ChangeUserAssociationResponse {
 
 type DefaultBooleanResponseDTO {
     success: Boolean!
+    message: String
+}
+
+type SendAssociationInviteResponseDTO {
+    success: Boolean!
+    message: String!
+    associationInvite: AssociationInvite
 }
 

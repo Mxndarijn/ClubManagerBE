@@ -94,25 +94,33 @@ public class AssociationController {
     }
 
     @QueryMapping
-    public Association getAssociationDetails(@Argument String associationID) {
+    public Association getAssociationDetails(@Argument UUID associationID) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userRepository.findByEmailEquals(user.getEmail());
         if (optionalUser.isEmpty()) {
             throw new UserNotFoundException("user-not-found");
         }
-        UUID uuid = UUID.fromString(associationID);
         User u = optionalUser.get();
-        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(u.getId(), uuid);
+        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(u.getId(), associationID);
         if(optionalUserAssociation.isEmpty())
             return null;
         UserAssociation userAssociation = optionalUserAssociation.get();
         Association association = userAssociation.getAssociation();
-        if(permissionService.validateAssociationPermission(uuid, AssociationPermissionData.MANAGE_MEMBERS)) {
+        if(permissionService.validateAssociationPermission(associationID, AssociationPermissionData.MANAGE_MEMBERS)) {
             association.getUsers().forEach(ui -> {
                 ui.getUser().setAssociations(null);
                 ui.getUser().setPresences(null);
+                association.getInvites().forEach(invite -> {
+                    invite.getUser().setAssociations(null);
+                    invite.getUser().setImage(null);
+                    invite.getUser().setRole(null);
+                    invite.getUser().setPresences(null);
+                    invite.getUser().setKnsaMembershipNumber(null);
+                    invite.getUser().setKnsaMembershipNumber(null);
+                });
             });
         } else {
+            association.setInvites(null);
             association.setUsers(null);
         }
         //TODO security filters
@@ -120,34 +128,4 @@ public class AssociationController {
         return association;
     }
 
-    @MutationMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_MEMBERS)")
-    public AssociationInvite sendAssociationInvite(AssociationInviteDTO dto) {
-
-        Optional<Association> optionalAssociation = associationService.getByID(dto.getAssociationUUID());
-        if(optionalAssociation.isEmpty()) {
-            throw new AssociationNotFoundException("association-not-found");
-        }
-
-        Optional<AssociationRole> optionalAssociationRole = associationRoleRepository.findById(dto.getAssociationRoleUUID());
-        if(optionalAssociationRole.isEmpty()) {
-            throw new AssociationRoleNotFoundException("association-role-not-found");
-        }
-
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<User> optionalUser = userRepository.findByEmailEquals(user.getEmail());
-        if (optionalUser.isEmpty()) {
-            throw new UserNotFoundException("user-not-found");
-        }
-
-
-        AssociationInvite associationInvite = new AssociationInvite();
-        associationInvite.setAssociation(optionalAssociation.get());
-        associationInvite.setAssociationRole(optionalAssociationRole.get());
-        associationInvite.setUser(optionalUser.get());
-
-        return associationInviteService.createAssociationInvite(associationInvite);
-
-
-    }
 }

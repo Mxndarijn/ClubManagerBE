@@ -6,6 +6,7 @@ type Association {
     contactEmail: String
     active: Boolean!
     users: [UserAssociation]
+    invites: [AssociationInvite]
 }
 
 type AssociationPermissionDTO {

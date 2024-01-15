@@ -10,4 +10,6 @@ import java.util.UUID;
 public interface AssociationInviteRepository extends JpaRepository<AssociationInvite, UUID> {
 
     List<AssociationInvite> findByUser(User user);
+
+    Optional<AssociationInvite> findAssociationInviteByUserAndAssociation(User user, Association association);
 }

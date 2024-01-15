@@ -26,4 +26,16 @@ public class AssociationInviteService {
     public AssociationInvite createAssociationInvite(AssociationInvite associationInvite) {
         return associationInviteRepository.save(associationInvite);
     }
+
+    public Optional<AssociationInvite> findAssociationInviteByID(UUID inviteID) {
+        return associationInviteRepository.findById(inviteID);
+    }
+
+    public void deleteAssociationInvite(AssociationInvite invite) {
+        associationInviteRepository.delete(invite);
+    }
+
+    public Optional<AssociationInvite> findAssociationInviteByUserIDAndAssociationID(User user, Association association) {
+        return associationInviteRepository.findAssociationInviteByUserAndAssociation(user, association);
+    }
 }

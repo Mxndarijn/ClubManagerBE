@@ -8,4 +8,5 @@ import lombok.Setter;
 public class DefaultBooleanResponseDTO {
 
     private boolean success;
+    private String message;
 }
