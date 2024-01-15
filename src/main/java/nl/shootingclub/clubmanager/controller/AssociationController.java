@@ -13,8 +13,10 @@ import nl.shootingclub.clubmanager.repository.*;
 import nl.shootingclub.clubmanager.service.*;
 import org.checkerframework.checker.nullness.Opt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -92,19 +94,20 @@ public class AssociationController {
     }
 
     @QueryMapping
-    public Association getAssociationDetails(UUID associationID) {
+    public Association getAssociationDetails(@Argument String associationID) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userRepository.findByEmailEquals(user.getEmail());
         if (optionalUser.isEmpty()) {
             throw new UserNotFoundException("user-not-found");
         }
+        UUID uuid = UUID.fromString(associationID);
         User u = optionalUser.get();
-        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(u.getId(), associationID);
+        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(u.getId(), uuid);
         if(optionalUserAssociation.isEmpty())
             return null;
         UserAssociation userAssociation = optionalUserAssociation.get();
         Association association = userAssociation.getAssociation();
-        if(permissionService.validateAssociationPermission(associationID, AssociationPermissionData.MANAGE_MEMBERS)) {
+        if(permissionService.validateAssociationPermission(uuid, AssociationPermissionData.MANAGE_MEMBERS)) {
             association.getUsers().forEach(ui -> {
                 ui.getUser().setAssociations(null);
                 ui.getUser().setPresences(null);

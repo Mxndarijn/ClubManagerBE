@@ -17,4 +17,12 @@ public class UserAssociationService {
     public void createUserAssociation(UserAssociation userAssociation) {
         userAssociationRepository.save(userAssociation);
     }
+
+    public void saveUserAssociation(UserAssociation userAssociation) {
+        userAssociationRepository.save(userAssociation);
+    }
+
+    public void deleteUserAssociation(UserAssociation userAssociation) {
+        userAssociationRepository.delete(userAssociation);
+    }
 }

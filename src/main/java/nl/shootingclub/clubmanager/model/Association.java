@@ -7,6 +7,7 @@ import java.util.UUID;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.repository.cdi.Eager;
 
 @Getter
 @Setter

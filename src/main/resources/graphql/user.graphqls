@@ -1,6 +1,5 @@
 type User {
-    id: ID!
-    password: String!
+    id: ID
     email: String!
     fullName: String!
     knsaMembershipNumber: Int

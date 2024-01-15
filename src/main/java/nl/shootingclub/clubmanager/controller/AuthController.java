@@ -76,7 +76,7 @@ public class AuthController {
 
     private static Bucket createBucketForIp(String ip) {
         return Bucket.builder()
-                .addLimit(Bandwidth.classic(10, Refill.greedy(10, Duration.ofMinutes(1))))
+                .addLimit(Bandwidth.classic(100, Refill.greedy(100, Duration.ofMinutes(1))))
                 .build();
     }
 
