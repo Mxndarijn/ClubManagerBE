@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-public interface AssociationInviteRepository extends JpaRepository<AssociationInvite, UUID> {
+public interface AssociationInviteRepository extends JpaRepository<AssociationInvite, AssociationInviteId> {
 
     List<AssociationInvite> findByUser(User user);
 

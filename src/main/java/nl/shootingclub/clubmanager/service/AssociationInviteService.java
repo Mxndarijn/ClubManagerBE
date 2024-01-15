@@ -1,8 +1,10 @@
 
 package nl.shootingclub.clubmanager.service;
 
+import nl.shootingclub.clubmanager.dto.AssociationInviteDTO;
 import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.model.AssociationInvite;
+import nl.shootingclub.clubmanager.model.AssociationInviteId;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.AssociationInviteRepository;
 import nl.shootingclub.clubmanager.repository.AssociationRepository;
@@ -27,7 +29,7 @@ public class AssociationInviteService {
         return associationInviteRepository.save(associationInvite);
     }
 
-    public Optional<AssociationInvite> findAssociationInviteByID(UUID inviteID) {
+    public Optional<AssociationInvite> findAssociationInviteByID(AssociationInviteId inviteID) {
         return associationInviteRepository.findById(inviteID);
     }
 
@@ -37,5 +39,13 @@ public class AssociationInviteService {
 
     public Optional<AssociationInvite> findAssociationInviteByUserIDAndAssociationID(User user, Association association) {
         return associationInviteRepository.findAssociationInviteByUserAndAssociation(user, association);
+    }
+
+    public AssociationInvite saveAssociationInvite(AssociationInvite invite) {
+        return associationInviteRepository.save(invite);
+    }
+
+    public void removeAssociationInvite(AssociationInvite invite) {
+        associationInviteRepository.delete(invite);
     }
 }

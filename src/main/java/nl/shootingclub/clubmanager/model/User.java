@@ -45,6 +45,9 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<UserPresence> presences;
 
+    @OneToMany(mappedBy = "user")
+    private Set<AssociationInvite> invites;
+
     @ManyToMany(mappedBy = "users")
     private Set<Reservation> reservations;
 

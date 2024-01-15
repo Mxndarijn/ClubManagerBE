@@ -17,9 +17,10 @@ type AssociationPermissionDTO {
 
 type AssociationInvite {
     id: AssociationInviteId!
-    user: User!
+    user: PrivateUser!
     association: Association!
     associationRole: AssociationRole
+    createdAt: String
 }
 
 type AssociationInviteId {

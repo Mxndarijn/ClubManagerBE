@@ -9,6 +9,7 @@ type User {
     presences: [UserPresence]
     reservations: [Reservation]
     role: AccountRole
+    invites: [AssociationInvite]
 }
 
 type UserAssociation {
@@ -29,4 +30,9 @@ type UserPresence {
     user: User
     association: Association
     date: String
+}
+
+type PrivateUser {
+    id: ID
+    email: String!
 }

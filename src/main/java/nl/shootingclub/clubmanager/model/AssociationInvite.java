@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -30,6 +31,9 @@ public class AssociationInvite {
     @ManyToOne
     @JoinColumn(name = "association_role_id")
     private AssociationRole associationRole;
+
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
 
 

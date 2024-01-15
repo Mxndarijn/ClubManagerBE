@@ -7,9 +7,11 @@ extend type Query {
 type Mutation {
     createAssociation: Association
     sendAssociationInvite(dto: CreateAssociationInviteInput!): SendAssociationInviteResponseDTO
-    removeAssociationInvite(inviteID: ID!): DefaultBooleanResponseDTO
+    removeAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
     changeUserAssociation(changeUserAssociationDTO: ChangeUserAssociationDTO!): ChangeUserAssociationResponse
     removeUserAssociation(deleteUserAssociationDTO: DeleteUserAssociationDTO!): DefaultBooleanResponseDTO
+    acceptAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
+    rejectAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
 }
 
 input ChangeUserAssociationDTO {
@@ -24,9 +26,14 @@ input DeleteUserAssociationDTO {
 }
 
 input CreateAssociationInviteInput {
-    userUUID: ID!
+    userEmail: String!
     associationUUID: ID!
     associationRoleUUID: ID!
+}
+
+input AssociationInviteInput {
+    userUUID: ID!
+    associationUUID: ID!
 }
 
 type ChangeUserAssociationResponse {
@@ -41,7 +48,7 @@ type DefaultBooleanResponseDTO {
 
 type SendAssociationInviteResponseDTO {
     success: Boolean!
-    message: String!
+    message: String
     associationInvite: AssociationInvite
 }
 

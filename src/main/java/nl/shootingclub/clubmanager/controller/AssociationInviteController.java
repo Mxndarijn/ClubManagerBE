@@ -1,15 +1,13 @@
 
 package nl.shootingclub.clubmanager.controller;
 
-import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
 import nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData;
-import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAssociation;
 import nl.shootingclub.clubmanager.dto.AssociationInviteDTO;
 import nl.shootingclub.clubmanager.dto.DefaultBooleanResponseDTO;
+import nl.shootingclub.clubmanager.dto.InputAssociationInviteDTO;
 import nl.shootingclub.clubmanager.dto.SendAssociationInviteResponseDTO;
 import nl.shootingclub.clubmanager.exceptions.AssociationNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.AssociationRoleNotFoundException;
-import nl.shootingclub.clubmanager.exceptions.UserNotFoundException;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.AssociationRoleRepository;
 import nl.shootingclub.clubmanager.repository.DefaultImageRepository;
@@ -19,14 +17,11 @@ import nl.shootingclub.clubmanager.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
-import javax.naming.NoPermissionException;
+import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 public class AssociationInviteController {
@@ -72,15 +67,21 @@ public class AssociationInviteController {
         if(optionalAssociationRole.isEmpty()) {
             throw new AssociationRoleNotFoundException("association-role-not-found");
         }
-
-        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        Optional<User> optionalUser = userRepository.findByEmailEquals(user.getEmail());
         SendAssociationInviteResponseDTO responseDTO = new SendAssociationInviteResponseDTO();
+        Optional<User> optionalUser = userRepository.findByEmailEquals(dto.getUserEmail());
         if (optionalUser.isEmpty()) {
             responseDTO.setSuccess(false);
             responseDTO.setMessage("user-not-found");
             return responseDTO;
         }
+
+        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(optionalUser.get().getId(), dto.getAssociationUUID());
+        if(optionalUserAssociation.isPresent()) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("already-in-association");
+            return responseDTO;
+        }
+
 
         Optional<AssociationInvite> optionalAssociationInvite = associationInviteService.findAssociationInviteByUserIDAndAssociationID(optionalUser.get(), optionalAssociation.get());
         if(optionalAssociationInvite.isPresent()) {
@@ -89,18 +90,18 @@ public class AssociationInviteController {
         } else {
             responseDTO.setSuccess(true);
             AssociationInvite invite = new AssociationInvite();
+
+            AssociationInviteId id = new AssociationInviteId();
+            id.setAssociationId(optionalAssociation.get().getId());
+            id.setUserId(optionalUser.get().getId());
+
+            invite.setId(id);
             invite.setAssociation(optionalAssociation.get());
             invite.setAssociationRole(optionalAssociationRole.get());
             invite.setUser(optionalUser.get());
+            invite.setCreatedAt(LocalDateTime.now());
 
-            invite.getUser().setAssociations(null);
-            invite.getUser().setImage(null);
-            invite.getUser().setRole(null);
-            invite.getUser().setPresences(null);
-            invite.getUser().setKnsaMembershipNumber(null);
-            invite.getUser().setKnsaMembershipNumber(null);
-
-            responseDTO.setAssociationInvite(invite);
+            responseDTO.setAssociationInvite(associationInviteService.saveAssociationInvite(invite));
         }
 
         return responseDTO;
@@ -111,9 +112,13 @@ public class AssociationInviteController {
     }
 
     @MutationMapping
-    public DefaultBooleanResponseDTO removeAssociationInvite(@Argument UUID inviteID) {
+    public DefaultBooleanResponseDTO removeAssociationInvite(@Argument InputAssociationInviteDTO inviteId) {
 
-        Optional<AssociationInvite> optionalAssociationInvite = associationInviteService.findAssociationInviteByID(inviteID);
+        AssociationInviteId id = new AssociationInviteId();
+        id.setAssociationId(inviteId.getAssociationUUID());
+        id.setUserId(inviteId.getUserUUID());
+
+        Optional<AssociationInvite> optionalAssociationInvite = associationInviteService.findAssociationInviteByID(id);
         DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
         if(optionalAssociationInvite.isPresent()) {
             AssociationInvite invite = optionalAssociationInvite.get();
@@ -124,6 +129,53 @@ public class AssociationInviteController {
                 response.setSuccess(false);
                 response.setMessage("no-permission");
             }
+
+        } else {
+            response.setSuccess(false);
+            response.setMessage("no-invite-found");
+        }
+
+        return response;
+    }
+
+    @MutationMapping
+    public DefaultBooleanResponseDTO acceptAssociationInvite(@Argument InputAssociationInviteDTO inviteId) {
+
+        AssociationInviteId id = new AssociationInviteId();
+        id.setAssociationId(inviteId.getAssociationUUID());
+        id.setUserId(inviteId.getUserUUID());
+
+        Optional<AssociationInvite> optionalAssociationInvite = associationInviteService.findAssociationInviteByID(id);
+        DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
+        if(optionalAssociationInvite.isPresent()) {
+            AssociationInvite invite = optionalAssociationInvite.get();
+            UserAssociation userAssociation = userAssociationService.createUserAssociation(invite.getUser(), invite.getAssociation(), invite.getAssociationRole());
+            associationInviteService.removeAssociationInvite(invite);
+            if(userAssociation != null) {
+                response.setSuccess(true);
+            }
+
+        } else {
+            response.setSuccess(false);
+            response.setMessage("no-invite-found");
+        }
+
+        return response;
+    }
+
+    @MutationMapping
+    public DefaultBooleanResponseDTO rejectAssociationInvite(@Argument InputAssociationInviteDTO inviteId) {
+
+        AssociationInviteId id = new AssociationInviteId();
+        id.setAssociationId(inviteId.getAssociationUUID());
+        id.setUserId(inviteId.getUserUUID());
+
+        Optional<AssociationInvite> optionalAssociationInvite = associationInviteService.findAssociationInviteByID(id);
+        DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
+        if(optionalAssociationInvite.isPresent()) {
+            AssociationInvite invite = optionalAssociationInvite.get();
+            associationInviteService.removeAssociationInvite(invite);
+            response.setSuccess(true);
 
         } else {
             response.setSuccess(false);
