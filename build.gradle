@@ -49,6 +49,8 @@ dependencies {
 	testImplementation 'org.springframework.security:spring-security-test'
 	implementation 'com.bucket4j:bucket4j-core:8.1.0'
 	implementation 'com.github.ben-manes.caffeine:caffeine:2.7.0'
+//	implementation platform("com.google.cloud:spring-cloud-gcp-dependencies:5.0.0")
+//	implementation("com.google.cloud:spring-cloud-gcp-starter-sql-mysql")
 }
 
 tasks.named('test') {

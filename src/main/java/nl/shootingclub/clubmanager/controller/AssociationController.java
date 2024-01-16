@@ -11,7 +11,6 @@ import nl.shootingclub.clubmanager.exceptions.UserNotFoundException;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.*;
 import nl.shootingclub.clubmanager.service.*;
-import org.checkerframework.checker.nullness.Opt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
