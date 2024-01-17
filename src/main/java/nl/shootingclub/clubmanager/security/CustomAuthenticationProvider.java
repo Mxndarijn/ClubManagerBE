@@ -25,7 +25,6 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
         if (userService.authenticate(email, password)) {
             return authentication;
         } else {
-            System.out.println("throw");
             throw new BadCredentialsException("Credentials are wrong");
         }
     }

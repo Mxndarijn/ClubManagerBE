@@ -66,6 +66,7 @@ public class AuthController {
     private DefaultImageRepository defaultImageRepository;
 
 
+    // Handles rate limiting
     private Cache<String, Bucket> ipBucketCache;
 
     public AuthController() {
@@ -94,13 +95,7 @@ public class AuthController {
                     ));
             SecurityContextHolder.getContext().setAuthentication(auth);
 
-            Optional<User> optionalUser = userRepository.findByEmailEquals(loginRequest.getEmail());
-
-            if(optionalUser.isEmpty()) {
-                throw new BadCredentialsException("credentials wrong");
-            }
-
-            final String token = userAuthProvider.createToken(new HashMap<>(), optionalUser.get().getEmail());
+            final String token = userAuthProvider.createToken(new HashMap<>(), (String) auth.getPrincipal());
 
             Map<String, Object> response = new HashMap<>();
             response.put("success", true);
