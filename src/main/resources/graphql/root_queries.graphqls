@@ -1,17 +1,36 @@
 extend type Query {
     getMyProfile: User
+
+#    Association Details
     getAssociationDetails(associationID: ID!): Association
+    getAssociationStatistics(associationID: ID!): AssociationStatisticsDTO
+
     getAssociationRoles: [AssociationRole]!
+    getAllWeapons(associationID: ID!): [Weapon]!
+    getAllWeaponTypes(associationID: ID!): [WeaponType]!
 }
 
 type Mutation {
     createAssociation: Association
+
+#    Invites
     sendAssociationInvite(dto: CreateAssociationInviteInput!): SendAssociationInviteResponseDTO
     removeAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
     changeUserAssociation(changeUserAssociationDTO: ChangeUserAssociationDTO!): ChangeUserAssociationResponse
     removeUserAssociation(deleteUserAssociationDTO: DeleteUserAssociationDTO!): DefaultBooleanResponseDTO
     acceptAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
     rejectAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
+
+#    User Profile
+    updateMyProfile(dto: UpdateMyProfileDTO!) : DefaultBooleanResponseDTO
+    updateMyProfilePicture(dto: ChangeProfilePictureDTO!) : DefaultBooleanResponseDTO
+
+#    Association settings
+    updateAssociationPicture(dto: ChangeProfilePictureDTO!, associationID: ID!): DefaultBooleanResponseDTO
+    updateAssociationSettings(dto: UpdateAssociationDTO!, associationID: ID!): DefaultBooleanResponseDTO
+
+#    Create Weapon
+    createWeapon(dto: CreateWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
 }
 
 input ChangeUserAssociationDTO {
@@ -31,6 +50,12 @@ input CreateAssociationInviteInput {
     associationRoleUUID: ID!
 }
 
+input CreateWeaponDTO {
+    weaponName: String!
+    weaponType: ID!
+    weaponStatus: String!
+}
+
 input AssociationInviteInput {
     userUUID: ID!
     associationUUID: ID!
@@ -46,9 +71,22 @@ type DefaultBooleanResponseDTO {
     message: String
 }
 
+type CreateWeaponResponseDTO {
+    success: Boolean!
+    message: String
+    Weapon: Weapon
+}
+
 type SendAssociationInviteResponseDTO {
     success: Boolean!
     message: String
     associationInvite: AssociationInvite
 }
+
+input UpdateAssociationDTO {
+    associationName: String!
+    welcomeMessage: String!
+    contactEmail: String!
+}
+
 

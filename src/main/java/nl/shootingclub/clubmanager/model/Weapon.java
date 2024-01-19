@@ -31,5 +31,7 @@ public class Weapon {
     @Enumerated(EnumType.STRING)
     private WeaponStatus status;
 
+    private boolean isDeleted = false;
+
 }
 

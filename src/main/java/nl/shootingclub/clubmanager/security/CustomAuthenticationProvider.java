@@ -1,5 +1,6 @@
 package nl.shootingclub.clubmanager.security;
 
+import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -33,4 +34,5 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     public boolean supports(Class<?> authentication) {
         return authentication.equals(UsernamePasswordAuthenticationToken.class);
     }
+
 }

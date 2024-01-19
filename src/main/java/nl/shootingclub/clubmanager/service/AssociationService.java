@@ -36,4 +36,8 @@ public class AssociationService {
     public Optional<Association> getByID(UUID associationUUID) {
         return associationRepository.findById(associationUUID);
     }
+
+    public void saveAssociation(Association association) {
+        associationRepository.save(association);
+    }
 }

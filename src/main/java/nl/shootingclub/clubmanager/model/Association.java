@@ -42,5 +42,11 @@ public class Association {
     @OneToMany(mappedBy = "association")
     private Set<AssociationInvite> invites;
 
+    @OneToMany(mappedBy = "association")
+    private Set<Track> tracks;
+
+    @OneToMany(mappedBy = "association")
+    private Set<Weapon> weapons;
+
 
 }

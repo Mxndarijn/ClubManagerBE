@@ -1,3 +1,0 @@
-runtime: java21 # of java17, afhankelijk van je Java-versie
-
-instance_class: F1 # Dit is de kleinste en goedkoopste klasse

@@ -5,14 +5,17 @@ import jakarta.validation.ConstraintValidatorContext;
 
 public class PasswordConstraintValidator implements ConstraintValidator<ValidPassword, String> {
 
+    private boolean canBeNull;
+
     @Override
     public void initialize(ValidPassword constraintAnnotation) {
+        this.canBeNull = constraintAnnotation.canBeNull();
     }
 
     @Override
     public boolean isValid(String password, ConstraintValidatorContext context) {
-        if (password == null) {
-            return false;
+        if (password == null || password.isEmpty()) {
+            return canBeNull;
         }
         boolean hasUppercase = !password.equals(password.toLowerCase());
         boolean hasLowercase = !password.equals(password.toUpperCase());

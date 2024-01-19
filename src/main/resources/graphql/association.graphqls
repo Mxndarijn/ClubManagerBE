@@ -27,3 +27,9 @@ type AssociationInviteId {
     userId: ID!
     associationId: ID!
 }
+
+type AssociationStatisticsDTO {
+    totalMembers: Int!
+    totalTracks: Int!
+    totalWeapons: Int!
+}

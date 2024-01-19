@@ -6,13 +6,13 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = PasswordConstraintValidator.class)
+@Constraint(validatedBy = ImageConstraintValidator.class)
 @Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ValidPassword {
-    String message() default "password-invalid";
-    boolean canBeNull() default false;
+public @interface ValidImage {
+    String message() default "image-invalid";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
-}
 
+    boolean spaces() default false;
+}

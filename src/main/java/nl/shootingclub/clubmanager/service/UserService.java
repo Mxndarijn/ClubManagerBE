@@ -44,6 +44,14 @@ public class UserService implements UserDetailsService {
         return false;
     }
 
+    public boolean authenticate(User u, String password) {
+        return encoder.matches(password, u.getPassword());
+    }
+
+    public String encodePassword(String password) {
+        return encoder.encode(password);
+    }
+
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<User> optionalUser = userRepository.findByEmailEquals(email);

@@ -4,10 +4,11 @@ package nl.shootingclub.clubmanager.controller;
 import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
 import nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData;
 import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAssociation;
-import nl.shootingclub.clubmanager.dto.AssociationInviteDTO;
+import nl.shootingclub.clubmanager.dto.*;
 import nl.shootingclub.clubmanager.exceptions.AssociationNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.AssociationRoleNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.UserNotFoundException;
+import nl.shootingclub.clubmanager.helper.ImageHelper;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.*;
 import nl.shootingclub.clubmanager.service.*;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -125,6 +127,84 @@ public class AssociationController {
         //TODO security filters
 
         return association;
+    }
+
+    @QueryMapping
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_MEMBERS)")
+    public AssociationStatisticsDTO getAssociationStatistics(@Argument UUID associationID) {
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        if(optionalAssociation.isEmpty())
+            return null;
+
+        Association association = optionalAssociation.get();
+
+        AssociationStatisticsDTO statisticsDTO = new AssociationStatisticsDTO();
+        statisticsDTO.setTotalMembers(association.getUsers().size());
+        statisticsDTO.setTotalTracks(association.getTracks().size());
+        statisticsDTO.setTotalWeapons(association.getWeapons().size());
+
+        return statisticsDTO;
+    }
+
+    @MutationMapping
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_SETTINGS)")
+    public DefaultBooleanResponseDTO updateAssociationPicture(@Argument ChangeProfilePictureDTO dto, @Argument UUID associationID) {
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        if(optionalAssociation.isEmpty()) {
+            DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("no-association-found");
+            return responseDTO;
+        }
+
+        Association association = optionalAssociation.get();
+        Image i = association.getImage();
+
+        try {
+            i.setEncoded(ImageHelper.scaleImage(dto.getImage(), 720));
+            association.setImage(i);
+        } catch (IOException e) {
+            System.out.println("error");
+            DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("could-not-convert");
+            return responseDTO;
+        }
+
+        associationService.saveAssociation(association);
+        DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+        responseDTO.setSuccess(true);
+        responseDTO.setMessage("changed");
+
+        return responseDTO;
+
+
+    }
+
+    @MutationMapping
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_SETTINGS)")
+    public DefaultBooleanResponseDTO updateAssociationSettings(@Argument UpdateAssociationDTO dto, @Argument UUID associationID) {
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+        if(optionalAssociation.isEmpty()) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("no-association-found");
+            return responseDTO;
+        }
+
+        Association association = optionalAssociation.get();
+        association.setName(dto.getAssociationName());
+        association.setWelcomeMessage(dto.getWelcomeMessage());
+        association.setContactEmail(dto.getContactEmail());
+
+        associationService.saveAssociation(association);
+
+
+        responseDTO.setSuccess(true);
+        responseDTO.setMessage("changed");
+        return responseDTO;
+
+
     }
 
 }

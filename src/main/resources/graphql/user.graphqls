@@ -36,3 +36,15 @@ type PrivateUser {
     id: ID
     email: String!
 }
+
+
+input ChangeProfilePictureDTO {
+    image: String!
+}
+
+input UpdateMyProfileDTO {
+    fullName: String!
+    email: String!
+    oldPassword: String!
+    newPassword: String
+}

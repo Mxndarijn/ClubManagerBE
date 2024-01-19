@@ -1,16 +1,32 @@
 
 package nl.shootingclub.clubmanager.controller;
 
+import nl.shootingclub.clubmanager.configuration.validator.ValidImage;
+import nl.shootingclub.clubmanager.dto.ChangeProfilePictureDTO;
+import nl.shootingclub.clubmanager.dto.DefaultBooleanResponseDTO;
+import nl.shootingclub.clubmanager.dto.UpdateMyProfileDTO;
+import nl.shootingclub.clubmanager.helper.ImageHelper;
 import nl.shootingclub.clubmanager.model.Association;
+import nl.shootingclub.clubmanager.model.Image;
 import nl.shootingclub.clubmanager.model.User;
+import nl.shootingclub.clubmanager.security.CustomAuthenticationProvider;
 import nl.shootingclub.clubmanager.service.AssociationService;
 import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,6 +35,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private CustomAuthenticationProvider authenticationProvider;
 
     @QueryMapping
     @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
@@ -35,4 +54,82 @@ public class UserController {
         }
         return null;
     }
+
+    @MutationMapping
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
+    public DefaultBooleanResponseDTO updateMyProfile(@Argument UpdateMyProfileDTO dto) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> optionalUser = userService.getUser(user);
+        if(optionalUser.isEmpty()) {
+            DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("no-user-found");
+            return responseDTO;
+        }
+        user = optionalUser.get();
+        if(!userService.authenticate(user, dto.getOldPassword())) {
+            DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("not-correct-password");
+            return responseDTO;
+        }
+        user.setEmail(dto.getEmail());
+        user.setFullName(dto.getFullName());
+        if(dto.getNewPassword()!= null && !dto.getNewPassword().isEmpty()) {
+            user.setPassword(userService.encodePassword(dto.getNewPassword()));
+        }
+
+        User updatedUser = userService.saveUser(user);
+        DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+        if (updatedUser != null) {
+            responseDTO.setSuccess(true);
+            responseDTO.setMessage("profile-updated");
+        } else {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("profile-update-failed");
+        }
+        return responseDTO;
+
+
+    }
+
+    @MutationMapping
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
+    public DefaultBooleanResponseDTO updateMyProfilePicture(@Argument ChangeProfilePictureDTO dto) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> optionalUser = userService.getUser(user);
+        if(optionalUser.isEmpty()) {
+            DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("no-user-found");
+            return responseDTO;
+        }
+        user = optionalUser.get();
+        Image i = user.getImage();
+
+        try {
+            i.setEncoded(ImageHelper.scaleImage(dto.getImage(), 480));
+            user.setImage(i);
+        } catch (IOException e) {
+            System.out.println("error");
+            DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("could-not-convert");
+            return responseDTO;
+        }
+
+        userService.saveUser(user);
+
+
+
+        DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+        responseDTO.setSuccess(true);
+        responseDTO.setMessage("changed");
+
+        return responseDTO;
+
+
+    }
+
+
 }

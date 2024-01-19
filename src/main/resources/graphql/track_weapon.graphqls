@@ -9,7 +9,6 @@ type Track {
 type Weapon {
     id: ID!
     name: String
-    association: Association
     type: WeaponType
     status: WeaponStatus
 }
@@ -23,5 +22,4 @@ enum WeaponStatus {
 type WeaponType {
     id: ID!
     name: String
-    tracks: [Track]
 }
