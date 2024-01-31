@@ -1,10 +1,12 @@
 package nl.shootingclub.clubmanager;
 
+import nl.shootingclub.clubmanager.configuration.data.DefaultColorPreset;
 import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
 import nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData;
 import nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData;
 import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAccount;
 import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAssociation;
+import nl.shootingclub.clubmanager.configuration.weapons.DefaultWeaponType;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.*;
 import nl.shootingclub.clubmanager.service.AssociationService;
@@ -40,6 +42,12 @@ public class ShootingClubManagerApplication {
 
 	@Autowired
 	private DefaultImageRepository defaultImageRepository;
+
+	@Autowired
+	private WeaponTypeRepository weaponTypeRepository;
+
+	@Autowired
+	private ColorPresetRepository colorPresetRepository;
 
 
 	public static void main(String[] args) {
@@ -139,6 +147,27 @@ public class ShootingClubManagerApplication {
 					permission.setName(perm.getName());
 					permission.setDescription(perm.getDescription());
 					associationPermissionRepository.save(permission);
+				}
+			}
+
+			for (DefaultWeaponType weapon : DefaultWeaponType.values()) {
+				Optional<WeaponType> optionalWeaponType = weaponTypeRepository.findByName(weapon.getName());
+				if(optionalWeaponType.isEmpty()) {
+					WeaponType weaponType = new WeaponType();
+					weaponType.setName(weapon.getName());
+					weaponTypeRepository.save(weaponType);
+				}
+			}
+
+			//Default ColorPresets
+			for (DefaultColorPreset color : DefaultColorPreset.values()) {
+				Optional<ColorPreset> optionalColorPreset = colorPresetRepository.findByName(color.getName());
+				if(optionalColorPreset.isEmpty()) {
+					ColorPreset preset = new ColorPreset();
+					preset.setName(color.getName());
+					preset.setPrimaryColor(color.getPrimary());
+					preset.setSecondaryColor(color.getSecondary());
+					colorPresetRepository.save(preset);
 				}
 			}
 		};

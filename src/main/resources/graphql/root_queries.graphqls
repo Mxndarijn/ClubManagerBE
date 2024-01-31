@@ -1,3 +1,4 @@
+
 extend type Query {
     getMyProfile: User
 
@@ -8,6 +9,34 @@ extend type Query {
     getAssociationRoles: [AssociationRole]!
     getAllWeapons(associationID: ID!): [Weapon]!
     getAllWeaponTypes(associationID: ID!): [WeaponType]!
+
+    getWeaponMaintenancesBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetWeaponMaintenancesDTO
+
+    getAllColorPresets: [ColorPreset]
+}
+
+scalar LocalDateTime
+
+type GetWeaponMaintenancesDTO {
+    success: Boolean,
+    maintenances: [WeaponMaintenance]
+}
+
+type WeaponMaintenance {
+    id: ID!
+    association: Association
+    startDate: LocalDateTime
+    endDate: LocalDateTime
+    title: String
+    colorPreset: ColorPreset
+    description: String
+}
+
+type ColorPreset {
+    id: ID!
+    name: String!
+    primaryColor: String!
+    secondaryColor: String!
 }
 
 type Mutation {
@@ -74,7 +103,7 @@ type DefaultBooleanResponseDTO {
 type CreateWeaponResponseDTO {
     success: Boolean!
     message: String
-    Weapon: Weapon
+    weapon: Weapon
 }
 
 type SendAssociationInviteResponseDTO {
