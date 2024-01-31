@@ -24,12 +24,17 @@ type GetWeaponMaintenancesDTO {
 
 type WeaponMaintenance {
     id: ID!
-    association: Association
+    association: PrivateAssociation
     startDate: LocalDateTime
     endDate: LocalDateTime
     title: String
     colorPreset: ColorPreset
     description: String
+}
+
+type PrivateAssociation {
+    id: ID!
+    name: String!
 }
 
 type ColorPreset {
