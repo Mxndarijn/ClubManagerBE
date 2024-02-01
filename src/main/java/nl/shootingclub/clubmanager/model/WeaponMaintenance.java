@@ -38,4 +38,8 @@ public class WeaponMaintenance {
 
     @Column(nullable = false)
     private String description;
+
+    @ManyToOne
+    @JoinColumn(name = "weapon_id", referencedColumnName = "id")
+    private Weapon weapon;
 }

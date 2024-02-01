@@ -30,6 +30,7 @@ type WeaponMaintenance {
     title: String
     colorPreset: ColorPreset
     description: String
+    weapon: Weapon
 }
 
 type PrivateAssociation {
