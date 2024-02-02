@@ -19,7 +19,7 @@ public class ColorPreset {
 
     @Lob()
     @Column(name = "color-name", nullable = false)
-    private String name;
+    private String colorName;
 
 
     @Column(name = "primary-color", nullable = false)

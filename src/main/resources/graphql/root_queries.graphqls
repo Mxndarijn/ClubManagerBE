@@ -15,6 +15,31 @@ extend type Query {
     getAllColorPresets: [ColorPreset]
 }
 
+type Mutation {
+    createAssociation: Association
+
+#    Invites
+    sendAssociationInvite(dto: CreateAssociationInviteInput!): SendAssociationInviteResponseDTO
+    removeAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
+    changeUserAssociation(changeUserAssociationDTO: ChangeUserAssociationDTO!): ChangeUserAssociationResponse
+    removeUserAssociation(deleteUserAssociationDTO: DeleteUserAssociationDTO!): DefaultBooleanResponseDTO
+    acceptAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
+    rejectAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
+
+#    User Profile
+    updateMyProfile(dto: UpdateMyProfileDTO!) : DefaultBooleanResponseDTO
+    updateMyProfilePicture(dto: ChangeProfilePictureDTO!) : DefaultBooleanResponseDTO
+
+#    Association settings
+    updateAssociationPicture(dto: ChangeProfilePictureDTO!, associationID: ID!): DefaultBooleanResponseDTO
+    updateAssociationSettings(dto: UpdateAssociationDTO!, associationID: ID!): DefaultBooleanResponseDTO
+
+#    Create Weapon
+    createWeapon(dto: CreateWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
+
+    #Weapon Maintenance
+    createWeaponMaintenance(dto: CreateWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
+}
 scalar LocalDateTime
 
 type GetWeaponMaintenancesDTO {
@@ -40,33 +65,11 @@ type PrivateAssociation {
 
 type ColorPreset {
     id: ID!
-    name: String!
+    colorName: String!
     primaryColor: String!
     secondaryColor: String!
 }
 
-type Mutation {
-    createAssociation: Association
-
-#    Invites
-    sendAssociationInvite(dto: CreateAssociationInviteInput!): SendAssociationInviteResponseDTO
-    removeAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
-    changeUserAssociation(changeUserAssociationDTO: ChangeUserAssociationDTO!): ChangeUserAssociationResponse
-    removeUserAssociation(deleteUserAssociationDTO: DeleteUserAssociationDTO!): DefaultBooleanResponseDTO
-    acceptAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
-    rejectAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
-
-#    User Profile
-    updateMyProfile(dto: UpdateMyProfileDTO!) : DefaultBooleanResponseDTO
-    updateMyProfilePicture(dto: ChangeProfilePictureDTO!) : DefaultBooleanResponseDTO
-
-#    Association settings
-    updateAssociationPicture(dto: ChangeProfilePictureDTO!, associationID: ID!): DefaultBooleanResponseDTO
-    updateAssociationSettings(dto: UpdateAssociationDTO!, associationID: ID!): DefaultBooleanResponseDTO
-
-#    Create Weapon
-    createWeapon(dto: CreateWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
-}
 
 input ChangeUserAssociationDTO {
     userUUID: ID!
@@ -96,6 +99,12 @@ input AssociationInviteInput {
     associationUUID: ID!
 }
 
+type CreateWeaponMaintenanceDTOResponse {
+    success: Boolean!
+    message: String!
+    maintenance: WeaponMaintenance
+}
+
 type ChangeUserAssociationResponse {
     success: Boolean!
     userAssociation: UserAssociation
@@ -122,6 +131,16 @@ input UpdateAssociationDTO {
     associationName: String!
     welcomeMessage: String!
     contactEmail: String!
+}
+
+input CreateWeaponMaintenanceDTO {
+    weaponUUID: ID!
+    colorPresetUUID: ID!
+    title: String!
+    description: String!
+    associationUUID: ID!
+    startDate: LocalDateTime!
+    endDate: LocalDateTime!
 }
 
 

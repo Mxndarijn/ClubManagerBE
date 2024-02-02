@@ -44,7 +44,12 @@ public class LocalDateTimeScalarConfiguration {
                     @Override
                     public LocalDateTime parseValue(@NotNull Object input, @NotNull GraphQLContext graphQLContext, @NotNull Locale locale) throws CoercingParseValueException {
                         if (input instanceof String) {
-                            return LocalDateTime.parse((String) input, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                            try {
+                                return LocalDateTime.parse((String) input, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                return null;
+                            }
                         } else {
                             throw new CoercingParseValueException("Expected a ISO_LOCAL_DATE_TIME string.");
                         }

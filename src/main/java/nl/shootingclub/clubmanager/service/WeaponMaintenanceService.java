@@ -22,4 +22,8 @@ public class WeaponMaintenanceService {
     public List<WeaponMaintenance> getAllMaintenances(UUID associationID, LocalDateTime startDate, LocalDateTime endDate) {
         return weaponMaintenanceRepository.findAllByAssociationIdAndStartDateGreaterThanEqualAndEndDateLessThanEqual(associationID, startDate, endDate);
     }
+
+    public WeaponMaintenance createWeaponMaintenance(WeaponMaintenance maintenance) {
+        return weaponMaintenanceRepository.save(maintenance);
+    }
 }

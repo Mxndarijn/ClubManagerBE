@@ -161,10 +161,10 @@ public class ShootingClubManagerApplication {
 
 			//Default ColorPresets
 			for (DefaultColorPreset color : DefaultColorPreset.values()) {
-				Optional<ColorPreset> optionalColorPreset = colorPresetRepository.findByName(color.getName());
+				Optional<ColorPreset> optionalColorPreset = colorPresetRepository.findByColorName(color.getName());
 				if(optionalColorPreset.isEmpty()) {
 					ColorPreset preset = new ColorPreset();
-					preset.setName(color.getName());
+					preset.setColorName(color.getName());
 					preset.setPrimaryColor(color.getPrimary());
 					preset.setSecondaryColor(color.getSecondary());
 					colorPresetRepository.save(preset);
