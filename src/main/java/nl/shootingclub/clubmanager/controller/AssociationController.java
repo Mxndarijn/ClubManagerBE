@@ -59,6 +59,11 @@ public class AssociationController {
     @Autowired
     private PermissionService permissionService;
 
+    /**
+     * Creates a new Association with default values and performs necessary operations to associate it with a User.
+     *
+     * @return The created Association.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).CREATE_ASSOCIATION)")
     public Association createAssociation() {
@@ -94,6 +99,14 @@ public class AssociationController {
         return a;
     }
 
+    /**
+     * Retrieves the details of an association.
+     *
+     * @param associationID The ID of the association to retrieve.
+     * @return The Association object containing the details of the association.
+     *         Returns null if the user does not have permission to manage the association or if the association is not found.
+     * @throws UserNotFoundException If the authenticated user is not found in the user repository.
+     */
     @QueryMapping
     public Association getAssociationDetails(@Argument UUID associationID) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -129,6 +142,13 @@ public class AssociationController {
         return association;
     }
 
+    /**
+     * Retrieves the statistics of an association.
+     *
+     * @param associationID The ID of the association.
+     * @return The AssociationStatisticsDTO object containing the total number of members, weapons, and tracks of the association,
+     *          or null if the association does not exist.
+     */
     @QueryMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_MEMBERS)")
     public AssociationStatisticsDTO getAssociationStatistics(@Argument UUID associationID) {
@@ -146,6 +166,13 @@ public class AssociationController {
         return statisticsDTO;
     }
 
+    /**
+     * Updates the profile picture of an association.
+     *
+     * @param dto           The DTO containing the new profile picture details.
+     * @param associationID The ID of the association to update.
+     * @return The response DTO indicating the success of the operation or any error message.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_SETTINGS)")
     public DefaultBooleanResponseDTO updateAssociationPicture(@Argument ChangeProfilePictureDTO dto, @Argument UUID associationID) {
@@ -181,6 +208,13 @@ public class AssociationController {
 
     }
 
+    /**
+     * Updates the settings of an Association.
+     *
+     * @param dto The data transfer object containing the updated values for the Association.
+     * @param associationID The ID of the Association to update.
+     * @return The response object indicating the success of the update operation.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_SETTINGS)")
     public DefaultBooleanResponseDTO updateAssociationSettings(@Argument UpdateAssociationDTO dto, @Argument UUID associationID) {

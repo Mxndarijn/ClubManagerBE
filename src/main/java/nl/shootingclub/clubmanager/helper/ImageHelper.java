@@ -10,6 +10,14 @@ import java.util.Base64;
 
 public class ImageHelper {
 
+    /**
+     * Scales the given image data URL to the specified scale value.
+     *
+     * @param dataUrl The image data URL to be scaled.
+     * @param scale   The scale value to resize the image (e.g., 2 for doubling the size, 0.5 for halving the size).
+     * @return The scaled image data URL.
+     * @throws IOException If an I/O error occurs while reading or writing the image.
+     */
     public static String scaleImage(String dataUrl, int scale) throws IOException {
         String base64Image = dataUrl.split(",")[1];
 
@@ -23,6 +31,14 @@ public class ImageHelper {
 
     }
 
+    /**
+     * Converts a BufferedImage to a Data URL.
+     *
+     * @param image the BufferedImage to convert
+     * @param format the image format to use in the Data URL (e.g., "jpeg", "png")
+     * @return the Data URL representation of the BufferedImage
+     * @throws IOException if an I/O error occurs during the conversion
+     */
     public static  String bufferedImageToDataUrl(BufferedImage image, String format) throws IOException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 
@@ -39,6 +55,13 @@ public class ImageHelper {
         return "data:image/" + format + ";base64," + base64Image;
     }
 
+    /**
+     * Resizes the given BufferedImage to the specified target size while maintaining the aspect ratio.
+     *
+     * @param originalImage The original BufferedImage to be resized.
+     * @param targetSize The target size for the resized image (either the width or height, depending on the aspect ratio).
+     * @return The resized BufferedImage.
+     */
     public static  BufferedImage resizeImage(BufferedImage originalImage, int targetSize) {
         int width = originalImage.getWidth();
         int height = originalImage.getHeight();

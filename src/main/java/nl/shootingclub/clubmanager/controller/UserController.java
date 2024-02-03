@@ -39,6 +39,12 @@ public class UserController {
     @Autowired
     private CustomAuthenticationProvider authenticationProvider;
 
+    /**
+     * Retrieves the profile of the currently authenticated user.
+     *
+     * @return The user profile of the currently authenticated user.
+     *         Returns null if the user does not exist.
+     */
     @QueryMapping
     @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
     public User getMyProfile() {
@@ -55,6 +61,12 @@ public class UserController {
         return null;
     }
 
+    /**
+     * Updates the profile of the currently logged-in user.
+     *
+     * @param dto The object containing the updated user profile information.
+     * @return A response object indicating the success or failure of the profile update.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
     public DefaultBooleanResponseDTO updateMyProfile(@Argument UpdateMyProfileDTO dto) {
@@ -93,6 +105,12 @@ public class UserController {
 
     }
 
+    /**
+     * Updates the profile picture of the authenticated user.
+     *
+     * @param dto The DTO containing the new profile picture image data.
+     * @return The response DTO indicating the result of the update operation.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
     public DefaultBooleanResponseDTO updateMyProfilePicture(@Argument ChangeProfilePictureDTO dto) {

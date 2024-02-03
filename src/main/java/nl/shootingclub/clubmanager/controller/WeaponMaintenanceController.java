@@ -68,6 +68,15 @@ public class WeaponMaintenanceController {
     private ColorPresetService colorPresetService;
 
 
+    /**
+     * Retrieves a list of weapon maintenances within a specified date range for a given association.
+     *
+     * @param associationID The UUID of the association.
+     * @param startDate The start date of the date range.
+     * @param endDate The end date of the date range.
+     * @return An instance of GetWeaponMaintenancesDTO containing the list of maintenances and a success flag. If the period between the start date and end date is greater than 4
+     * months, the success flag will be set to false and the list of maintenances will be empty.
+     */
     @QueryMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
     public GetWeaponMaintenancesDTO getWeaponMaintenancesBetween(@Argument UUID associationID, @Argument LocalDateTime startDate, @Argument LocalDateTime endDate) {
@@ -86,6 +95,12 @@ public class WeaponMaintenanceController {
 
     }
 
+    /**
+     * Create a new weapon maintenance.
+     *
+     * @param dto The CreateWeaponMaintenanceDTO containing the necessary information to create the maintenance.
+     * @return The CreateWeaponMaintenanceDTOResponse indicating the success or failure of the operation.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
     public CreateWeaponMaintenanceDTOResponse createWeaponMaintenance(@Argument CreateWeaponMaintenanceDTO dto) {
@@ -136,6 +151,12 @@ public class WeaponMaintenanceController {
 
     }
 
+    /**
+     * Updates the maintenance details of a weapon.
+     *
+     * @param dto The DTO containing the updated maintenance information.
+     * @return The response containing the updated maintenance details or an error message.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
     public CreateWeaponMaintenanceDTOResponse changeWeaponMaintenance(@Argument ChangeWeaponMaintenanceDTO dto) {
@@ -195,6 +216,13 @@ public class WeaponMaintenanceController {
 
     }
 
+    /**
+     * Delete a weapon maintenance.
+     *
+     * @param maintenanceID   The ID of the maintenance to delete.
+     * @param associationID   The ID of the association.
+     * @return The response indicating whether the deletion was successful.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
     public DefaultBooleanResponseDTO deleteWeaponMaintenance(@Argument UUID maintenanceID, @Argument UUID associationID) {

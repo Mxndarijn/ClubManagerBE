@@ -54,44 +54,18 @@ public class ShootingClubManagerApplication {
 		SpringApplication.run(ShootingClubManagerApplication.class, args);
 	}
 
+	/**
+	 * Loads initial data into the database.
+	 *
+	 * @param userService           the UserService object to perform user-related operations
+	 * @param associationService    the AssociationService object to perform association-related operations
+	 * @param userAssociationService the UserAssociationService object to perform user-association related operations
+	 *
+	 * @return a CommandLineRunner object that executes the initial data loading
+	 */
 	@Bean
 	public CommandLineRunner run(UserService userService, AssociationService associationService, UserAssociationService userAssociationService) {
 		return args -> {
-//			User newUser = new User();
-//			Image newImage = new Image();
-//			newImage.setEncoded("a");
-//
-////
-//			newUser.setFullName("jappie");
-//			newUser.setEmail("merijn.gommereeeen@hotmail.com");
-//			newUser.setPassword(encoder.encode("easy"));
-//			newUser.setImage(newImage);
-//
-//			userService.createUser(newUser);
-//
-//			Association association = new Association();
-//			association.setName("Test Associatie");
-//            association.setContactEmail("merijnzndiscord");
-//			association.setActive(true);
-//			association.setWelcomeMessage("Halloooo");
-////
-////
-////
-//			User u = userService.loadUserByEmail("merijn.gommeren@hotmail.com").get();
-//
-//			Association savedAssociation = associationService.createAssociation(association);
-//			UserAssociation userAssociation = new UserAssociation();
-//			userAssociation.setAssociation(savedAssociation);
-//			userAssociation.setUser(u);
-//			userAssociation.setContributionPrice(10);
-//
-//			UserAssociationId id = new UserAssociationId();
-//			id.setAssociationId(savedAssociation.getId());
-//			id.setUserId(u.getId());
-//			userAssociation.setId(id);
-
-//			userAssociationService.createUserAssociation(userAssociation);
-
 			//Load images into database
 			for (DefaultImageData defaultImage : DefaultImageData.values()) {
 				Optional<DefaultImage> image = defaultImageRepository.findByName(defaultImage.getName());

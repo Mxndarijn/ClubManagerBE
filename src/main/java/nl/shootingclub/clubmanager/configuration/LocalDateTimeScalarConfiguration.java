@@ -17,6 +17,11 @@ import java.util.Locale;
 @Configuration
 public class LocalDateTimeScalarConfiguration {
 
+    /**
+     * Creates a GraphQLScalarType representing a LocalDateTime as an ISO String.
+     *
+     * @return The created GraphQLScalarType.
+     */
     @Bean
     public GraphQLScalarType localDateTimeScalar() {
         return GraphQLScalarType.newScalar()

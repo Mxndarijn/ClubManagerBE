@@ -69,12 +69,21 @@ public class AuthController {
     // Handles rate limiting
     private Cache<String, Bucket> ipBucketCache;
 
+    /**
+     * AuthController handles authentication-related operations such as login, registration, and token validation.
+     */
     public AuthController() {
         ipBucketCache = Caffeine.newBuilder()
                 .expireAfterWrite(Duration.ofMinutes(15)) // Adjust the duration as needed
                 .build();
     }
 
+    /**
+     * Creates a bucket for the given IP address.
+     *
+     * @param ip The IP address for which to create the bucket.
+     * @return The created Bucket.
+     */
     private static Bucket createBucketForIp(String ip) {
         return Bucket.builder()
                 .addLimit(Bandwidth.classic(100, Refill.greedy(100, Duration.ofMinutes(1))))
@@ -82,6 +91,14 @@ public class AuthController {
     }
 
 
+    /**
+     * Handles user login.
+     *
+     * @param request        the HttpServletRequest object representing the incoming request
+     * @param loginRequest   the LoginDTO object containing the login credentials
+     * @return a ResponseEntity object containing the login response
+     * @throws TooManyRequestsException   if there are too many requests for login
+     */
     @PostMapping("/login")
     public ResponseEntity<Map<String,Object>> login(HttpServletRequest request, @RequestBody @Valid LoginDTO loginRequest) {
         Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthController::createBucketForIp);
@@ -106,6 +123,15 @@ public class AuthController {
 
     }
 
+    /**
+     * Validates the token received in the request.
+     *
+     * @param request the HttpServletRequest object containing the request information
+     * @return a ResponseEntity<Map<String, Object>> representing the response with the validation result
+     *         success - a boolean indicating if the token is valid or not
+     *         message - a string message indicating the result of the validation
+     * @throws TooManyRequestsException if there are too many requests for login from the same IP address
+     */
     @PostMapping("/validateToken")
     public ResponseEntity<Map<String, Object>> validateToken(HttpServletRequest request) {
         Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthController::createBucketForIp);
@@ -127,6 +153,19 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    /**
+     * Registers a new user in the system.
+     *
+     * @param request         the HttpServletRequest object for the current request
+     * @param registerRequest the RegisterDTO object containing the user's registration information
+     * @return a ResponseEntity with a Map containing the response data
+     *         - "success": a boolean value indicating whether the registration was successful
+     *         - "message": a string value representing the token assigned to the user
+     * @throws TooManyRequestsException    if there are too many requests from the same IP address
+     * @throws EmailAlreadyUsedException   if the provided email is already associated with an account
+     * @throws AccountValidationException if there is an error creating the user account
+     * @throws AuthenticationException    if there is an error during the authentication process
+     */
     @PostMapping("/register")
     public ResponseEntity<Map<String,Object>> register(HttpServletRequest request, @RequestBody @Valid RegisterDTO registerRequest) {
         try {

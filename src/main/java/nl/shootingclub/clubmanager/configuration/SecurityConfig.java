@@ -36,6 +36,13 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
 
+    /**
+     * Returns an instance of AuthenticationManager.
+     *
+     * @param http The HttpSecurity object to obtain the AuthenticationManagerBuilder from.
+     * @return An instance of AuthenticationManager.
+     * @throws Exception if an error occurs while building the AuthenticationManager.
+     */
     @Bean
     public AuthenticationManager authManager(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder authenticationManagerBuilder =
@@ -44,6 +51,16 @@ public class SecurityConfig {
         return authenticationManagerBuilder.build();
     }
 
+    /**
+     * Creates a {@link SecurityFilterChain} for the given {@link HttpSecurity} object.
+     * Disables CSRF protection, configures CORS, disables HTTP basic authentication.
+     * Permits all requests to "/", "/auth/**", and "/graphql", and permits all other requests.
+     * Adds the {@link JwtAuthFilter} before the {@link UsernamePasswordAuthenticationFilter}.
+     *
+     * @param http the {@link HttpSecurity} object to configure the security filter chain for
+     * @return the configured {@link SecurityFilterChain}
+     * @throws Exception if an error occurs during configuration
+     */
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -62,6 +79,11 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Provides a {@link CorsConfigurationSource} bean that allows Cross-Origin Resource Sharing (CORS) for all origins, headers, and methods.
+     *
+     * @return The {@link CorsConfigurationSource} bean.
+     */
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();

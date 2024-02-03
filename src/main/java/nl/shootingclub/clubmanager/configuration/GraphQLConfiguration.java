@@ -13,6 +13,13 @@ public class GraphQLConfiguration {
     @Value("${graphql.maxQueryDepth:10}")
     private int maxQueryDepth;
 
+    /**
+     * Creates and returns an Instrumentation object for enforcing a maximum query depth in GraphQL queries.
+     * If the 'graphql.maxQueryDepth' property is not set or its value is outside the range [0, 100],
+     * the default value of 10 will be used.
+     *
+     * @return the Instrumentation object for enforcing a maximum query depth
+     */
     @Bean
     public Instrumentation maxQueryDepthInstrumentation() {
         if(maxQueryDepth < 0 || maxQueryDepth > 100)

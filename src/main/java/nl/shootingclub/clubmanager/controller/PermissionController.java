@@ -55,6 +55,11 @@ public class PermissionController {
     @Autowired
     private PermissionService permissionService;
 
+    /**
+     * Retrieves a list of all association roles.
+     *
+     * @return a list of AssociationRole objects representing all association roles.
+     */
     @QueryMapping
     @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_ASSOCIATION_ROLES)")
     public List<AssociationRole> getAssociationRoles() {

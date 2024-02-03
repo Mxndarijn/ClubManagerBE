@@ -55,6 +55,15 @@ public class UserAssociationController {
     @Autowired
     private PermissionService permissionService;
 
+    /**
+     * Changes the association of a user.
+     *
+     * @param changeUserAssociationDTO The DTO containing the necessary information for changing the user association.
+     *                                Required fields: userUUID, associationUUID, associationRoleUUID.
+     * @return The response DTO indicating the success of the operation and the updated UserAssociation object.
+     *         If the user association does not exist, returns null.
+     * @throws AssociationRoleNotFoundException If the specified association role UUID is not found.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#changeUserAssociationDTO.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_MEMBERS)")
     public ChangeUserAssociationResponseDTO changeUserAssociation(@Argument ChangeUserAssociationDTO changeUserAssociationDTO) {
@@ -78,6 +87,15 @@ public class UserAssociationController {
         return response;
     }
 
+    /**
+     * Removes the association between a user and an association.
+     *
+     * @param deleteUserAssociationDTO The DTO containing the information to remove the user association:
+     *                                - userUUID: The UUID of the user
+     *                                - associationUUID: The UUID of the association
+     * @return The response indicating the success of removing the user association.
+     *         - success: True if the user association is removed successfully, false otherwise.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#deleteUserAssociationDTO.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_MEMBERS)")
     public DefaultBooleanResponseDTO removeUserAssociation(@Argument DeleteUserAssociationDTO deleteUserAssociationDTO) {

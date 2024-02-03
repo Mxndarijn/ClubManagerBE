@@ -54,6 +54,18 @@ public class AssociationInviteController {
     private PermissionService permissionService;
 
 
+    /**
+     * Sends an association invite to a user.
+     *
+     * @param dto The AssociationInviteDTO containing the necessary details for the association invitation.
+     *               - userEmail: The email address of the user to invite to the association. (String)
+     *               - associationUUID: The UUID of the association. (UUID)
+     *               - associationRoleUUID: The UUID of the association role. (UUID)
+     * @return SendAssociationInviteResponseDTO The response DTO containing the result of the invitation.
+     *               - success: True if the invitation was sent successfully, false otherwise. (boolean)
+     *               - message: A message describing the outcome of the invitation. (String)
+     *               - associationInvite: The created AssociationInvite object if the invitation was sent successfully, null otherwise.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_MEMBERS)")
     public SendAssociationInviteResponseDTO sendAssociationInvite(@Argument AssociationInviteDTO dto) {
@@ -111,6 +123,12 @@ public class AssociationInviteController {
 
     }
 
+    /**
+     * Removes an association invite.
+     *
+     * @param inviteId The input invitation ID object {@link InputAssociationInviteDTO} that contains the user UUID and association UUID.
+     * @return A {@link DefaultBooleanResponseDTO} object indicating the success or failure of the removal operation.
+     */
     @MutationMapping
     public DefaultBooleanResponseDTO removeAssociationInvite(@Argument InputAssociationInviteDTO inviteId) {
 
@@ -138,6 +156,12 @@ public class AssociationInviteController {
         return response;
     }
 
+    /**
+     * Accepts an association invite and creates a user association.
+     *
+     * @param inviteId The input association invite ID containing the user UUID and association UUID.
+     * @return A DefaultBooleanResponseDTO indicating the success or failure of accepting the invitation.
+     */
     @MutationMapping
     public DefaultBooleanResponseDTO acceptAssociationInvite(@Argument InputAssociationInviteDTO inviteId) {
 
@@ -163,6 +187,12 @@ public class AssociationInviteController {
         return response;
     }
 
+    /**
+     * Rejects an association invite.
+     *
+     * @param inviteId The ID of the association invite to reject.
+     * @return A DefaultBooleanResponseDTO indicating the success of the operation and an optional message.
+     */
     @MutationMapping
     public DefaultBooleanResponseDTO rejectAssociationInvite(@Argument InputAssociationInviteDTO inviteId) {
 

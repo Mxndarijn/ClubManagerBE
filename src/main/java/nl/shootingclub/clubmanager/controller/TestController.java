@@ -48,6 +48,11 @@ public class TestController {
     private JwtService userAuthProvider;
 
 
+    /**
+     * Performs the login operation and return a response entity with a map containing the success status.
+     *
+     * @return A response entity containing a map with "success" key set to true.
+     */
     @PostMapping("/test2")
     public ResponseEntity<Map<String,Object>> login() {
         Map<String, Object> response = new HashMap<>();
@@ -55,6 +60,14 @@ public class TestController {
             return ResponseEntity.ok(response);
     }
 
+    /**
+     * Registers a new user.
+     *
+     * @param registerRequest The registration request body containing the user's email, password, and full name.
+     * @return A ResponseEntity with a success flag and a token message.
+     * @throws EmailAlreadyUsedException If the provided email is already associated with an existing account.
+     * @throws AccountValidationException If an error occurs during account creation.
+     */
     @PostMapping("/register")
     public ResponseEntity<Map<String,Object>> register(@RequestBody @Valid RegisterDTO registerRequest) {
         try {

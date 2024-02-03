@@ -58,6 +58,13 @@ public class WeaponController {
     private WeaponService weaponService;
 
 
+    /**
+     * Creates a new weapon for the given association.
+     *
+     * @param dto The CreateWeaponDTO containing the details of the weapon to be created.
+     * @param associationID The ID of the association.
+     * @return The CreateWeaponResponseDTO containing the success status, message, and the created weapon.
+     */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
     public CreateWeaponResponseDTO createWeapon(@Argument CreateWeaponDTO dto, @Argument UUID associationID) {
@@ -101,6 +108,12 @@ public class WeaponController {
         return responseDTO;
     }
 
+    /**
+     * Retrieves all weapons associated with a given association.
+     *
+     * @param associationID the ID of the association
+     * @return a Set containing all weapons associated with the given association
+     */
     @QueryMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).VIEW_WEAPONS)")
     public Set<Weapon> getAllWeapons(@Argument UUID associationID) {
@@ -115,6 +128,12 @@ public class WeaponController {
 
     }
 
+    /**
+     * Retrieves all weapon types associated with the given association ID.
+     *
+     * @param associationID The ID of the association.
+     * @return A list of WeaponType objects.
+     */
     @QueryMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).VIEW_WEAPONS)")
     public List<WeaponType> getAllWeaponTypes(@Argument UUID associationID) {

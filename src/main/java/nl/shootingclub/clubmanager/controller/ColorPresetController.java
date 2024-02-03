@@ -23,6 +23,11 @@ public class ColorPresetController {
     private ColorPresetRepository colorPresetRepository;
 
 
+    /**
+     * Retrieves all color presets.
+     *
+     * @return a list of color presets
+     */
     @QueryMapping
     public List<ColorPreset> getAllColorPresets() {
             return colorPresetRepository.findAll();
