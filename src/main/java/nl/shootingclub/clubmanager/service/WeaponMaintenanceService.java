@@ -26,4 +26,12 @@ public class WeaponMaintenanceService {
     public WeaponMaintenance createWeaponMaintenance(WeaponMaintenance maintenance) {
         return weaponMaintenanceRepository.save(maintenance);
     }
+
+    public Optional<WeaponMaintenance> getById(UUID weaponMaintenanceUUID) {
+        return weaponMaintenanceRepository.findById(weaponMaintenanceUUID);
+    }
+
+    public void deleteMaintenance(WeaponMaintenance maintenance) {
+        weaponMaintenanceRepository.delete(maintenance);
+    }
 }

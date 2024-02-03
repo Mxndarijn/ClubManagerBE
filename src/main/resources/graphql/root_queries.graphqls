@@ -39,6 +39,8 @@ type Mutation {
 
     #Weapon Maintenance
     createWeaponMaintenance(dto: CreateWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
+    changeWeaponMaintenance(dto: ChangeWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
+    deleteWeaponMaintenance(associationID: ID!,maintenanceID: ID!): DefaultBooleanResponseDTO
 }
 scalar LocalDateTime
 
@@ -139,6 +141,17 @@ input CreateWeaponMaintenanceDTO {
     title: String!
     description: String!
     associationUUID: ID!
+    startDate: LocalDateTime!
+    endDate: LocalDateTime!
+}
+
+input ChangeWeaponMaintenanceDTO {
+    weaponUUID: ID!
+    colorPresetUUID: ID!
+    title: String!
+    description: String!
+    associationUUID: ID!
+    weaponMaintenanceUUID: ID!
     startDate: LocalDateTime!
     endDate: LocalDateTime!
 }

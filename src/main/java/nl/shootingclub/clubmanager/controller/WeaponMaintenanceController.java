@@ -5,9 +5,7 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import nl.shootingclub.clubmanager.dto.CreateWeaponMaintenanceDTO;
-import nl.shootingclub.clubmanager.dto.CreateWeaponMaintenanceDTOResponse;
-import nl.shootingclub.clubmanager.dto.GetWeaponMaintenancesDTO;
+import nl.shootingclub.clubmanager.dto.*;
 import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.model.ColorPreset;
 import nl.shootingclub.clubmanager.model.Weapon;
@@ -97,7 +95,6 @@ public class WeaponMaintenanceController {
             response.setMessage("start-is-after-end");
             return response;
         }
-        System.out.println(dto);
         WeaponMaintenance maintenance = new WeaponMaintenance();
 
         Optional<Association> optionalAssociation = associationService.getByID(dto.getAssociationUUID());
@@ -130,6 +127,90 @@ public class WeaponMaintenanceController {
         maintenance = weaponMaintenanceService.createWeaponMaintenance(maintenance);
 
         response.setMaintenance(maintenance);
+        response.setSuccess(true);
+        response.setMessage("done");
+
+
+        return response;
+
+
+    }
+
+    @MutationMapping
+    @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
+    public CreateWeaponMaintenanceDTOResponse changeWeaponMaintenance(@Argument ChangeWeaponMaintenanceDTO dto) {
+        CreateWeaponMaintenanceDTOResponse response = new CreateWeaponMaintenanceDTOResponse();
+        if(dto.getStartDate().isAfter(dto.getEndDate())) {
+            response.setSuccess(false);
+            response.setMessage("start-is-after-end");
+            return response;
+        }
+
+
+        Optional<Association> optionalAssociation = associationService.getByID(dto.getAssociationUUID());
+        if(optionalAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("association-not-found");
+            return response;
+        }
+        Optional<Weapon> optionalWeapon = weaponService.getByID(dto.getWeaponUUID());
+        if (optionalWeapon.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("weapon-not-found");
+            return response;
+        }
+        Optional<ColorPreset> optionalColorPreset = colorPresetService.getByID(dto.getColorPresetUUID());
+        if (optionalColorPreset.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("color-preset-not-found");
+            return response;
+        }
+
+        Optional<WeaponMaintenance> optionalWeaponMaintenance = weaponMaintenanceService.getById(dto.getWeaponMaintenanceUUID());
+        if (optionalWeaponMaintenance.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("weapon-maintenance-not-found");
+            return response;
+        }
+
+        WeaponMaintenance maintenance = optionalWeaponMaintenance.get();
+
+        maintenance.setWeapon(optionalWeapon.get());
+        maintenance.setStartDate(dto.getStartDate());
+        maintenance.setEndDate(dto.getEndDate());
+        maintenance.setColorPreset(optionalColorPreset.get());
+        maintenance.setAssociation(optionalAssociation.get());
+        maintenance.setTitle(dto.getTitle());
+        maintenance.setDescription(dto.getDescription());
+
+        maintenance = weaponMaintenanceService.createWeaponMaintenance(maintenance);
+
+        response.setMaintenance(maintenance);
+        response.setSuccess(true);
+        response.setMessage("done");
+
+
+        return response;
+
+
+    }
+
+    @MutationMapping
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
+    public DefaultBooleanResponseDTO deleteWeaponMaintenance(@Argument UUID maintenanceID, @Argument UUID associationID) {
+        DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
+        Optional<WeaponMaintenance> optionalWeaponMaintenance = weaponMaintenanceService.getById(maintenanceID);
+
+        if (optionalWeaponMaintenance.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("weapon-maintenance-not-found");
+            return response;
+        }
+
+        WeaponMaintenance maintenance = optionalWeaponMaintenance.get();
+
+        weaponMaintenanceService.deleteMaintenance(maintenance);
+
         response.setSuccess(true);
         response.setMessage("done");
 
