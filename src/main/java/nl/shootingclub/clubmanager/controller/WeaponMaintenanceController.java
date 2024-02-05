@@ -78,7 +78,7 @@ public class WeaponMaintenanceController {
      * months, the success flag will be set to false and the list of maintenances will be empty.
      */
     @QueryMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_WEAPONS)")
     public GetWeaponMaintenancesDTO getWeaponMaintenancesBetween(@Argument UUID associationID, @Argument LocalDateTime startDate, @Argument LocalDateTime endDate) {
         GetWeaponMaintenancesDTO dto = new GetWeaponMaintenancesDTO();
         Period period = Period.between(startDate.toLocalDate(), endDate.toLocalDate());
@@ -102,7 +102,7 @@ public class WeaponMaintenanceController {
      * @return The CreateWeaponMaintenanceDTOResponse indicating the success or failure of the operation.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_WEAPONS)")
     public CreateWeaponMaintenanceDTOResponse createWeaponMaintenance(@Argument CreateWeaponMaintenanceDTO dto) {
         CreateWeaponMaintenanceDTOResponse response = new CreateWeaponMaintenanceDTOResponse();
         if(dto.getStartDate().isAfter(dto.getEndDate())) {
@@ -158,7 +158,7 @@ public class WeaponMaintenanceController {
      * @return The response containing the updated maintenance details or an error message.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_WEAPONS)")
     public CreateWeaponMaintenanceDTOResponse changeWeaponMaintenance(@Argument ChangeWeaponMaintenanceDTO dto) {
         CreateWeaponMaintenanceDTOResponse response = new CreateWeaponMaintenanceDTOResponse();
         if(dto.getStartDate().isAfter(dto.getEndDate())) {
@@ -224,7 +224,7 @@ public class WeaponMaintenanceController {
      * @return The response indicating whether the deletion was successful.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_WEAPONS)")
     public DefaultBooleanResponseDTO deleteWeaponMaintenance(@Argument UUID maintenanceID, @Argument UUID associationID) {
         DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
         Optional<WeaponMaintenance> optionalWeaponMaintenance = weaponMaintenanceService.getById(maintenanceID);

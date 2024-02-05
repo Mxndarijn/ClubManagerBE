@@ -1,7 +1,7 @@
 
 package nl.shootingclub.clubmanager.controller;
 
-import nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData;
+import nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData;
 import nl.shootingclub.clubmanager.dto.AssociationInviteDTO;
 import nl.shootingclub.clubmanager.dto.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.dto.InputAssociationInviteDTO;
@@ -67,7 +67,7 @@ public class AssociationInviteController {
      *               - associationInvite: The created AssociationInvite object if the invitation was sent successfully, null otherwise.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_MEMBERS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_MEMBERS)")
     public SendAssociationInviteResponseDTO sendAssociationInvite(@Argument AssociationInviteDTO dto) {
 
         Optional<Association> optionalAssociation = associationService.getByID(dto.getAssociationUUID());

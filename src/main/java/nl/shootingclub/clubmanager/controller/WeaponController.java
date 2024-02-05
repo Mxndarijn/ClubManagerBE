@@ -1,12 +1,7 @@
 
 package nl.shootingclub.clubmanager.controller;
 
-import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
-import nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData;
-import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAssociation;
 import nl.shootingclub.clubmanager.dto.*;
-import nl.shootingclub.clubmanager.exceptions.UserNotFoundException;
-import nl.shootingclub.clubmanager.helper.ImageHelper;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.*;
 import nl.shootingclub.clubmanager.service.*;
@@ -15,10 +10,8 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
-import java.io.IOException;
 import java.util.*;
 
 @Controller
@@ -66,7 +59,7 @@ public class WeaponController {
      * @return The CreateWeaponResponseDTO containing the success status, message, and the created weapon.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_WEAPONS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_WEAPONS)")
     public CreateWeaponResponseDTO createWeapon(@Argument CreateWeaponDTO dto, @Argument UUID associationID) {
         Optional<Association> optionalAssociation = associationService.getByID(associationID);
         CreateWeaponResponseDTO responseDTO = new CreateWeaponResponseDTO();
@@ -115,7 +108,7 @@ public class WeaponController {
      * @return a Set containing all weapons associated with the given association
      */
     @QueryMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).VIEW_WEAPONS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_WEAPONS)")
     public Set<Weapon> getAllWeapons(@Argument UUID associationID) {
         Optional<Association> optionalAssociation = associationService.getByID(associationID);
         if(optionalAssociation.isEmpty()) {
@@ -135,7 +128,7 @@ public class WeaponController {
      * @return A list of WeaponType objects.
      */
     @QueryMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).VIEW_WEAPONS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_WEAPONS)")
     public List<WeaponType> getAllWeaponTypes(@Argument UUID associationID) {
         return weaponTypeRepository.findAll();
     }

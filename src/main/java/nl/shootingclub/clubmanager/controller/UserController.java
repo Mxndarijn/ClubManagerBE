@@ -46,7 +46,7 @@ public class UserController {
      *         Returns null if the user does not exist.
      */
     @QueryMapping
-    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.data.AccountPermissionData).GET_MY_PROFILE)")
     public User getMyProfile() {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userService.getUser(user);
@@ -68,7 +68,7 @@ public class UserController {
      * @return A response object indicating the success or failure of the profile update.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.data.AccountPermissionData).GET_MY_PROFILE)")
     public DefaultBooleanResponseDTO updateMyProfile(@Argument UpdateMyProfileDTO dto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userService.getUser(user);
@@ -112,7 +112,7 @@ public class UserController {
      * @return The response DTO indicating the result of the update operation.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).GET_MY_PROFILE)")
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.data.AccountPermissionData).GET_MY_PROFILE)")
     public DefaultBooleanResponseDTO updateMyProfilePicture(@Argument ChangeProfilePictureDTO dto) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userService.getUser(user);

@@ -1,12 +1,9 @@
 
 package nl.shootingclub.clubmanager.controller;
 
-import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
-import nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData;
-import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAssociation;
+import nl.shootingclub.clubmanager.configuration.data.DefaultImageData;
+import nl.shootingclub.clubmanager.configuration.data.DefaultRoleAssociation;
 import nl.shootingclub.clubmanager.dto.*;
-import nl.shootingclub.clubmanager.exceptions.AssociationNotFoundException;
-import nl.shootingclub.clubmanager.exceptions.AssociationRoleNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.UserNotFoundException;
 import nl.shootingclub.clubmanager.helper.ImageHelper;
 import nl.shootingclub.clubmanager.model.*;
@@ -16,16 +13,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Controller;
-import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -65,7 +57,7 @@ public class AssociationController {
      * @return The created Association.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData).CREATE_ASSOCIATION)")
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.data.AccountPermissionData).CREATE_ASSOCIATION)")
     public Association createAssociation() {
         Association association = new Association();
         association.setContactEmail("ContactEmail-Placeholder");
@@ -108,6 +100,7 @@ public class AssociationController {
      * @throws UserNotFoundException If the authenticated user is not found in the user repository.
      */
     @QueryMapping
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_MEMBERS)")
     public Association getAssociationDetails(@Argument UUID associationID) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userRepository.findByEmailEquals(user.getEmail());
@@ -120,23 +113,18 @@ public class AssociationController {
             return null;
         UserAssociation userAssociation = optionalUserAssociation.get();
         Association association = userAssociation.getAssociation();
-        if(permissionService.validateAssociationPermission(associationID, AssociationPermissionData.MANAGE_MEMBERS)) {
-            association.getUsers().forEach(ui -> {
-                ui.getUser().setAssociations(null);
-                ui.getUser().setPresences(null);
-                association.getInvites().forEach(invite -> {
-                    invite.getUser().setAssociations(null);
-                    invite.getUser().setImage(null);
-                    invite.getUser().setRole(null);
-                    invite.getUser().setPresences(null);
-                    invite.getUser().setKnsaMembershipNumber(null);
-                    invite.getUser().setKnsaMembershipNumber(null);
-                });
+        association.getUsers().forEach(ui -> {
+            ui.getUser().setAssociations(null);
+            ui.getUser().setPresences(null);
+            association.getInvites().forEach(invite -> {
+                invite.getUser().setAssociations(null);
+                invite.getUser().setImage(null);
+                invite.getUser().setRole(null);
+                invite.getUser().setPresences(null);
+                invite.getUser().setKnsaMembershipNumber(null);
+                invite.getUser().setKnsaMembershipNumber(null);
             });
-        } else {
-            association.setInvites(null);
-            association.setUsers(null);
-        }
+        });
         //TODO security filters
 
         return association;
@@ -150,7 +138,7 @@ public class AssociationController {
      *          or null if the association does not exist.
      */
     @QueryMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_MEMBERS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_MEMBERS)")
     public AssociationStatisticsDTO getAssociationStatistics(@Argument UUID associationID) {
         Optional<Association> optionalAssociation = associationService.getByID(associationID);
         if(optionalAssociation.isEmpty())
@@ -174,7 +162,7 @@ public class AssociationController {
      * @return The response DTO indicating the success of the operation or any error message.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_SETTINGS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_SETTINGS)")
     public DefaultBooleanResponseDTO updateAssociationPicture(@Argument ChangeProfilePictureDTO dto, @Argument UUID associationID) {
         Optional<Association> optionalAssociation = associationService.getByID(associationID);
         if(optionalAssociation.isEmpty()) {
@@ -216,7 +204,7 @@ public class AssociationController {
      * @return The response object indicating the success of the update operation.
      */
     @MutationMapping
-    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData).MANAGE_SETTINGS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_SETTINGS)")
     public DefaultBooleanResponseDTO updateAssociationSettings(@Argument UpdateAssociationDTO dto, @Argument UUID associationID) {
         Optional<Association> optionalAssociation = associationService.getByID(associationID);
         DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();

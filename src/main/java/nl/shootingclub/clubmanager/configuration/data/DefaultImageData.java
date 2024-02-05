@@ -1,4 +1,4 @@
-package nl.shootingclub.clubmanager.configuration.images;
+package nl.shootingclub.clubmanager.configuration.data;
 
 import lombok.Getter;
 

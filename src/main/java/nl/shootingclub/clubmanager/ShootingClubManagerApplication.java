@@ -1,11 +1,11 @@
 package nl.shootingclub.clubmanager;
 
 import nl.shootingclub.clubmanager.configuration.data.DefaultColorPreset;
-import nl.shootingclub.clubmanager.configuration.images.DefaultImageData;
-import nl.shootingclub.clubmanager.configuration.permission.AccountPermissionData;
-import nl.shootingclub.clubmanager.configuration.permission.AssociationPermissionData;
-import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAccount;
-import nl.shootingclub.clubmanager.configuration.role.DefaultRoleAssociation;
+import nl.shootingclub.clubmanager.configuration.data.DefaultImageData;
+import nl.shootingclub.clubmanager.configuration.data.AccountPermissionData;
+import nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData;
+import nl.shootingclub.clubmanager.configuration.data.DefaultRoleAccount;
+import nl.shootingclub.clubmanager.configuration.data.DefaultRoleAssociation;
 import nl.shootingclub.clubmanager.configuration.weapons.DefaultWeaponType;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.*;
