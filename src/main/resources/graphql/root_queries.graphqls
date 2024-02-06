@@ -13,6 +13,9 @@ extend type Query {
     getWeaponMaintenancesBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetWeaponMaintenancesDTO
 
     getAllColorPresets: [ColorPreset]
+    getTracksOfAssociation(associationID: ID!): [Track]!
+
+
 }
 
 type Mutation {
@@ -41,6 +44,10 @@ type Mutation {
     createWeaponMaintenance(dto: CreateWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
     changeWeaponMaintenance(dto: ChangeWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
     deleteWeaponMaintenance(associationID: ID!,maintenanceID: ID!): DefaultBooleanResponseDTO
+
+    createTrackForAssociation(associationID: ID!, dto: TrackDTO!):  CreateTrackResponseDTO
+    editTrackForAssociation(associationID: ID!, dto: TrackDTO!, trackID: ID!):  CreateTrackResponseDTO
+    deleteTrackForAssociation(associationID: ID!, trackID: ID!):  CreateTrackResponseDTO
 }
 scalar LocalDateTime
 
@@ -60,6 +67,11 @@ type WeaponMaintenance {
     weapon: Weapon
 }
 
+type CreateTrackResponseDTO {
+    success: Boolean!
+    message: String
+    track: Track
+}
 type PrivateAssociation {
     id: ID!
     name: String!
@@ -72,6 +84,11 @@ type ColorPreset {
     secondaryColor: String!
 }
 
+input TrackDTO {
+    name: String!
+    description: String!
+    allowedWeaponTypes: [ID]!
+}
 
 input ChangeUserAssociationDTO {
     userUUID: ID!

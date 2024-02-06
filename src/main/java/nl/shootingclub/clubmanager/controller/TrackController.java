@@ -69,7 +69,7 @@ public class TrackController {
 
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_TRACK_CONFIGURATION)")
-    public CreateTrackResponseDTO editTrackForAssociation(@Argument UUID associationID, @Argument TrackDTO dto, @Argument UUID trackUUID) {
+    public CreateTrackResponseDTO editTrackForAssociation(@Argument UUID associationID, @Argument TrackDTO dto, @Argument UUID trackID) {
         Optional<Association> optionalAssociation = associationService.getByID(associationID);
         CreateTrackResponseDTO response = new CreateTrackResponseDTO();
         if(optionalAssociation.isEmpty()) {
@@ -78,7 +78,7 @@ public class TrackController {
             return response;
         }
 
-        Optional<Track> optionalTrack = trackService.getByID(trackUUID);
+        Optional<Track> optionalTrack = trackService.getByID(trackID);
         if(optionalTrack.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("could-not-find-track");
@@ -103,7 +103,7 @@ public class TrackController {
 
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_TRACK_CONFIGURATION)")
-    public DefaultBooleanResponseDTO deleteTrackForAssociation(@Argument UUID associationID, @Argument UUID trackUUID) {
+    public DefaultBooleanResponseDTO deleteTrackForAssociation(@Argument UUID associationID, @Argument UUID trackID) {
         Optional<Association> optionalAssociation = associationService.getByID(associationID);
         DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
         if(optionalAssociation.isEmpty()) {
@@ -112,7 +112,7 @@ public class TrackController {
             return response;
         }
 
-        Optional<Track> optionalTrack = trackService.getByID(trackUUID);
+        Optional<Track> optionalTrack = trackService.getByID(trackID);
         if(optionalTrack.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("could-not-find-track");
