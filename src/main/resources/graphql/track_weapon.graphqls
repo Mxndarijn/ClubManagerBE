@@ -2,7 +2,7 @@ type Track {
     id: ID!
     name: String
     description: String
-    association: Association
+    association: PrivateAssociation
     allowedWeaponTypes: [WeaponType]
 }
 
