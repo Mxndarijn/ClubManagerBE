@@ -1,4 +1,4 @@
-package nl.shootingclub.clubmanager.dto;
+package nl.shootingclub.clubmanager.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;

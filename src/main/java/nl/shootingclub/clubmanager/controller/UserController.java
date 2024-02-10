@@ -1,16 +1,13 @@
 
 package nl.shootingclub.clubmanager.controller;
 
-import nl.shootingclub.clubmanager.configuration.validator.ValidImage;
 import nl.shootingclub.clubmanager.dto.ChangeProfilePictureDTO;
-import nl.shootingclub.clubmanager.dto.DefaultBooleanResponseDTO;
+import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.dto.UpdateMyProfileDTO;
 import nl.shootingclub.clubmanager.helper.ImageHelper;
-import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.model.Image;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.security.CustomAuthenticationProvider;
-import nl.shootingclub.clubmanager.service.AssociationService;
 import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -20,14 +17,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
-import javax.imageio.ImageIO;
-import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Base64;
-import java.util.List;
 import java.util.Optional;
 
 @Controller

@@ -1,12 +1,15 @@
 type Reservation {
     id: ID!
-    association: Association
-    date: String
-    title: String
-    description: String
+    association: Association!
+    startDate: String!
+    endDate: String!
+    title: String!
+    description: String!
     status: ReservationStatus
-    maxSize: Int
-    users: [User]
+    maxSize: Int!
+    users: [User]!
+    tracks: [Track]!
+    allowedWeaponTypes: [WeaponType]!
     reservationSerie: ReservationSeries
 }
 

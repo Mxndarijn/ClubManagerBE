@@ -3,8 +3,10 @@ package nl.shootingclub.clubmanager.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.antlr.v4.runtime.misc.Array2DHashSet;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -13,6 +15,10 @@ import java.util.UUID;
 @Entity
 @Table(name = "reservation")
 public class Reservation {
+
+    public Reservation() {
+        this.users = new HashSet<>();
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,7 +30,10 @@ public class Reservation {
     private Association association;
 
     @Column
-    private LocalDateTime date;
+    private LocalDateTime startDate;
+
+    @Column
+    private LocalDateTime endDate;
 
     @Column()
     private String title;
@@ -41,6 +50,14 @@ public class Reservation {
     @ManyToMany
     @JoinTable()
     private Set<User> users;
+
+    @ManyToMany
+    @JoinTable()
+    private Set<Track> tracks;
+
+    @ManyToMany
+    @JoinTable()
+    private Set<WeaponType> allowedWeaponTypes;
 
     @ManyToOne
     @JoinColumn(name = "reservation_series_id", referencedColumnName = "id")

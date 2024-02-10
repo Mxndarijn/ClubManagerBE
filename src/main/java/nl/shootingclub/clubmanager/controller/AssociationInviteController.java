@@ -3,9 +3,9 @@ package nl.shootingclub.clubmanager.controller;
 
 import nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData;
 import nl.shootingclub.clubmanager.dto.AssociationInviteDTO;
-import nl.shootingclub.clubmanager.dto.DefaultBooleanResponseDTO;
+import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.dto.InputAssociationInviteDTO;
-import nl.shootingclub.clubmanager.dto.SendAssociationInviteResponseDTO;
+import nl.shootingclub.clubmanager.dto.response.SendAssociationInviteResponseDTO;
 import nl.shootingclub.clubmanager.exceptions.AssociationNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.AssociationRoleNotFoundException;
 import nl.shootingclub.clubmanager.model.*;

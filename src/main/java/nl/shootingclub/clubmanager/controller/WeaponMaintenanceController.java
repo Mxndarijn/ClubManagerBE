@@ -1,11 +1,9 @@
 
 package nl.shootingclub.clubmanager.controller;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.FutureOrPresent;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import nl.shootingclub.clubmanager.dto.*;
+import nl.shootingclub.clubmanager.dto.response.CreateWeaponMaintenanceResponseDTO;
+import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.model.ColorPreset;
 import nl.shootingclub.clubmanager.model.Weapon;
@@ -103,8 +101,8 @@ public class WeaponMaintenanceController {
      */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_WEAPONS)")
-    public CreateWeaponMaintenanceDTOResponse createWeaponMaintenance(@Argument CreateWeaponMaintenanceDTO dto) {
-        CreateWeaponMaintenanceDTOResponse response = new CreateWeaponMaintenanceDTOResponse();
+    public CreateWeaponMaintenanceResponseDTO createWeaponMaintenance(@Argument CreateWeaponMaintenanceDTO dto) {
+        CreateWeaponMaintenanceResponseDTO response = new CreateWeaponMaintenanceResponseDTO();
         if(dto.getStartDate().isAfter(dto.getEndDate())) {
             response.setSuccess(false);
             response.setMessage("start-is-after-end");
@@ -159,8 +157,8 @@ public class WeaponMaintenanceController {
      */
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationUUID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_WEAPONS)")
-    public CreateWeaponMaintenanceDTOResponse changeWeaponMaintenance(@Argument ChangeWeaponMaintenanceDTO dto) {
-        CreateWeaponMaintenanceDTOResponse response = new CreateWeaponMaintenanceDTOResponse();
+    public CreateWeaponMaintenanceResponseDTO changeWeaponMaintenance(@Argument ChangeWeaponMaintenanceDTO dto) {
+        CreateWeaponMaintenanceResponseDTO response = new CreateWeaponMaintenanceResponseDTO();
         if(dto.getStartDate().isAfter(dto.getEndDate())) {
             response.setSuccess(false);
             response.setMessage("start-is-after-end");

@@ -4,6 +4,7 @@ package nl.shootingclub.clubmanager.controller;
 import nl.shootingclub.clubmanager.configuration.data.DefaultImageData;
 import nl.shootingclub.clubmanager.configuration.data.DefaultRoleAssociation;
 import nl.shootingclub.clubmanager.dto.*;
+import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.exceptions.UserNotFoundException;
 import nl.shootingclub.clubmanager.helper.ImageHelper;
 import nl.shootingclub.clubmanager.model.*;
