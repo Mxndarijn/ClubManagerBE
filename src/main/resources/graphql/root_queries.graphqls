@@ -13,6 +13,7 @@ extend type Query {
     getWeaponMaintenancesBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetWeaponMaintenancesDTO
 
     getAllColorPresets: [ColorPreset]
+
     getTracksOfAssociation(associationID: ID!): [Track]!
 
 
@@ -47,7 +48,7 @@ type Mutation {
 
     createTrackForAssociation(associationID: ID!, dto: TrackDTO!):  CreateTrackResponseDTO
     editTrackForAssociation(associationID: ID!, dto: TrackDTO!, trackID: ID!):  CreateTrackResponseDTO
-    deleteTrackForAssociation(associationID: ID!, trackID: ID!):  CreateTrackResponseDTO
+    deleteTrackForAssociation(associationID: ID!, trackID: ID!):  DefaultBooleanResponseDTO
 }
 scalar LocalDateTime
 
