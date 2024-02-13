@@ -7,7 +7,7 @@ type Reservation {
     description: String!
     status: ReservationStatus
     maxSize: Int!
-    users: [User]!
+    users: [ReservationUser]!
     tracks: [Track]!
     allowedWeaponTypes: [WeaponType]!
     reservationSerie: ReservationSeries
@@ -21,4 +21,25 @@ enum ReservationStatus {
 type ReservationSeries {
     id: ID!
     reservations: [Reservation]
+}
+
+type ReservationUser {
+    id: ID!
+    user: PrivateUser
+    reservation: Reservation
+    registerDate: LocalDateTime!
+}
+
+type CreateReservationResponseDTO {
+    success: Boolean!
+    message: String
+    reservations: [Reservation]
+    reservationSeries: ReservationSeries
+}
+
+input EditReservationSeriesDTO {
+    reservationSeriesId: ID!
+    title: String!
+    description: String!
+    maxMembers: Int!
 }

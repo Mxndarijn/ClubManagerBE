@@ -47,9 +47,9 @@ public class Reservation {
     @Column(name = "max_size")
     private Integer maxSize;
 
-    @ManyToMany
     @JoinTable()
-    private Set<User> users;
+    @OneToMany(mappedBy = "reservation")
+    private Set<ReservationUser> users;
 
     @ManyToMany
     @JoinTable()
@@ -62,6 +62,8 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "reservation_series_id", referencedColumnName = "id")
     private ReservationSeries reservationSerie;
+
+
 
 }
 
