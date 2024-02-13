@@ -48,8 +48,8 @@ public class User {
     @OneToMany(mappedBy = "user")
     private Set<AssociationInvite> invites;
 
-    @ManyToMany(mappedBy = "users")
-    private Set<Reservation> reservations;
+    @OneToMany(mappedBy = "user")
+    private Set<ReservationUser> reservations;
 
     @ManyToOne
     @JoinColumn(name = "role_id", nullable = false, referencedColumnName = "id")

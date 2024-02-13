@@ -3,7 +3,6 @@ package nl.shootingclub.clubmanager.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import org.antlr.v4.runtime.misc.Array2DHashSet;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -17,7 +16,7 @@ import java.util.UUID;
 public class Reservation {
 
     public Reservation() {
-        this.users = new HashSet<>();
+        this.reservationUsers = new HashSet<>();
     }
 
     @Id
@@ -41,15 +40,15 @@ public class Reservation {
     @Lob
     private String description;
 
+    @Column
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
     @Column(name = "max_size")
     private Integer maxSize;
 
-    @JoinTable()
     @OneToMany(mappedBy = "reservation")
-    private Set<ReservationUser> users;
+    private Set<ReservationUser> reservationUsers;
 
     @ManyToMany
     @JoinTable()
@@ -61,7 +60,7 @@ public class Reservation {
 
     @ManyToOne
     @JoinColumn(name = "reservation_series_id", referencedColumnName = "id")
-    private ReservationSeries reservationSerie;
+    private ReservationSeries reservationSeries;
 
 
 

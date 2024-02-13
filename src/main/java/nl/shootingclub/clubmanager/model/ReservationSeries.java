@@ -3,10 +3,7 @@ package nl.shootingclub.clubmanager.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
 
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -26,7 +23,7 @@ public class ReservationSeries {
     @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @OneToMany(mappedBy = "reservationSerie")
+    @OneToMany(mappedBy = "reservationSeries")
     private Set<Reservation> reservations;
 
 
