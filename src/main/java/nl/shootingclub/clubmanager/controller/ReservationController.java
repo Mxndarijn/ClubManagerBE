@@ -3,8 +3,10 @@ package nl.shootingclub.clubmanager.controller;
 import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
 import nl.shootingclub.clubmanager.dto.CreateReservationDTO;
 import nl.shootingclub.clubmanager.dto.EditReservationSeriesDTO;
+import nl.shootingclub.clubmanager.dto.GetWeaponMaintenancesDTO;
 import nl.shootingclub.clubmanager.dto.response.CreateReservationResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
+import nl.shootingclub.clubmanager.dto.response.GetReservationResponseDTO;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.service.*;
 import org.jetbrains.annotations.NotNull;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
@@ -282,6 +285,24 @@ public class ReservationController {
         return dto.getAllowedWeaponTypes().stream()
                 .map(id -> getEntityOrThrow(() -> weaponTypeService.getByID(id), "weapon-type-not-found"))
                 .collect(Collectors.toSet());
+    }
+
+    @QueryMapping
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_RESERVATIONS)")
+    public GetReservationResponseDTO getReservationsBetween(@Argument UUID associationID, @Argument LocalDateTime startDate, @Argument LocalDateTime endDate) {
+        GetReservationResponseDTO response = new GetReservationResponseDTO();
+        Period period = Period.between(startDate.toLocalDate(), endDate.toLocalDate());
+        if (period.getMonths() > 4) {
+            response.setSuccess(false);
+            return response;
+        }
+
+        response.setSuccess(true);
+        response.setReservations(reservationService.getAllReservations(associationID, startDate, endDate));
+
+
+        return response;
+
     }
 
     private Reservation buildReservation(LocalDateTime start, LocalDateTime end, Association association, Set<Track> tracks, Set<WeaponType> allowedWeaponTypes, String title, String description, int maxSize) {

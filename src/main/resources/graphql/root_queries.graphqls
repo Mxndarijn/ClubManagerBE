@@ -1,8 +1,7 @@
-
 extend type Query {
     getMyProfile: User
 
-#    Association Details
+    #    Association Details
     getAssociationDetails(associationID: ID!): Association
     getAssociationStatistics(associationID: ID!): AssociationStatisticsDTO
 
@@ -15,6 +14,7 @@ extend type Query {
     getAllColorPresets: [ColorPreset]
 
     getTracksOfAssociation(associationID: ID!): [Track]!
+    getReservationsBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetReservationResponseDTO
 
 
 }
@@ -22,7 +22,7 @@ extend type Query {
 type Mutation {
     createAssociation: Association
 
-#    Invites
+    #    Invites
     sendAssociationInvite(dto: CreateAssociationInviteInput!): SendAssociationInviteResponseDTO
     removeAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
     changeUserAssociation(changeUserAssociationDTO: ChangeUserAssociationDTO!): ChangeUserAssociationResponse
@@ -30,18 +30,18 @@ type Mutation {
     acceptAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
     rejectAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
 
-#    User Profile
+    #    User Profile
     updateMyProfile(dto: UpdateMyProfileDTO!) : DefaultBooleanResponseDTO
     updateMyProfilePicture(dto: ChangeProfilePictureDTO!) : DefaultBooleanResponseDTO
 
-#    Association settings
+    #    Association settings
     updateAssociationPicture(dto: ChangeProfilePictureDTO!, associationID: ID!): DefaultBooleanResponseDTO
     updateAssociationSettings(dto: UpdateAssociationDTO!, associationID: ID!): DefaultBooleanResponseDTO
 
-#    Create Weapon
+    #    Create Weapon
     createWeapon(dto: CreateWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
 
-    #Weapon Maintenance
+    #   Weapon Maintenance
     createWeaponMaintenance(dto: CreateWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
     changeWeaponMaintenance(dto: ChangeWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
     deleteWeaponMaintenance(associationID: ID!,maintenanceID: ID!): DefaultBooleanResponseDTO
@@ -60,6 +60,11 @@ enum ReservationRepeat {
     NO_REPEAT
     DAY
     WEEK
+}
+
+type GetReservationResponseDTO {
+    success: Boolean
+    reservations: [Reservation]
 }
 
 input CreateReservationDTO {
