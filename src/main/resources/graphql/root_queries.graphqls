@@ -16,6 +16,7 @@ extend type Query {
     getTracksOfAssociation(associationID: ID!): [Track]!
     getReservationsBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetReservationResponseDTO
 
+    validateToken: DefaultBooleanResponseDTO
 
 }
 
@@ -54,7 +55,22 @@ type Mutation {
     editReservationSeries(dto: EditReservationSeriesDTO!): CreateReservationResponseDTO
     deleteReservationSeries(seriesID: ID!, associationID: ID!): DefaultBooleanResponseDTO
     deleteReservation(reservationID: ID!, associationID: ID!): DefaultBooleanResponseDTO
+
+    login(loginRequest: LoginDTOInput!): DefaultBooleanResponseDTO
+    register(registerRequest: RegisterDTOInput!): DefaultBooleanResponseDTO
 }
+
+input LoginDTOInput {
+    email: String!
+    password: String!
+}
+
+input RegisterDTOInput {
+    fullName: String!
+    email: String!
+    password: String!
+}
+
 
 enum ReservationRepeat {
     NO_REPEAT
@@ -66,6 +82,8 @@ type GetReservationResponseDTO {
     success: Boolean
     reservations: [Reservation]
 }
+
+
 
 input CreateReservationDTO {
     title: String!

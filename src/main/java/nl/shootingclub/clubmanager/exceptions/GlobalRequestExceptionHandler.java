@@ -28,8 +28,7 @@ public class GlobalRequestExceptionHandler {
 
         Map<String, Object> response = new HashMap<>();
         response.put("success", false);
-        response.put("message", "Errors occurred");
-        response.put("errors", errors);
+        response.put("message", errors);
 
         return response;
     }
@@ -51,8 +50,7 @@ public class GlobalRequestExceptionHandler {
     public Map<String, Object> handleAccountValidationException(AccountValidationException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", false);
-        response.put("message", ex.getMessage());
-        response.put("error", "account-validation-error");
+        response.put("message", "account-validation-error");
         return response;
     }
 
@@ -62,8 +60,7 @@ public class GlobalRequestExceptionHandler {
     public Map<String, Object> handleAccountBadCredentialsException(BadCredentialsException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", false);
-        response.put("message", ex.getMessage());
-        response.put("error", "account-bad-credentials");
+        response.put("message", "account-bad-credentials");
         return response;
     }
 
@@ -73,8 +70,7 @@ public class GlobalRequestExceptionHandler {
     public Map<String, Object> handleException(TooManyRequestsException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", false);
-        response.put("message", ex.getMessage());
-        response.put("error", "too-many-requests");
+        response.put("message", "too-many-requests");
         return response;
     }
 
@@ -84,8 +80,7 @@ public class GlobalRequestExceptionHandler {
     public Map<String, Object> handleException(IllegalArgumentException ex) {
         Map<String, Object> response = new HashMap<>();
         response.put("success", false);
-        response.put("message", "illegal argument");
-        response.put("error", ex.getMessage());
+        response.put("message", ex.getMessage());
         return response;
     }
 

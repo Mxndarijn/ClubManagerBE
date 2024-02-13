@@ -2,6 +2,7 @@ package nl.shootingclub.clubmanager.controller;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
+import graphql.schema.DataFetchingEnvironment;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
@@ -11,6 +12,7 @@ import nl.shootingclub.clubmanager.configuration.data.DefaultImageData;
 import nl.shootingclub.clubmanager.configuration.data.DefaultRoleAccount;
 import nl.shootingclub.clubmanager.dto.LoginDTO;
 import nl.shootingclub.clubmanager.dto.RegisterDTO;
+import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.exceptions.AccountValidationException;
 import nl.shootingclub.clubmanager.exceptions.EmailAlreadyUsedException;
 import nl.shootingclub.clubmanager.exceptions.TooManyRequestsException;
@@ -24,6 +26,9 @@ import nl.shootingclub.clubmanager.repository.UserRepository;
 import nl.shootingclub.clubmanager.service.JwtService;
 import nl.shootingclub.clubmanager.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.graphql.data.method.annotation.Argument;
+import org.springframework.graphql.data.method.annotation.MutationMapping;
+import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,7 +36,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.context.request.NativeWebRequest;
 
 import java.time.Duration;
 import java.util.ArrayList;
@@ -39,8 +47,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@RestController
-@RequestMapping("/auth")
+@Controller
 public class AuthController {
 
     @Autowired
@@ -89,93 +96,66 @@ public class AuthController {
                 .build();
     }
 
+    @Autowired
+    private HttpServletRequest request;
 
-    /**
-     * Handles user login.
-     *
-     * @param request        the HttpServletRequest object representing the incoming request
-     * @param loginRequest   the LoginDTO object containing the login credentials
-     * @return a ResponseEntity object containing the login response
-     * @throws TooManyRequestsException   if there are too many requests for login
-     */
-    @PostMapping("/login")
-    public ResponseEntity<Map<String,Object>> login(HttpServletRequest request, @RequestBody @Valid LoginDTO loginRequest) {
+    @MutationMapping
+    public DefaultBooleanResponseDTO login(@Argument @Valid LoginDTO loginRequest) {
+        Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthController::createBucketForIp);
+        if (bucket == null || !bucket.tryConsume(1)) {
+            throw new TooManyRequestsException("Too many requests for login");
+        }
+
+        // Authenticatieproces
+        Authentication auth = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        loginRequest.getEmail(), loginRequest.getPassword(), new ArrayList<>()
+                ));
+        SecurityContextHolder.getContext().setAuthentication(auth);
+
+        // Token creatie
+        final String token = userAuthProvider.createToken(new HashMap<>(), (String) auth.getPrincipal());
+
+        // Response voorbereiden
+        DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
+        response.setSuccess(true);
+        response.setMessage(token);
+
+        return response;
+    }
+
+
+    @QueryMapping
+    public DefaultBooleanResponseDTO validateToken() {
         Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthController::createBucketForIp);
         if (bucket == null || !bucket.tryConsume(1)) {
             throw new TooManyRequestsException("too many requests for login");
         }
+        DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
 
-            Authentication auth = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginRequest.getEmail(), loginRequest.getPassword(), new ArrayList<>()
-                    ));
-            SecurityContextHolder.getContext().setAuthentication(auth);
+        if (!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User)) {
+            response.setSuccess(false);
+            response.setMessage("token-invalid");
 
-            final String token = userAuthProvider.createToken(new HashMap<>(), (String) auth.getPrincipal());
-
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", token);
-
-            return ResponseEntity.ok(response);
-
-
+            return response;
+        }
+        response.setSuccess(true);
+        response.setMessage("token-valid");
+        return response;
     }
 
-    /**
-     * Validates the token received in the request.
-     *
-     * @param request the HttpServletRequest object containing the request information
-     * @return a ResponseEntity<Map<String, Object>> representing the response with the validation result
-     *         success - a boolean indicating if the token is valid or not
-     *         message - a string message indicating the result of the validation
-     * @throws TooManyRequestsException if there are too many requests for login from the same IP address
-     */
-    @PostMapping("/validateToken")
-    public ResponseEntity<Map<String, Object>> validateToken(HttpServletRequest request) {
-        Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthController::createBucketForIp);
-        if (bucket == null || !bucket.tryConsume(1)) {
-            throw new TooManyRequestsException("too many requests for login");
-        }
-
-        if(!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User)) {
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", false);
-            response.put("message", "token is not valid");
-
-            return ResponseEntity.ok(response);
-        }
-        Map<String, Object> response = new HashMap<>();
-        response.put("success", true);
-        response.put("message", "token is correct");
-
-        return ResponseEntity.ok(response);
-    }
-
-    /**
-     * Registers a new user in the system.
-     *
-     * @param request         the HttpServletRequest object for the current request
-     * @param registerRequest the RegisterDTO object containing the user's registration information
-     * @return a ResponseEntity with a Map containing the response data
-     *         - "success": a boolean value indicating whether the registration was successful
-     *         - "message": a string value representing the token assigned to the user
-     * @throws TooManyRequestsException    if there are too many requests from the same IP address
-     * @throws EmailAlreadyUsedException   if the provided email is already associated with an account
-     * @throws AccountValidationException if there is an error creating the user account
-     * @throws AuthenticationException    if there is an error during the authentication process
-     */
-    @PostMapping("/register")
-    public ResponseEntity<Map<String,Object>> register(HttpServletRequest request, @RequestBody @Valid RegisterDTO registerRequest) {
+    @MutationMapping
+    public DefaultBooleanResponseDTO register( @Argument @Valid RegisterDTO registerRequest) {
         try {
             Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthController::createBucketForIp);
             if (bucket == null || !bucket.tryConsume(1)) {
                 throw new TooManyRequestsException("too many requests for login");
             }
 
+            DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
             Optional<User> optionalUser = userRepository.findByEmailEquals(registerRequest.getEmail().toLowerCase());
 
-            if(optionalUser.isPresent()) {
+            if (optionalUser.isPresent()) {
                 throw new EmailAlreadyUsedException("Email already has an account");
             }
 
@@ -185,14 +165,14 @@ public class AuthController {
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
             Optional<DefaultImage> image = defaultImageRepository.findByName(DefaultImageData.PROFILE_PICTURE.getName());
-            if(image.isPresent()) {
+            if (image.isPresent()) {
                 Image i = new Image();
                 i.setEncoded(image.get().getImage().getEncoded());
                 user.setImage(i);
             }
 
             Optional<AccountRole> optionalAccountRole = accountRoleRepository.findByName(DefaultRoleAccount.USER.getName());
-            if(optionalAccountRole.isPresent()) {
+            if (optionalAccountRole.isPresent()) {
                 user.setRole(optionalAccountRole.get());
             } else {
                 throw new AccountValidationException("Could not create account");
@@ -201,14 +181,12 @@ public class AuthController {
             userService.createUser(user);
 
 
-
             final String token = userAuthProvider.createToken(new HashMap<>(), user.getEmail());
 
-            Map<String, Object> response = new HashMap<>();
-            response.put("success", true);
-            response.put("message", token);
+            response.setSuccess(true);
+            response.setMessage(token);
 
-            return ResponseEntity.ok(response);
+            return response;
 
         } catch (AuthenticationException e) {
             throw new AccountValidationException("Could not create account");

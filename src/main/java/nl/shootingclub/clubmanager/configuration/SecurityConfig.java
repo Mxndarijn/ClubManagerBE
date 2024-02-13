@@ -71,7 +71,7 @@ public class SecurityConfig {
             .httpBasic(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(requestCustomizer -> {
                 requestCustomizer
-                    .requestMatchers("/","/auth/**", "/graphql").permitAll()
+                    .requestMatchers("/", "/graphql").permitAll()
                     .anyRequest().permitAll();
              })
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);

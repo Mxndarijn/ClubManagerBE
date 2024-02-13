@@ -5,6 +5,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import nl.shootingclub.clubmanager.configuration.CustomUsernamePasswordAuthenticationToken;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.service.JwtService;
 import nl.shootingclub.clubmanager.service.UserService;
@@ -45,7 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                         Optional<User> userDetails = userDetailsService.loadUserByEmail(email);
                         if (userDetails.isPresent()) {
                             if (jwtService.validateToken(token, userDetails.get())) {
-                                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails.get(), null, new ArrayList<>());
+                                CustomUsernamePasswordAuthenticationToken authToken = new CustomUsernamePasswordAuthenticationToken(userDetails.get(), null, request.getRemoteAddr());
                                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                                 SecurityContextHolder.getContext().setAuthentication(authToken);
                             }
