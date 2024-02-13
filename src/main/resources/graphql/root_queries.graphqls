@@ -49,7 +49,49 @@ type Mutation {
     createTrackForAssociation(associationID: ID!, dto: TrackDTO!):  CreateTrackResponseDTO
     editTrackForAssociation(associationID: ID!, dto: TrackDTO!, trackID: ID!):  CreateTrackResponseDTO
     deleteTrackForAssociation(associationID: ID!, trackID: ID!):  DefaultBooleanResponseDTO
+
+    createReservations(dto: CreateReservationDTO!): CreateReservationResponseDTO
+    editReservationSeries(dto: EditReservationSeriesDTO!): CreateReservationResponseDTO
+    deleteReservationSeries(seriesID: ID!, associationID: ID!): DefaultBooleanResponseDTO
+    deleteReservation(reservationID: ID!, associationID: ID!): DefaultBooleanResponseDTO
 }
+
+enum ReservationRepeat {
+    NO_REPEAT
+    DAY
+    WEEK
+}
+
+input CreateReservationDTO {
+    title: String!
+    description: String!
+    startTime: LocalDateTime!
+    endTime: LocalDateTime!
+    maxSize: Int!
+    repeatType: ReservationRepeat!
+    repeatUntil: LocalDateTime
+    customDaysBetween: Int
+    associationID: ID!
+    trackIDs: [ID]!
+    allowedWeaponTypeIDs: [ID]!
+}
+
+type CreateReservationResponseDTO {
+    success: Boolean!
+    message: String
+    reservations: [Reservation]
+    reservationSeries: ReservationSeries
+}
+
+
+
+input EditReservationSeriesDTO {
+    reservationSeriesId: ID!
+    title: String!
+    description: String!
+    maxMembers: Int!
+}
+
 scalar LocalDateTime
 
 type GetWeaponMaintenancesDTO {

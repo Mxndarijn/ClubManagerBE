@@ -6,6 +6,5 @@ import lombok.Getter;
 public enum ReservationRepeat {
     NO_REPEAT,
     DAY,
-    WEEK,
-    CUSTOM;
+    WEEK;
 }

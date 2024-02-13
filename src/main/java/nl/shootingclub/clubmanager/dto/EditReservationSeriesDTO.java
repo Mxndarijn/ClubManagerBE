@@ -1,6 +1,9 @@
 package nl.shootingclub.clubmanager.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
@@ -15,38 +18,10 @@ import java.util.UUID;
 
 @Getter
 @Setter
-public class CreateReservationDTO {
-    @NotNull
-    private UUID associationID;
-
+public class EditReservationSeriesDTO {
 
     @NotNull
-    private LocalDateTime startTime;
-
-    @FutureOrPresent
-    @NotNull
-    private LocalDateTime endTime;
-
-    @NotNull
-    private ReservationRepeat repeatType;
-
-    @NotNull
-    private Optional<LocalDateTime> repeatUntil;
-
-    @NotNull
-    private Optional<List<DayOfWeek>> repeatDays;
-
-    @Range(min=1)
-    private Optional<Integer> customDaysBetween;
-
-    @NotNull
-    @Size(min=1)
-    private List<UUID> allowedWeaponTypes;
-
-    @NotNull
-    @Size(min=1)
-    private List<UUID> tracks;
-
+    private UUID reservationSeriesId;
     @Range(min=1)
     private int maxMembers;
 
