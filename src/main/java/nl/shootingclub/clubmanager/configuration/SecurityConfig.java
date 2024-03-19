@@ -31,25 +31,8 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 public class SecurityConfig {
 
     @Autowired
-    private CustomAuthenticationProvider authProvider;
-
-    @Autowired
     private JwtAuthFilter jwtAuthFilter;
 
-    /**
-     * Returns an instance of AuthenticationManager.
-     *
-     * @param http The HttpSecurity object to obtain the AuthenticationManagerBuilder from.
-     * @return An instance of AuthenticationManager.
-     * @throws Exception if an error occurs while building the AuthenticationManager.
-     */
-    @Bean
-    public AuthenticationManager authManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder =
-                http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.authenticationProvider(authProvider);
-        return authenticationManagerBuilder.build();
-    }
 
     /**
      * Creates a {@link SecurityFilterChain} for the given {@link HttpSecurity} object.

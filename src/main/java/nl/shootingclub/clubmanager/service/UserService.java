@@ -41,6 +41,7 @@ public class UserService implements UserDetailsService {
         if (user.isPresent()) {
             return encoder.matches(password, user.get().getPassword());
         }
+
         return false;
     }
 

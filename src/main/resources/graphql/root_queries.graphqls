@@ -51,6 +51,8 @@ type Mutation {
     editTrackForAssociation(associationID: ID!, dto: TrackDTO!, trackID: ID!):  CreateTrackResponseDTO
     deleteTrackForAssociation(associationID: ID!, trackID: ID!):  DefaultBooleanResponseDTO
 
+
+    # Reservation
     createReservations(dto: CreateReservationDTO!): CreateReservationResponseDTO
     editReservationSeries(dto: EditReservationSeriesDTO!): CreateReservationResponseDTO
     deleteReservationSeries(seriesID: ID!, associationID: ID!): DefaultBooleanResponseDTO
@@ -95,8 +97,9 @@ input CreateReservationDTO {
     repeatUntil: LocalDateTime
     customDaysBetween: Int
     associationID: ID!
-    trackIDs: [ID]!
-    allowedWeaponTypeIDs: [ID]!
+    tracks: [ID]!
+    allowedWeaponTypes: [ID]!
+    colorPreset: ID!
 }
 
 

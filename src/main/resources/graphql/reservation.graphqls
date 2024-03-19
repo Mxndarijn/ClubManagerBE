@@ -1,16 +1,17 @@
 type Reservation {
     id: ID!
-    association: Association!
+    association: PrivateAssociation!
     startDate: String!
     endDate: String!
     title: String!
     description: String!
     status: ReservationStatus
     maxSize: Int!
-    users: [ReservationUser]!
+    reservationUsers: [ReservationUser]!
     tracks: [Track]!
     allowedWeaponTypes: [WeaponType]!
-    reservationSerie: ReservationSeries
+    reservationSeries: ReservationSeries
+    colorPreset: ColorPreset
 }
 
 enum ReservationStatus {
@@ -21,19 +22,27 @@ enum ReservationStatus {
 type ReservationSeries {
     id: ID!
     reservations: [Reservation]
+    title: String
+    description: String
+    maxUsers: Int
 }
 
 type ReservationUser {
-    id: ID!
+    id: ReservationUserId!
     user: PrivateUser
     reservation: Reservation
     registerDate: LocalDateTime!
 }
 
+type ReservationUserId {
+    userId: ID!
+    reservationId: ID!
+}
+
 type CreateReservationResponseDTO {
     success: Boolean!
     message: String
-    reservations: [Reservation]
+    reservations: [Reservation]!
     reservationSeries: ReservationSeries
 }
 

@@ -19,6 +19,9 @@ public class CreateReservationDTO {
     @NotNull
     private UUID associationID;
 
+    @NotNull
+    private UUID colorPreset;
+
 
     @NotNull
     private LocalDateTime startTime;
@@ -32,9 +35,6 @@ public class CreateReservationDTO {
 
     @NotNull
     private Optional<LocalDateTime> repeatUntil;
-
-    @NotNull
-    private Optional<List<DayOfWeek>> repeatDays;
 
     @Range(min=1)
     private Optional<Integer> customDaysBetween;
@@ -58,4 +58,21 @@ public class CreateReservationDTO {
     @NotBlank(message = "empty")
     @Length(max = 200, message = "length-max-exceeded")
     private String description;
+
+    @Override
+    public String toString() {
+        return "CreateReservationDTO{" +
+                "associationID=" + associationID +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", repeatType=" + repeatType +
+                ", repeatUntil=" + repeatUntil +
+                ", customDaysBetween=" + customDaysBetween +
+                ", allowedWeaponTypes=" + allowedWeaponTypes +
+                ", tracks=" + tracks +
+                ", maxMembers=" + maxMembers +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
+    }
 }

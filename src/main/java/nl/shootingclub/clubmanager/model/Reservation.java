@@ -40,9 +40,9 @@ public class Reservation {
     @Lob
     private String description;
 
-    @Column
-    @Enumerated(EnumType.STRING)
-    private ReservationStatus status;
+//    @Column
+//    @Enumerated(EnumType.STRING)
+//    private ReservationStatus status;
 
     @Column(name = "max_size")
     private Integer maxSize;
@@ -61,6 +61,10 @@ public class Reservation {
     @ManyToOne
     @JoinColumn(name = "reservation_series_id", referencedColumnName = "id")
     private ReservationSeries reservationSeries;
+
+    @ManyToOne
+    @JoinColumn(name = "color_preset_id", referencedColumnName = "id")
+    private ColorPreset colorPreset;
 
 
 
