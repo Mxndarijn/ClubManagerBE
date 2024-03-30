@@ -102,6 +102,57 @@ public class WeaponController {
         return responseDTO;
     }
 
+    @MutationMapping
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_WEAPONS)")
+    public CreateWeaponResponseDTO changeWeapon(@Argument ChangeWeaponDTO dto, @Argument UUID associationID) {
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        CreateWeaponResponseDTO responseDTO = new CreateWeaponResponseDTO();
+        if(optionalAssociation.isEmpty()) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("no-association-found");
+            return responseDTO;
+        }
+
+        Optional<WeaponType> optionalWeaponType = weaponTypeRepository.findById(dto.getWeaponType());
+        if(optionalWeaponType.isEmpty()) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("no-weapon-type-found");
+            return responseDTO;
+        }
+        WeaponStatus weaponStatus;
+        try {
+            weaponStatus = WeaponStatus.valueOf(dto.getWeaponStatus());
+        } catch (IllegalArgumentException e) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("invalid-weapon-status");
+            return responseDTO;
+        }
+
+        Optional<Weapon> optionalWeapon = weaponService.getByID(dto.getWeaponID());
+        if(optionalWeapon.isEmpty()) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("no-weapon-found");
+            return responseDTO;
+        }
+        Weapon weapon = optionalWeapon.get();
+        if(!weapon.getAssociation().getId().equals(associationID)) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("weapon-association-no-match");
+            return responseDTO;
+        }
+
+        weapon.setName(dto.getWeaponName());
+        weapon.setType(optionalWeaponType.get());
+        weapon.setStatus(weaponStatus);
+
+        weapon = weaponService.saveWeapon(weapon);
+
+        responseDTO.setSuccess(true);
+        responseDTO.setWeapon(weapon);
+        responseDTO.setMessage("changed");
+        return responseDTO;
+    }
+
     /**
      * Retrieves all weapons associated with a given association.
      *

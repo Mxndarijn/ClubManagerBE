@@ -41,6 +41,7 @@ type Mutation {
 
     #    Create Weapon
     createWeapon(dto: CreateWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
+    changeWeapon(dto: ChangeWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
 
     #   Weapon Maintenance
     createWeaponMaintenance(dto: CreateWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
@@ -60,6 +61,8 @@ type Mutation {
 
     login(loginRequest: LoginDTOInput!): DefaultBooleanResponseDTO
     register(registerRequest: RegisterDTOInput!): DefaultBooleanResponseDTO
+
+    participateReservation(associationID: ID!, reservationID: ID!, join: Boolean) : ReservationResponseDTO
 }
 
 input LoginDTOInput {
@@ -83,6 +86,11 @@ enum ReservationRepeat {
 type GetReservationResponseDTO {
     success: Boolean
     reservations: [Reservation]
+}
+
+type ReservationResponseDTO {
+    success: Boolean
+    reservation: Reservation
 }
 
 
@@ -164,6 +172,12 @@ input CreateAssociationInviteInput {
 input CreateWeaponDTO {
     weaponName: String!
     weaponType: ID!
+    weaponStatus: String!
+}
+input ChangeWeaponDTO {
+    weaponName: String!
+    weaponType: ID!
+    weaponID: ID!
     weaponStatus: String!
 }
 

@@ -7,6 +7,7 @@ import nl.shootingclub.clubmanager.dto.GetWeaponMaintenancesDTO;
 import nl.shootingclub.clubmanager.dto.response.CreateReservationResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.GetReservationResponseDTO;
+import nl.shootingclub.clubmanager.dto.response.ReservationResponseDTO;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.service.*;
 import org.jetbrains.annotations.NotNull;
@@ -16,6 +17,7 @@ import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
@@ -47,6 +49,9 @@ public class ReservationController {
 
     @Autowired
     private ColorPresetService colorPresetService;
+
+    @Autowired
+    private ReservationUserService reservationUserService;
 
     @MutationMapping
     @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_TRACK_CONFIGURATION)")
@@ -308,5 +313,53 @@ public class ReservationController {
         reservation.setMaxSize(maxSize);
         reservation.setColorPreset(preset);
         return reservation;
+    }
+
+
+    @MutationMapping
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_RESERVATIONS)")
+    public ReservationResponseDTO participateReservation(@Argument UUID associationID, UUID reservationID, boolean join) {
+        Reservation reservation = getEntityOrThrow(
+                () -> reservationService.getByID(reservationID),
+                "reservation-not-found"
+        );
+
+        ReservationResponseDTO responseDTO = new ReservationResponseDTO();
+//        Association association = getEntityOrThrow(
+//                () -> associationService.getByID(associationID),
+//                "association-not-found"
+//        );
+        if(!reservation.getAssociation().getId().equals(associationID)) {
+            responseDTO.setSuccess(false);
+            return responseDTO;
+        }
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<ReservationUser> optionalReservationUser = reservationUserService.findReservationUserByReservationAndUser(reservation, user);
+
+        responseDTO.setReservation(reservation);
+        if(optionalReservationUser.isEmpty() && join) {
+            ReservationUser reservationUser = new ReservationUser();
+            reservationUser.setReservation(reservation);
+            reservationUser.setUser(user);
+            reservation.getReservationUsers().add(reservationUser);
+
+            reservationService.saveReservation(reservation);
+
+            responseDTO.setSuccess(true);
+            return responseDTO;
+        }
+        if(optionalReservationUser.isPresent() && !join) {
+            reservation.getReservationUsers().remove(optionalReservationUser.get());
+
+            reservationService.saveReservation(reservation);
+
+            responseDTO.setSuccess(true);
+            return responseDTO;
+        }
+
+
+        responseDTO.setSuccess(false);
+        return responseDTO;
+
     }
 }

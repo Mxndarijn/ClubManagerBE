@@ -2,7 +2,6 @@ package nl.shootingclub.clubmanager.controller;
 
 import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
-import graphql.schema.DataFetchingEnvironment;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Refill;
@@ -16,7 +15,6 @@ import nl.shootingclub.clubmanager.dto.LoginDTO;
 import nl.shootingclub.clubmanager.dto.RegisterDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.exceptions.AccountValidationException;
-import nl.shootingclub.clubmanager.exceptions.EmailAlreadyUsedException;
 import nl.shootingclub.clubmanager.exceptions.TooManyRequestsException;
 import nl.shootingclub.clubmanager.model.AccountRole;
 import nl.shootingclub.clubmanager.model.DefaultImage;
@@ -33,23 +31,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.context.request.NativeWebRequest;
 
 import java.io.IOException;
 import java.time.Duration;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -205,7 +196,7 @@ public class AuthController {
             response.setMessage(token);
             try {
                 emailService.sendHTMLMail(user.getEmail(), HTMLTemplate.REGISTERED, new HashMap<>());
-            } catch (MessagingException | IOException e) {
+            } catch (MessagingException e) {
                 System.out.printf("Could not send registered mail to " + user.getEmail());
             }
 
