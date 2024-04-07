@@ -26,6 +26,9 @@ public class User {
     @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(name = "language")
+    private String language;
+
     @Column(name = "full_name", nullable = false)
     private String fullName;
 

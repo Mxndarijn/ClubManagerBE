@@ -25,4 +25,7 @@ public class RegisterDTO {
     @Length(max = 64, min = 2, message = "length-wrong")
     @ValidName(spaces = true, message = "invalid-characters")
     private String fullName;
+    @NotBlank(message = "empty")
+    @Length(max = 64, min = 2, message = "length-wrong")
+    private String language;
 }

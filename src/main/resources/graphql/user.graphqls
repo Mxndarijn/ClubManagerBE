@@ -2,6 +2,7 @@ type User {
     id: ID
     email: String!
     fullName: String!
+    language: String!
     knsaMembershipNumber: Int
     knsaMemberSince: String
     image: Image

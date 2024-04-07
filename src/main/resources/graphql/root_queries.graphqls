@@ -63,6 +63,11 @@ type Mutation {
     register(registerRequest: RegisterDTOInput!): DefaultBooleanResponseDTO
 
     participateReservation(associationID: ID!, reservationID: ID!, join: Boolean) : ReservationResponseDTO
+
+    storeEncryptData(pcName: String, key: String) : DefaultBooleanResponseDTO
+    updateLanguage(language: String) : DefaultBooleanResponseDTO
+
+
 }
 
 input LoginDTOInput {
@@ -74,6 +79,7 @@ input RegisterDTOInput {
     fullName: String!
     email: String!
     password: String!
+    language: String!
 }
 
 

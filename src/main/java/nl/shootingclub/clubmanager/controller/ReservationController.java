@@ -3,7 +3,6 @@ package nl.shootingclub.clubmanager.controller;
 import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
 import nl.shootingclub.clubmanager.dto.CreateReservationDTO;
 import nl.shootingclub.clubmanager.dto.EditReservationSeriesDTO;
-import nl.shootingclub.clubmanager.dto.GetWeaponMaintenancesDTO;
 import nl.shootingclub.clubmanager.dto.response.CreateReservationResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.GetReservationResponseDTO;
@@ -12,7 +11,6 @@ import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.service.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.time.temporal.WeekFields;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -170,7 +167,7 @@ public class ReservationController {
     }
 
     private CreateReservationResponseDTO createSingleReservation(CreateReservationDTO dto, Association association, Set<Track> tracks, Set<WeaponType> allowedWeaponTypes, ColorPreset preset) {
-        Reservation reservation = buildReservation(dto.getStartTime(), dto.getEndTime(), association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxMembers(), preset);
+        Reservation reservation = buildReservation(dto.getStartTime(), dto.getEndTime(), association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset);
         reservation = reservationService.createReservation(reservation);
 
         CreateReservationResponseDTO responseDTO = new CreateReservationResponseDTO();
@@ -196,7 +193,7 @@ public class ReservationController {
 
         while (currentDate.isBefore(repeatUntil.get())) {
                 LocalDateTime reservationEnd = currentDate.plus(period);
-                Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxMembers(), preset);
+                Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset);
                 serie.getReservations().add(reservationService.createReservation(reservation));
             currentDate = currentDate.plusDays(7);
         }
@@ -204,17 +201,13 @@ public class ReservationController {
         if (!serie.getReservations().isEmpty()) {
             serie.setTitle(dto.getTitle());
             serie.setDescription(dto.getDescription());
-            serie.setMaxUsers(dto.getMaxMembers());
+            serie.setMaxUsers(dto.getMaxSize());
             serie.setAssociation(association);
             serie = reservationSeriesService.createReservationSeries(serie);
 
         }
 
         return createReservationResponseDTO(serie);
-    }
-    private static int getWeekNumber(LocalDateTime time) {
-        WeekFields weekFields = WeekFields.of(Locale.getDefault());
-        return time.get(weekFields.weekOfWeekBasedYear());
     }
 
     private CreateReservationResponseDTO createDailyRepeatingReservations(CreateReservationDTO dto, Association association, Set<Track> tracks, Set<WeaponType> allowedWeaponTypes, ColorPreset preset) {
@@ -228,7 +221,7 @@ public class ReservationController {
         ReservationSeries serie = new ReservationSeries();
         while (currentDate.isBefore(dto.getRepeatUntil().get())) {
             LocalDateTime reservationEnd = currentDate.plus(period);
-            Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxMembers(), preset);
+            Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset);
             reservation = reservationService.createReservation(reservation);
             serie.getReservations().add(reservation);
             currentDate = currentDate.plusDays(dto.getCustomDaysBetween().get());
@@ -237,7 +230,7 @@ public class ReservationController {
         if (!serie.getReservations().isEmpty()) {
             serie.setTitle(dto.getTitle());
             serie.setDescription(dto.getDescription());
-            serie.setMaxUsers(dto.getMaxMembers());
+            serie.setMaxUsers(dto.getMaxSize());
             serie.setAssociation(association);
             serie = reservationSeriesService.createReservationSeries(serie);
         }

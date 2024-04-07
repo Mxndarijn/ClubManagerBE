@@ -1,6 +1,7 @@
 
 package nl.shootingclub.clubmanager.controller;
 
+import nl.shootingclub.clubmanager.configuration.data.Language;
 import nl.shootingclub.clubmanager.dto.ChangeProfilePictureDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.dto.UpdateMyProfileDTO;
@@ -25,9 +26,6 @@ public class UserController {
 
     @Autowired
     private UserService userService;
-
-    @Autowired
-    private CustomAuthenticationProvider authenticationProvider;
 
     /**
      * Retrieves the profile of the currently authenticated user.
@@ -89,6 +87,41 @@ public class UserController {
         } else {
             responseDTO.setSuccess(false);
             responseDTO.setMessage("profile-update-failed");
+        }
+        return responseDTO;
+
+
+    }
+
+    @MutationMapping
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.data.AccountPermissionData).GET_MY_PROFILE)")
+    public DefaultBooleanResponseDTO updateLanguage(@Argument String language) {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Optional<User> optionalUser = userService.getUser(user);
+        if(optionalUser.isEmpty()) {
+            DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("no-user-found");
+            return responseDTO;
+        }
+        user = optionalUser.get();
+        Optional<Language> optionalLanguage = Language.fromString(language);
+        DefaultBooleanResponseDTO responseDTO = new DefaultBooleanResponseDTO();
+        if(optionalLanguage.isEmpty()) {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("language-not-found");
+            return responseDTO;
+        }
+
+        user.setLanguage(language);
+
+        User updatedUser = userService.saveUser(user);
+        if (updatedUser != null) {
+            responseDTO.setSuccess(true);
+            responseDTO.setMessage("language-updated");
+        } else {
+            responseDTO.setSuccess(false);
+            responseDTO.setMessage("language-update-failed");
         }
         return responseDTO;
 

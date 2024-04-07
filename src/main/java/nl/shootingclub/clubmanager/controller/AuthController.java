@@ -11,6 +11,7 @@ import jakarta.validation.Valid;
 import nl.shootingclub.clubmanager.configuration.data.DefaultImageData;
 import nl.shootingclub.clubmanager.configuration.data.DefaultRoleAccount;
 import nl.shootingclub.clubmanager.configuration.data.HTMLTemplate;
+import nl.shootingclub.clubmanager.configuration.data.Language;
 import nl.shootingclub.clubmanager.dto.LoginDTO;
 import nl.shootingclub.clubmanager.dto.RegisterDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
@@ -169,6 +170,14 @@ public class AuthController {
             user.setFullName(registerRequest.getFullName());
             user.setEmail(registerRequest.getEmail());
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
+
+            Optional<Language> optionalLanguage = Language.fromString(registerRequest.getLanguage());
+            if(optionalLanguage.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("language-not-found");
+                return response;
+            }
+            user.setLanguage(optionalLanguage.get().getLanguage());
 
             Optional<DefaultImage> image = defaultImageRepository.findByName(DefaultImageData.PROFILE_PICTURE.getName());
             if (image.isPresent()) {

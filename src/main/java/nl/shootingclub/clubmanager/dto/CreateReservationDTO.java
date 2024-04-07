@@ -7,7 +7,6 @@ import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.Range;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -48,7 +47,7 @@ public class CreateReservationDTO {
     private List<UUID> tracks;
 
     @Range(min=1)
-    private int maxMembers;
+    private int maxSize;
 
 
     @NotBlank(message = "empty")
@@ -70,7 +69,7 @@ public class CreateReservationDTO {
                 ", customDaysBetween=" + customDaysBetween +
                 ", allowedWeaponTypes=" + allowedWeaponTypes +
                 ", tracks=" + tracks +
-                ", maxMembers=" + maxMembers +
+                ", maxMembers=" + maxSize +
                 ", title='" + title + '\'' +
                 ", description='" + description + '\'' +
                 '}';
