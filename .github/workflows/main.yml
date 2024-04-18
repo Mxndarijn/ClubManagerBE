@@ -21,12 +21,6 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
-      - name: Get project name and version
-        id: gradle-info
-        run: |
-          echo "PROJECT_NAME=$(./gradlew -q printProjectName)" >> $GITHUB_ENV
-          echo "PROJECT_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
-
       - name: Login to Azure
         uses: azure/login@v1
         with:
@@ -36,8 +30,9 @@ jobs:
         uses: azure/spring-cloud-deploy@v1
         with:
           azure-subscription: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resource-group: 'ledencentraal-spring-env_SpringApps_e1db83d8-84cb-4d46-a764-5ae6a36f331b'
           action: 'Deploy'
-          app-name: '${{ env.PROJECT_NAME }}'
+          app-name: 'spring-app-20240319180921'
           use-staging-deployment: true
           package: './build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar'
           environment: 'Staging'
