@@ -35,7 +35,7 @@ jobs:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Deploy to Azure Spring Apps
-        uses: azure/spring-cloud-deploy@v1
+        uses: azure/spring-apps-deploy@v1
         with:
           azure-subscription: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           service-name: 'ledencentraal-backend-service'
