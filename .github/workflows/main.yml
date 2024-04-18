@@ -38,8 +38,8 @@ jobs:
         with:
           inlineScript: |
             az spring app deploy \
-            --resource-group rg-ledencentraal-sapp-sql\
-            --service ledencentraal-backend-service\
+            --resource-group rg-ledencentraal-sapp-sql \
+            --service ledencentraal-backend-service \
             --name spring-app-20240319180921 \
             --artifact-path ${{ github.workspace }}/build/libs/*.jar \
             --runtime-version Java_17 \
