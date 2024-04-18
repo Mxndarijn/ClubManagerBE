@@ -33,12 +33,11 @@ jobs:
         uses: azure/spring-cloud-deploy@v1
         with:
           azure-subscription: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resource-group: 'ledencentraal-spring-env_SpringApps_e1db83d8-84cb-4d46-a764-5ae6a36f331b'
+          service-name: 'ledencentraal-backend-service'
           action: 'Deploy'
           app-name: 'spring-app-20240319180921'
           use-staging-deployment: true
           package: './build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar'
-          environment: 'Staging'
 
       - name: Logout from Azure
         run: az logout
