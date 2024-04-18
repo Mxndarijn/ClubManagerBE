@@ -204,7 +204,8 @@ public class AuthController {
             response.setSuccess(true);
             response.setMessage(token);
             try {
-                emailService.sendHTMLMail(user.getEmail(), HTMLTemplate.REGISTERED, new HashMap<>());
+
+                emailService.sendHTMLMail(user.getEmail(), HTMLTemplate.REGISTERED, optionalLanguage.get(),  new HashMap<>());
             } catch (MessagingException e) {
                 System.out.printf("Could not send registered mail to " + user.getEmail());
             }

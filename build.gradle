@@ -58,3 +58,16 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+task printProjectName {
+	doLast {
+		println rootProject.name
+	}
+}
+
+task printVersion {
+	doLast {
+		println version
+	}
+}
+
