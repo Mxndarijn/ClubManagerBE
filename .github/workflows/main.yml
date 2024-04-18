@@ -41,7 +41,7 @@ jobs:
           service-name: 'ledencentraal-backend-service'
           action: 'Deploy'
           app-name: 'spring-app-20240319180921'
-          use-staging-deployment: true
+          deployment-name: 'default'
           package: './build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar'
 
       - name: Logout from Azure
