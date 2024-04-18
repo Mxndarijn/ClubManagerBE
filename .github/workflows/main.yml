@@ -43,7 +43,7 @@ jobs:
             --name spring-app-20240319180921 \
             --artifact-path ${{ github.workspace }}/build/libs/*.jar \
             --runtime-version Java_17 \
-            --jvm-options='-Dspring.profiles.active=dev'
+            --jvm-options='-Dspring.profiles.active=dev' --allow-preview true
 
 
       - name: Logout from Azure
