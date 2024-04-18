@@ -44,7 +44,6 @@ jobs:
             --artifact-path './build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar' \
             --runtime-version Java_17 \
             --jvm-options='-Dspring.profiles.active=dev' \
-            --allow-preview true
 
 
       - name: Logout from Azure
