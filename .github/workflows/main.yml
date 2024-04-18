@@ -23,6 +23,11 @@ jobs:
 
       - name: Build with Gradle
         run: ./gradlew build -x test
+      - name: Get project name and version
+        id: gradle-info
+        run: |
+          echo "PROJECT_NAME=$(./gradlew -q printProjectName)" >> $GITHUB_ENV
+          echo "PROJECT_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
 
       - name: Login to Azure
         uses: azure/login@v1
