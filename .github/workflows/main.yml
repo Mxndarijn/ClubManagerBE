@@ -52,9 +52,9 @@ jobs:
             az spring app deploy \
             --resource-group ${{vars.AZURE_RESOURCE_GROUP}} \
             --service ${{vars.AZURE_SERVICE_NAME}} \
-            --name spring-app-20240319180921 \
+            --name ${{vars.AZURE_APP_NAME}} \
             --artifact-path './build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar' \
-            --runtime-version Java_17 \
+            --runtime-version ${{vars.AZURE_RUNTIME_VERSION}} \
             --jvm-options='-Dspring.profiles.active=dev'
 
       - name: Logout from Azure
