@@ -18,11 +18,22 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
 
       - name: Build with Gradle
         run: ./gradlew build -x test
+
       - name: Get project name and version
         id: gradle-info
         run: |
@@ -33,6 +44,7 @@ jobs:
         uses: azure/login@v1
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Azure CLI Action to deploy to dev with main branch
         uses: Azure/cli@v1.0.7
         with:
@@ -43,8 +55,11 @@ jobs:
             --name spring-app-20240319180921 \
             --artifact-path './build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar' \
             --runtime-version Java_17 \
-            --jvm-options='-Dspring.profiles.active=dev' \
-
+            --jvm-options='-Dspring.profiles.active=dev'
 
       - name: Logout from Azure
         run: az logout
+
+      - name: Error handling
+        if: failure()
+        run: echo "Deployment failed. Please check the logs above."
