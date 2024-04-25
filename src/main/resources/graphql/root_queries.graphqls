@@ -21,6 +21,9 @@ extend type Query {
 }
 
 type Mutation {
+    """
+    This mutation creates a news association, with a image, and sets the owner.
+    """
     createAssociation: Association
 
     #    Invites
@@ -53,7 +56,7 @@ type Mutation {
     deleteTrackForAssociation(associationID: ID!, trackID: ID!):  DefaultBooleanResponseDTO
 
 
-    # Reservation
+    #   Reservation
     createReservations(dto: CreateReservationDTO!): CreateReservationResponseDTO
     editReservationSeries(dto: EditReservationSeriesDTO!): CreateReservationResponseDTO
     deleteReservationSeries(seriesID: ID!, associationID: ID!): DefaultBooleanResponseDTO
