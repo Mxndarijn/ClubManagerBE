@@ -47,10 +47,12 @@ jobs:
           password: ${{ secrets.DOCKER_PAT }}
       - name: Build Docker Image
         run: |
-          docker build \
+          docker build -t mxndarijn/${{ env.PROJECT_NAME }}:${{ github.run_number }} \
           --build-arg JAR_FILE=./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar \
           .
-
+      - name: Push Docker Image
+        run: |
+          docker push mxndarijn/${{ env.PROJECT_NAME }}:${{ github.run_number }}
 
       - name: Login to Azure
         uses: azure/login@v1
