@@ -47,7 +47,7 @@ jobs:
           password: ${{ secrets.DOCKER_PAT }}
       - name: Build Docker Image
         run: |
-          docker build -t mxndarijn/${{ env.PROJECT_NAME }}:${{ github.run_number }} \
+          docker build \
           --build-arg JAR_FILE=./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar \
           .
 
