@@ -39,6 +39,9 @@ jobs:
         run: |
           echo "PROJECT_NAME=$(./gradlew -q printProjectName)" >> $GITHUB_ENV
           echo "PROJECT_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
+      - name: Define Docker Image Name
+        run: echo "IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/${{ env.PROJECT_NAME }}:${{ github.run_number }}" >> $GITHUB_ENV
+
 
       - name: Log in to Docker Hub
         uses: docker/login-action@v1
@@ -47,12 +50,12 @@ jobs:
           password: ${{ secrets.DOCKER_PAT }}
       - name: Build Docker Image
         run: |
-          docker build -t mxndarijn/${{ env.PROJECT_NAME }}:${{ github.run_number }} \
+          docker build -t  $IMAGE_NAME \
           --build-arg JAR_FILE=./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar \
           .
       - name: Push Docker Image
         run: |
-          docker push mxndarijn/${{ env.PROJECT_NAME }}:${{ github.run_number }}
+          docker push $IMAGE_NAME
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -67,9 +70,7 @@ jobs:
             --resource-group ${{vars.AZURE_RESOURCE_GROUP}} \
             --service ${{vars.AZURE_SERVICE_NAME}} \
             --name ${{vars.AZURE_APP_NAME}} \
-            --artifact-path './build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar' \
-            --runtime-version ${{vars.AZURE_RUNTIME_VERSION}} \
-            --jvm-options='-Dspring.profiles.active=dev'
+            --container-image $IMAGE_NAME
 
       - name: Logout from Azure
         run: az logout
