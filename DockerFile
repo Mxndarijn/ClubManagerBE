@@ -12,3 +12,4 @@ COPY ${JAR_FILE} app.jar
 
 # Specificeer het commando om de Java applicatie te starten
 CMD ["java", "-jar", "app.jar"]
+
