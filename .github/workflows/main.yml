@@ -50,12 +50,12 @@ jobs:
           password: ${{ secrets.DOCKER_PAT }}
       - name: Build Docker Image
         run: |
-          docker build -t  $IMAGE_NAME \
+          docker build -t  ${{ env.IMAGE_NAME }} \
           --build-arg JAR_FILE=./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar \
           .
       - name: Push Docker Image
         run: |
-          docker push $IMAGE_NAME
+          docker push ${{ env.IMAGE_NAME }}
 
       - name: Login to Azure
         uses: azure/login@v1
@@ -70,7 +70,7 @@ jobs:
             --resource-group ${{vars.AZURE_RESOURCE_GROUP}} \
             --service ${{vars.AZURE_SERVICE_NAME}} \
             --name ${{vars.AZURE_APP_NAME}} \
-            --container-image $IMAGE_NAME
+            --container-image ${{ env.IMAGE_NAME }}
 
       - name: Logout from Azure
         run: az logout
