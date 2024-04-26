@@ -1,0 +1,57 @@
+type AssociationQueries {
+    getAssociationDetails(associationID: ID!): Association
+    getAssociationStatistics(associationID: ID!): AssociationStatisticsDTO
+
+    associationWeaponQueries: AssociationWeaponQueries
+    associationTrackQueries: AssociationTrackQueries
+    associationReservationQueries: AssociationReservationQueries
+}
+
+type AssociationMutations {
+    associationWeaponMutations: AssociationWeaponMutations
+    associationTrackMutations: AssociationTrackMutations
+    associationReservationMutations: AssociationReservationMutations
+    associationSettingsMutations: AssociationSettingsMutations
+    associationMemberMutations: AssociationMemberMutations
+}
+
+type Association {
+    id: ID!
+    name: String!
+    image: Image
+    welcomeMessage: String
+    contactEmail: String
+    active: Boolean!
+    users: [UserAssociation]
+    invites: [AssociationInvite]
+}
+
+type AssociationPermissionDTO {
+    permissions: [String]
+    associationUUID: ID
+    associationName: String
+}
+
+type AssociationInvite {
+    id: AssociationInviteId!
+    user: PrivateUser!
+    association: Association!
+    associationRole: AssociationRole
+    createdAt: String
+}
+
+type AssociationInviteId {
+    userId: ID!
+    associationId: ID!
+}
+
+type AssociationStatisticsDTO {
+    totalMembers: Int!
+    totalTracks: Int!
+    totalWeapons: Int!
+}
+
+type PrivateAssociation {
+    id: ID!
+    name: String!
+}

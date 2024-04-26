@@ -1,0 +1,10 @@
+type AssociationSettingsMutations {
+    updateAssociationPicture(dto: ChangeProfilePictureDTO!, associationID: ID!): DefaultBooleanResponseDTO
+    updateAssociationSettings(dto: UpdateAssociationDTO!, associationID: ID!): DefaultBooleanResponseDTO
+}
+
+input UpdateAssociationDTO {
+    associationName: String!
+    welcomeMessage: String!
+    contactEmail: String!
+}

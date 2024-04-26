@@ -1,0 +1,73 @@
+type AssociationWeaponQueries {
+    getAllWeapons(associationID: ID!): [Weapon]!
+    getWeaponMaintenancesBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetWeaponMaintenancesDTO
+}
+
+type AssociationWeaponMutations {
+    createWeapon(dto: CreateWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
+    changeWeapon(dto: ChangeWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
+
+    createWeaponMaintenance(dto: CreateWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
+    changeWeaponMaintenance(dto: ChangeWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
+    deleteWeaponMaintenance(associationID: ID!,maintenanceID: ID!): DefaultBooleanResponseDTO
+}
+
+input CreateWeaponMaintenanceDTO {
+    weaponUUID: ID!
+    colorPresetUUID: ID!
+    title: String!
+    description: String!
+    associationUUID: ID!
+    startDate: LocalDateTime!
+    endDate: LocalDateTime!
+}
+
+input ChangeWeaponMaintenanceDTO {
+    weaponUUID: ID!
+    colorPresetUUID: ID!
+    title: String!
+    description: String!
+    associationUUID: ID!
+    weaponMaintenanceUUID: ID!
+    startDate: LocalDateTime!
+    endDate: LocalDateTime!
+}
+
+type CreateWeaponMaintenanceDTOResponse {
+    success: Boolean!
+    message: String!
+    maintenance: WeaponMaintenance
+}
+type CreateWeaponResponseDTO {
+    success: Boolean!
+    message: String
+    weapon: Weapon
+}
+
+input CreateWeaponDTO {
+    weaponName: String!
+    weaponType: ID!
+    weaponStatus: String!
+}
+input ChangeWeaponDTO {
+    weaponName: String!
+    weaponType: ID!
+    weaponID: ID!
+    weaponStatus: String!
+}
+
+type WeaponMaintenance {
+    id: ID!
+    association: PrivateAssociation
+    startDate: LocalDateTime
+    endDate: LocalDateTime
+    title: String
+    colorPreset: ColorPreset
+    description: String
+    weapon: Weapon
+}
+
+type GetWeaponMaintenancesDTO {
+    success: Boolean,
+    maintenances: [WeaponMaintenance]
+}

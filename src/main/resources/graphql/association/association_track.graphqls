@@ -1,0 +1,9 @@
+type AssociationTrackQueries {
+    getTracksOfAssociation(associationID: ID!): [Track]!
+}
+
+type AssociationTrackMutations {
+    createTrackForAssociation(associationID: ID!, dto: TrackDTO!):  CreateTrackResponseDTO
+    editTrackForAssociation(associationID: ID!, dto: TrackDTO!, trackID: ID!):  CreateTrackResponseDTO
+    deleteTrackForAssociation(associationID: ID!, trackID: ID!):  DefaultBooleanResponseDTO
+}

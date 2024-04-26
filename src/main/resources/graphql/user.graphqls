@@ -1,3 +1,14 @@
+type UserQueries {
+    getMyProfile: User
+}
+
+type UserMutations {
+    updateMyProfile(dto: UpdateMyProfileDTO!) : DefaultBooleanResponseDTO
+    updateMyProfilePicture(dto: ChangeProfilePictureDTO!) : DefaultBooleanResponseDTO
+    updateLanguage(language: String) : DefaultBooleanResponseDTO
+}
+
+
 type User {
     id: ID
     email: String!

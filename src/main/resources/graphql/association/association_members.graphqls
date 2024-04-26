@@ -1,0 +1,43 @@
+type AssociationMemberMutations {
+    sendAssociationInvite(dto: CreateAssociationInviteInput!): SendAssociationInviteResponseDTO
+    removeAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
+    changeUserAssociation(changeUserAssociationDTO: ChangeUserAssociationDTO!): ChangeUserAssociationResponse
+    removeUserAssociation(deleteUserAssociationDTO: DeleteUserAssociationDTO!): DefaultBooleanResponseDTO
+    acceptAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
+    rejectAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
+}
+
+input CreateAssociationInviteInput {
+    userEmail: String!
+    associationUUID: ID!
+    associationRoleUUID: ID!
+}
+
+
+input AssociationInviteInput {
+    userUUID: ID!
+    associationUUID: ID!
+}
+
+
+type ChangeUserAssociationResponse {
+    success: Boolean!
+    userAssociation: UserAssociation
+}
+
+input ChangeUserAssociationDTO {
+    userUUID: ID!
+    associationUUID: ID!
+    associationRoleUUID: ID!
+}
+
+input DeleteUserAssociationDTO {
+    userUUID: ID!
+    associationUUID: ID!
+}
+
+type SendAssociationInviteResponseDTO {
+    success: Boolean!
+    message: String
+    associationInvite: AssociationInvite
+}

@@ -1,0 +1,17 @@
+type UtilQueries {
+    getAllColorPresets: [ColorPreset]
+    getAssociationRoles: [AssociationRole]!
+    getAllWeaponTypes: [WeaponType]!
+}
+
+type DefaultBooleanResponseDTO {
+    success: Boolean!
+    message: String
+}
+
+type ColorPreset {
+    id: ID!
+    colorName: String!
+    primaryColor: String!
+    secondaryColor: String!
+}

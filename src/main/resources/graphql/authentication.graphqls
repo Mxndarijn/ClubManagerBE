@@ -1,0 +1,20 @@
+type AuthenticationQueries {
+    validateToken: DefaultBooleanResponseDTO
+}
+
+type AuthenticationMutations {
+    login(loginRequest: LoginDTOInput!): DefaultBooleanResponseDTO
+    register(registerRequest: RegisterDTOInput!): DefaultBooleanResponseDTO
+}
+
+input LoginDTOInput {
+    email: String!
+    password: String!
+}
+
+input RegisterDTOInput {
+    fullName: String!
+    email: String!
+    password: String!
+    language: String!
+}

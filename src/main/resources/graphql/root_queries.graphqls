@@ -1,253 +1,32 @@
-extend type Query {
-    getMyProfile: User
+# Represents a collection of user-related queries for the clubmanager application
+type Query {
+    # Queries related to user operations
+    userQueries: UserQueries
 
-    #    Association Details
-    getAssociationDetails(associationID: ID!): Association
-    getAssociationStatistics(associationID: ID!): AssociationStatisticsDTO
+    # Queries related to authentication
+    authenticationQueries: AuthenticationQueries
 
-    getAssociationRoles: [AssociationRole]!
-    getAllWeapons(associationID: ID!): [Weapon]!
-    getAllWeaponTypes(associationID: ID!): [WeaponType]!
+    # Utility queries that might be used across the application
+    utilQueries: UtilQueries
 
-    getWeaponMaintenancesBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetWeaponMaintenancesDTO
-
-    getAllColorPresets: [ColorPreset]
-
-    getTracksOfAssociation(associationID: ID!): [Track]!
-    getReservationsBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetReservationResponseDTO
-
-    validateToken: DefaultBooleanResponseDTO
-
+    # Queries related to associations between entities
+    associationQueries: AssociationQueries
 }
 
-type Mutation {
-    """
-    This mutation creates a news association, with a image, and sets the owner.
-    """
-    createAssociation: Association
-
-    #    Invites
-    sendAssociationInvite(dto: CreateAssociationInviteInput!): SendAssociationInviteResponseDTO
-    removeAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
-    changeUserAssociation(changeUserAssociationDTO: ChangeUserAssociationDTO!): ChangeUserAssociationResponse
-    removeUserAssociation(deleteUserAssociationDTO: DeleteUserAssociationDTO!): DefaultBooleanResponseDTO
-    acceptAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
-    rejectAssociationInvite(inviteId: AssociationInviteInput!): DefaultBooleanResponseDTO
-
-    #    User Profile
-    updateMyProfile(dto: UpdateMyProfileDTO!) : DefaultBooleanResponseDTO
-    updateMyProfilePicture(dto: ChangeProfilePictureDTO!) : DefaultBooleanResponseDTO
-
-    #    Association settings
-    updateAssociationPicture(dto: ChangeProfilePictureDTO!, associationID: ID!): DefaultBooleanResponseDTO
-    updateAssociationSettings(dto: UpdateAssociationDTO!, associationID: ID!): DefaultBooleanResponseDTO
-
-    #    Create Weapon
-    createWeapon(dto: CreateWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
-    changeWeapon(dto: ChangeWeaponDTO!, associationID: ID!): CreateWeaponResponseDTO
-
-    #   Weapon Maintenance
-    createWeaponMaintenance(dto: CreateWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
-    changeWeaponMaintenance(dto: ChangeWeaponMaintenanceDTO!): CreateWeaponMaintenanceDTOResponse
-    deleteWeaponMaintenance(associationID: ID!,maintenanceID: ID!): DefaultBooleanResponseDTO
-
-    createTrackForAssociation(associationID: ID!, dto: TrackDTO!):  CreateTrackResponseDTO
-    editTrackForAssociation(associationID: ID!, dto: TrackDTO!, trackID: ID!):  CreateTrackResponseDTO
-    deleteTrackForAssociation(associationID: ID!, trackID: ID!):  DefaultBooleanResponseDTO
-
-
-    #   Reservation
-    createReservations(dto: CreateReservationDTO!): CreateReservationResponseDTO
-    editReservationSeries(dto: EditReservationSeriesDTO!): CreateReservationResponseDTO
-    deleteReservationSeries(seriesID: ID!, associationID: ID!): DefaultBooleanResponseDTO
-    deleteReservation(reservationID: ID!, associationID: ID!): DefaultBooleanResponseDTO
-
-    login(loginRequest: LoginDTOInput!): DefaultBooleanResponseDTO
-    register(registerRequest: RegisterDTOInput!): DefaultBooleanResponseDTO
-
-    participateReservation(associationID: ID!, reservationID: ID!, join: Boolean) : ReservationResponseDTO
-
-    storeEncryptData(pcName: String, key: String) : DefaultBooleanResponseDTO
-    updateLanguage(language: String) : DefaultBooleanResponseDTO
-
-
-}
-
-input LoginDTOInput {
-    email: String!
-    password: String!
-}
-
-input RegisterDTOInput {
-    fullName: String!
-    email: String!
-    password: String!
-    language: String!
-}
-
-
-enum ReservationRepeat {
-    NO_REPEAT
-    DAY
-    WEEK
-}
-
-type GetReservationResponseDTO {
-    success: Boolean
-    reservations: [Reservation]
-}
-
-type ReservationResponseDTO {
-    success: Boolean
-    reservation: Reservation
-}
-
-
-
-input CreateReservationDTO {
-    title: String!
-    description: String!
-    startTime: LocalDateTime!
-    endTime: LocalDateTime!
-    maxSize: Int!
-    repeatType: ReservationRepeat!
-    repeatUntil: LocalDateTime
-    customDaysBetween: Int
-    associationID: ID!
-    tracks: [ID]!
-    allowedWeaponTypes: [ID]!
-    colorPreset: ID!
-}
-
-
+# A custom scalar to handle date and time
 scalar LocalDateTime
 
-type GetWeaponMaintenancesDTO {
-    success: Boolean,
-    maintenances: [WeaponMaintenance]
-}
+# Represents a collection of mutations for the clubmanager application
+type Mutation {
+    # Creates a new association entity
+    createAssociation: Association
 
-type WeaponMaintenance {
-    id: ID!
-    association: PrivateAssociation
-    startDate: LocalDateTime
-    endDate: LocalDateTime
-    title: String
-    colorPreset: ColorPreset
-    description: String
-    weapon: Weapon
-}
+    # Mutations related to user operations
+    userMutations: UserMutations
 
-type CreateTrackResponseDTO {
-    success: Boolean!
-    message: String
-    track: Track
-}
-type PrivateAssociation {
-    id: ID!
-    name: String!
-}
+    # Mutations for managing associations
+    associationMutations: AssociationMutations
 
-type ColorPreset {
-    id: ID!
-    colorName: String!
-    primaryColor: String!
-    secondaryColor: String!
+    # Mutations related to authentication processes
+    authenticationMutations: AuthenticationMutations
 }
-
-input TrackDTO {
-    name: String!
-    description: String!
-    allowedWeaponTypes: [ID]!
-}
-
-input ChangeUserAssociationDTO {
-    userUUID: ID!
-    associationUUID: ID!
-    associationRoleUUID: ID!
-}
-
-input DeleteUserAssociationDTO {
-    userUUID: ID!
-    associationUUID: ID!
-}
-
-input CreateAssociationInviteInput {
-    userEmail: String!
-    associationUUID: ID!
-    associationRoleUUID: ID!
-}
-
-input CreateWeaponDTO {
-    weaponName: String!
-    weaponType: ID!
-    weaponStatus: String!
-}
-input ChangeWeaponDTO {
-    weaponName: String!
-    weaponType: ID!
-    weaponID: ID!
-    weaponStatus: String!
-}
-
-input AssociationInviteInput {
-    userUUID: ID!
-    associationUUID: ID!
-}
-
-type CreateWeaponMaintenanceDTOResponse {
-    success: Boolean!
-    message: String!
-    maintenance: WeaponMaintenance
-}
-
-type ChangeUserAssociationResponse {
-    success: Boolean!
-    userAssociation: UserAssociation
-}
-
-type DefaultBooleanResponseDTO {
-    success: Boolean!
-    message: String
-}
-
-type CreateWeaponResponseDTO {
-    success: Boolean!
-    message: String
-    weapon: Weapon
-}
-
-type SendAssociationInviteResponseDTO {
-    success: Boolean!
-    message: String
-    associationInvite: AssociationInvite
-}
-
-input UpdateAssociationDTO {
-    associationName: String!
-    welcomeMessage: String!
-    contactEmail: String!
-}
-
-input CreateWeaponMaintenanceDTO {
-    weaponUUID: ID!
-    colorPresetUUID: ID!
-    title: String!
-    description: String!
-    associationUUID: ID!
-    startDate: LocalDateTime!
-    endDate: LocalDateTime!
-}
-
-input ChangeWeaponMaintenanceDTO {
-    weaponUUID: ID!
-    colorPresetUUID: ID!
-    title: String!
-    description: String!
-    associationUUID: ID!
-    weaponMaintenanceUUID: ID!
-    startDate: LocalDateTime!
-    endDate: LocalDateTime!
-}
-
-

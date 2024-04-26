@@ -1,0 +1,59 @@
+type AssociationReservationQueries {
+    getReservationsBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetReservationResponseDTO
+}
+
+type AssociationReservationMutations {
+    createReservations(dto: CreateReservationDTO!): CreateReservationResponseDTO
+    editReservationSeries(dto: EditReservationSeriesDTO!): CreateReservationResponseDTO
+    deleteReservationSeries(seriesID: ID!, associationID: ID!): DefaultBooleanResponseDTO
+    deleteReservation(reservationID: ID!, associationID: ID!): DefaultBooleanResponseDTO
+    participateReservation(associationID: ID!, reservationID: ID!, join: Boolean) : ReservationResponseDTO
+}
+
+
+
+enum ReservationRepeat {
+    NO_REPEAT
+    DAY
+    WEEK
+}
+
+type GetReservationResponseDTO {
+    success: Boolean
+    reservations: [Reservation]
+}
+
+type ReservationResponseDTO {
+    success: Boolean
+    reservation: Reservation
+}
+
+
+
+input CreateReservationDTO {
+    title: String!
+    description: String!
+    startTime: LocalDateTime!
+    endTime: LocalDateTime!
+    maxSize: Int!
+    repeatType: ReservationRepeat!
+    repeatUntil: LocalDateTime
+    customDaysBetween: Int
+    associationID: ID!
+    tracks: [ID]!
+    allowedWeaponTypes: [ID]!
+    colorPreset: ID!
+}
+
+
+
+type CreateTrackResponseDTO {
+    success: Boolean!
+    message: String
+    track: Track
+}
+input TrackDTO {
+    name: String!
+    description: String!
+    allowedWeaponTypes: [ID]!
+}
