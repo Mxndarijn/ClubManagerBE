@@ -69,7 +69,7 @@ jobs:
             az containerapp update \
             --name ${{vars.AZURE_CONTAINERAPP_NAME}} \
             --resource-group ${{vars.AZURE_RESOURCE_GROUP}} \
-            --image ${{ env.IMAGE_NAME }}
+            --image docker.io/${{ env.IMAGE_NAME }}
 
       - name: Logout from Azure
         run: az logout
