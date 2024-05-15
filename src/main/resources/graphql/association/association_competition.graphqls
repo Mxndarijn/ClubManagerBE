@@ -1,0 +1,68 @@
+type AssociationCompetitionMutations {
+    createCompetition(dto: CompetitionDTO!, associationID: ID!): CompetitionResponseDTO
+    addUser(dto: CompetitionUserDTO!, associationID: ID!): CompetitionResponseDTO
+}
+
+type AssociationCompetition {
+    id: ID!
+    name: String!
+    description: String!
+    association: PrivateAssociation!
+    startDate: LocalDateTime!
+    endDate: LocalDateTime!
+    scoreType: CompetitionScoreType!
+    ranking: CompetitionRanking!
+    competitionUsers: [CompetitionUser]
+}
+
+enum CompetitionScoreType {
+    TIME,
+    POINT
+}
+
+enum CompetitionRanking {
+    BEST,
+    AVERAGE,
+    AVERAGE_TOP_3
+}
+
+type CompetitionUser {
+    id: CompetitionUserId!
+    user: User!
+    competition: AssociationCompetition!
+    rank: Int!
+    scores: [CompetitionScore]
+}
+
+type CompetitionUserId {
+    userId: ID!
+    competitionId: ID!
+}
+
+type CompetitionScore {
+    id: ID!
+    competitionUser: CompetitionUser!
+    scoreDate: LocalDateTime!
+    score: Long!
+    competitionRank: Int
+}
+
+input CompetitionDTO {
+    name: String!
+    description: String!
+    competitionRanking: CompetitionRanking!
+    competitionScoreType: CompetitionScoreType!
+    startDate: LocalDateTime!
+    endDate: LocalDateTime!
+}
+
+type CompetitionResponseDTO {
+    success: Boolean!
+    message: String
+    competition: AssociationCompetition
+}
+
+input CompetitionUserDTO {
+    userID: ID!
+    competitionID: ID!
+}
