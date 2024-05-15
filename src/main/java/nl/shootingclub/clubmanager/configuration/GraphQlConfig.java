@@ -8,8 +8,14 @@ import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 @Configuration
 public class GraphQlConfig {
 
-    @Autowired
-    private LocalDateTimeScalarConfiguration scalar;
+    private final LocalDateTimeScalarConfiguration localDateTimeScalarConfiguration;
+
+    private final LongScalarConfiguration longScalarConfiguration;
+
+    public GraphQlConfig(LocalDateTimeScalarConfiguration localDateTimeScalarConfiguration, LongScalarConfiguration longScalarConfiguration) {
+        this.localDateTimeScalarConfiguration = localDateTimeScalarConfiguration;
+        this.longScalarConfiguration = longScalarConfiguration;
+    }
 
     /**
      * Configures the runtime wiring for GraphQL.
@@ -19,7 +25,8 @@ public class GraphQlConfig {
     @Bean
     public RuntimeWiringConfigurer runtimeWiringConfigurer() {
         return wiringBuilder -> wiringBuilder
-                .scalar(scalar.localDateTimeScalar());
+                .scalar(localDateTimeScalarConfiguration.localDateTimeScalar())
+                .scalar(longScalarConfiguration.longScalar());
 
     }
 

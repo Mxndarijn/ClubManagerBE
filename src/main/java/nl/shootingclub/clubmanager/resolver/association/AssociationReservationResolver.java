@@ -84,6 +84,7 @@ public class AssociationReservationResolver {
     @SchemaMapping(typeName = "AssociationReservationMutations")
     @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_TRACK_CONFIGURATION)")
     public CreateReservationResponseDTO createReservations(@Argument CreateReservationDTO dto) {
+        System.out.println(dto.toString());
         validateReservationDTO(dto);
 
         Association association = getEntityOrThrow(
@@ -290,7 +291,7 @@ public class AssociationReservationResolver {
         if(dto.getRepeatType() != ReservationRepeat.NO_REPEAT) {
             if(dto.getRepeatUntil().isEmpty())
                 throw new IllegalArgumentException("repeat-until-empty");
-            if(dto.getRepeatUntil().get().isBefore(LocalDateTime.now().plusYears(2)))
+            if(dto.getRepeatUntil().get().isAfter(LocalDateTime.now().plusYears(2)))
                 throw new IllegalArgumentException("repeat-until-invalid-too-long");
         }
     }

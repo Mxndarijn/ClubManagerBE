@@ -11,7 +11,8 @@ public enum AssociationPermissionData {
     MANAGE_WEAPONS("manage-weapons", "Permission to manage all the weapons"),
     VIEW_WEAPONS("view-weapons", "Permission to view all the weapons"),
     VIEW_TRACKS("view-tracks", "Permission to view all the tracks"),
-    VIEW_RESERVATIONS("view-reservations", "Permission to view all the reservations of a association")
+    VIEW_RESERVATIONS("view-reservations", "Permission to view all the reservations of a association"),
+    COMPETITION_SCORE_MANAGER("competition-score-manager", "Add scores and users to competitions");
 
 
     ;

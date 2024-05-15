@@ -2,17 +2,18 @@ type AssociationQueries {
     getAssociationDetails(associationID: ID!): Association
     getAssociationStatistics(associationID: ID!): AssociationStatisticsDTO
 
-    associationWeaponQueries: AssociationWeaponQueries
-    associationTrackQueries: AssociationTrackQueries
-    associationReservationQueries: AssociationReservationQueries
+    associationWeaponQueries: AssociationWeaponQueries!
+    associationTrackQueries: AssociationTrackQueries!
+    associationReservationQueries: AssociationReservationQueries!
 }
 
 type AssociationMutations {
-    associationWeaponMutations: AssociationWeaponMutations
-    associationTrackMutations: AssociationTrackMutations
-    associationReservationMutations: AssociationReservationMutations
-    associationSettingsMutations: AssociationSettingsMutations
-    associationMemberMutations: AssociationMemberMutations
+    associationWeaponMutations: AssociationWeaponMutations!
+    associationTrackMutations: AssociationTrackMutations!
+    associationReservationMutations: AssociationReservationMutations!
+    associationSettingsMutations: AssociationSettingsMutations!
+    associationMemberMutations: AssociationMemberMutations!
+    associationCompetitionMutations: AssociationCompetitionMutations!
 }
 
 type Association {

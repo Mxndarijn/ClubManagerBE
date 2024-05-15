@@ -3,6 +3,8 @@ package nl.shootingclub.clubmanager.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import nl.shootingclub.clubmanager.configuration.data.CompetitionRanking;
+import nl.shootingclub.clubmanager.configuration.data.CompetitionScoreType;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -37,5 +39,18 @@ public class Competition {
 
     @OneToMany(mappedBy = "competition")
     private Set<CompetitionUser> competitionUsers;
+
+    @Column(name = "score_type")
+    private CompetitionScoreType scoreType;
+
+    @Column(name = "ranking")
+    private CompetitionRanking ranking;
+
+
+    public void recalculateRanking() {
+        getScoreType().getHandlerInstance().recalculateRanking(this);
+
+    }
+
 
 }
