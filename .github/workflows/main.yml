@@ -1,4 +1,4 @@
-name: Deploy to Azure Spring Apps
+name: Deploy to Azure Container Apps
 
 on:
   push:
@@ -62,15 +62,14 @@ jobs:
         with:
           creds: ${{ secrets.AZURE_CREDENTIALS }}
 
-      - name: Azure CLI Action to deploy to dev with main branch
+      - name: Update Azure Container App
         uses: Azure/cli@v1.0.7
         with:
           inlineScript: |
-            az spring app deploy \
+            az containerapp update \
+            --name ${{vars.AZURE_CONTAINERAPP_NAME}} \
             --resource-group ${{vars.AZURE_RESOURCE_GROUP}} \
-            --service ${{vars.AZURE_SERVICE_NAME}} \
-            --name ${{vars.AZURE_APP_NAME}} \
-            --container-image ${{ env.IMAGE_NAME }}
+            --image docker.io/${{ env.IMAGE_NAME }}
 
       - name: Logout from Azure
         run: az logout
