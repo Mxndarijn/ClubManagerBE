@@ -3,6 +3,7 @@ package nl.shootingclub.clubmanager.resolver.association;
 
 import nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData;
 import nl.shootingclub.clubmanager.dto.CompetitionDTO;
+import nl.shootingclub.clubmanager.dto.CompetitionScoreDTO;
 import nl.shootingclub.clubmanager.dto.CompetitionUserDTO;
 import nl.shootingclub.clubmanager.dto.InputAssociationInviteDTO;
 import nl.shootingclub.clubmanager.dto.response.CompetitionResponseDTO;
@@ -94,6 +95,48 @@ public class AssociationCompetitionResolver {
         Competition competition = optionalCompetition.get();
 
         associationCompetitionService.addUser(competition, optionalUserAssociation.get().getUser());
+
+        response.setSuccess(true);
+        response.setCompetition(competition);
+
+        return response;
+    }
+
+    @SchemaMapping(typeName = "AssociationCompetitionMutations")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).COMPETITION_SCORE_MANAGER)")
+    public CompetitionResponseDTO addUserScore(@Argument CompetitionScoreDTO dto, @Argument UUID associationID) {
+        CompetitionResponseDTO response = new CompetitionResponseDTO();
+
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        if(optionalAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("association-not-found");
+            return response;
+        }
+
+        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
+        if(optionalCompetition.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("competition-not-found");
+            return response;
+        }
+        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(dto.getUserID(), associationID);
+        if(optionalUserAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("user-not-found");
+            return response;
+        }
+
+        Optional<CompetitionUser> optionalCompetitionUser = associationCompetitionService.getCompetitionUser(dto.getCompetitionID(), dto.getUserID());
+        if(optionalCompetitionUser.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("user-competition-not-found");
+            return response;
+        }
+
+        Competition competition = optionalCompetition.get();
+
+        associationCompetitionService.addUserScore(optionalCompetitionUser.get(), dto.getScore(), dto.getScoreDate());
 
         response.setSuccess(true);
         response.setCompetition(competition);

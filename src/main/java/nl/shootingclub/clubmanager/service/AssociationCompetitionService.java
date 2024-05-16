@@ -73,4 +73,8 @@ public class AssociationCompetitionService {
     public Optional<Competition> getCompetitionById(UUID competitionID) {
         return associationCompetitionRepository.findById(competitionID);
     }
+
+    public Optional<CompetitionUser> getCompetitionUser(UUID competitionID, UUID userID) {
+        return competitionUserRepository.findByUserIdAndCompetitionId(userID, competitionID);
+    }
 }

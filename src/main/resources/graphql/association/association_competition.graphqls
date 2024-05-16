@@ -1,6 +1,7 @@
 type AssociationCompetitionMutations {
     createCompetition(dto: CompetitionDTO!, associationID: ID!): CompetitionResponseDTO
     addUser(dto: CompetitionUserDTO!, associationID: ID!): CompetitionResponseDTO
+    addUserScore(dto: CompetitionScoreDTO!, associationID: ID!): CompetitionResponseDTO
 }
 
 type AssociationCompetition {
@@ -65,4 +66,11 @@ type CompetitionResponseDTO {
 input CompetitionUserDTO {
     userID: ID!
     competitionID: ID!
+}
+
+input CompetitionScoreDTO {
+    userID: ID!
+    competitionID: ID!
+    score: Long!
+    scoreDate: LocalDateTime!
 }
