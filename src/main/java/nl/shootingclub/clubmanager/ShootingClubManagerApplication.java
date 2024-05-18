@@ -16,12 +16,14 @@ import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfi
 import org.springframework.context.annotation.Bean;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.HashMap;
 import java.util.Optional;
 
 @SpringBootApplication(exclude = SecurityAutoConfiguration.class)
+@EnableScheduling
 public class ShootingClubManagerApplication {
 
 	@Autowired

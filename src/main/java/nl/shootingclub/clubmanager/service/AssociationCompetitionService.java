@@ -10,10 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 public class AssociationCompetitionService {
@@ -76,5 +73,9 @@ public class AssociationCompetitionService {
 
     public Optional<CompetitionUser> getCompetitionUser(UUID competitionID, UUID userID) {
         return competitionUserRepository.findByUserIdAndCompetitionId(userID, competitionID);
+    }
+
+    public List<Competition> getCompetitionsThatNeedToBeInactive() {
+        return associationCompetitionRepository.findAllByEndDateBeforeAndActiveTrue(LocalDateTime.now());
     }
 }

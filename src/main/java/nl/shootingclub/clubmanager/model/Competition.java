@@ -46,6 +46,9 @@ public class Competition {
     @Column(name = "ranking")
     private CompetitionRanking ranking;
 
+    @Column(name = "active")
+    private boolean active;
+
 
     public void recalculateRanking() {
         getScoreType().getHandlerInstance().recalculateRanking(this);
