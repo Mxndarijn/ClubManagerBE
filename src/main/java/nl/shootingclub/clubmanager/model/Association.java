@@ -48,5 +48,8 @@ public class Association {
     @OneToMany(mappedBy = "association")
     private Set<Weapon> weapons;
 
+    @OneToMany(mappedBy = "association")
+    private Set<AssociationCompetition> competitions;
+
 
 }

@@ -1,9 +1,9 @@
 package nl.shootingclub.clubmanager.helper.competition;
 
-import nl.shootingclub.clubmanager.model.Competition;
+import nl.shootingclub.clubmanager.model.AssociationCompetition;
 
 public interface CompetitionScoreHandler {
 
 
-    void recalculateRanking(Competition competition);
+    void recalculateRanking(AssociationCompetition competition);
 }

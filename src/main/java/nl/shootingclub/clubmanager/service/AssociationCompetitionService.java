@@ -20,9 +20,9 @@ public class AssociationCompetitionService {
     @Autowired
     private CompetitionUserRepository competitionUserRepository;
 
-    public Competition createCompetition(CompetitionDTO competitionDTO, Association association) {
+    public AssociationCompetition createCompetition(CompetitionDTO competitionDTO, Association association) {
 
-        Competition competition = new Competition();
+        AssociationCompetition competition = new AssociationCompetition();
         competition.setAssociation(association);
         competition.setCompetitionUsers(new HashSet<>());
         competition.setName(competitionDTO.getName());
@@ -36,7 +36,7 @@ public class AssociationCompetitionService {
     }
 
 
-    public boolean removeUser(Competition competition, User user) {
+    public boolean removeUser(AssociationCompetition competition, User user) {
         Optional<CompetitionUser> compUser = competitionUserRepository.findByUserIdAndCompetitionId(user.getId(), competition.getId());
         if(compUser.isPresent()) {
             competitionUserRepository.delete(compUser.get());
@@ -44,7 +44,7 @@ public class AssociationCompetitionService {
         }
         return false;
     }
-    public CompetitionUser addUser(Competition competition, User user) {
+    public CompetitionUser addUser(AssociationCompetition competition, User user) {
         Optional<CompetitionUser> compUser = competitionUserRepository.findByUserIdAndCompetitionId(user.getId(), competition.getId());
         if(compUser.isPresent()) {
             return compUser.get();
@@ -87,7 +87,7 @@ public class AssociationCompetitionService {
         return competitionUser;
     }
 
-    public Optional<Competition> getCompetitionById(UUID competitionID) {
+    public Optional<AssociationCompetition> getCompetitionById(UUID competitionID) {
         return associationCompetitionRepository.findById(competitionID);
     }
 
@@ -95,15 +95,15 @@ public class AssociationCompetitionService {
         return competitionUserRepository.findByUserIdAndCompetitionId(userID, competitionID);
     }
 
-    public List<Competition> getCompetitionsThatNeedToBeInactive() {
+    public List<AssociationCompetition> getCompetitionsThatNeedToBeInactive() {
         return associationCompetitionRepository.findAllByEndDateBeforeAndActiveTrue(LocalDateTime.now());
     }
 
-    public void deleteCompetition(Competition competition) {
+    public void deleteCompetition(AssociationCompetition competition) {
         associationCompetitionRepository.delete(competition);
     }
 
-    public void saveCompetition(Competition competition) {
+    public void saveCompetition(AssociationCompetition competition) {
         associationCompetitionRepository.save(competition);
     }
 }

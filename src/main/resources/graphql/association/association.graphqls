@@ -25,6 +25,7 @@ type Association {
     active: Boolean!
     users: [UserAssociation]
     invites: [AssociationInvite]
+    competitions: [AssociationCompetition]
 }
 
 type AssociationPermissionDTO {

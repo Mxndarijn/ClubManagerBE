@@ -1,7 +1,7 @@
 package nl.shootingclub.clubmanager.helper.competition;
 
 import nl.shootingclub.clubmanager.configuration.data.CompetitionRanking;
-import nl.shootingclub.clubmanager.model.Competition;
+import nl.shootingclub.clubmanager.model.AssociationCompetition;
 import nl.shootingclub.clubmanager.model.CompetitionUser;
 
 import java.util.Comparator;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 public class CompetitionScoreHandlerTime implements CompetitionScoreHandler {
 
     @Override
-    public void recalculateRanking(Competition competition) {
+    public void recalculateRanking(AssociationCompetition competition) {
         CompetitionRanking ranking = competition.getRanking();
 
         Map<CompetitionUser, List<Long>> map = competition.getCompetitionUsers().stream()

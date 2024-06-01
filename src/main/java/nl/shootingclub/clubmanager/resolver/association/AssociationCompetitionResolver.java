@@ -1,7 +1,6 @@
 
 package nl.shootingclub.clubmanager.resolver.association;
 
-import nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData;
 import nl.shootingclub.clubmanager.dto.*;
 import nl.shootingclub.clubmanager.dto.response.CompetitionResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
@@ -15,7 +14,6 @@ import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 
-import java.util.HashSet;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -56,7 +54,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Competition competition = associationCompetitionService.createCompetition(dto, optionalAssociation.get());
+        AssociationCompetition competition = associationCompetitionService.createCompetition(dto, optionalAssociation.get());
 
         response.setSuccess(true);
         response.setCompetition(competition);
@@ -76,7 +74,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(competitionId);
+        Optional<AssociationCompetition> optionalCompetition = associationCompetitionService.getCompetitionById(competitionId);
         if(optionalCompetition.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("competition-not-found");
@@ -100,7 +98,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(competitionId);
+        Optional<AssociationCompetition> optionalCompetition = associationCompetitionService.getCompetitionById(competitionId);
         if(optionalCompetition.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("competition-not-found");
@@ -126,7 +124,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
+        Optional<AssociationCompetition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
         if(optionalCompetition.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("competition-not-found");
@@ -139,7 +137,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Competition competition = optionalCompetition.get();
+        AssociationCompetition competition = optionalCompetition.get();
 
         associationCompetitionService.addUser(competition, optionalUserAssociation.get().getUser());
 
@@ -161,7 +159,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
+        Optional<AssociationCompetition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
         if(optionalCompetition.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("competition-not-found");
@@ -174,7 +172,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Competition competition = optionalCompetition.get();
+        AssociationCompetition competition = optionalCompetition.get();
 
 
 
@@ -196,7 +194,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
+        Optional<AssociationCompetition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
         if(optionalCompetition.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("competition-not-found");
@@ -216,7 +214,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Competition competition = optionalCompetition.get();
+        AssociationCompetition competition = optionalCompetition.get();
 
         associationCompetitionService.addUserScore(optionalCompetitionUser.get(), dto.getScore(), dto.getScoreDate());
 
@@ -238,7 +236,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
+        Optional<AssociationCompetition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
         if(optionalCompetition.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("competition-not-found");
@@ -258,7 +256,7 @@ public class AssociationCompetitionResolver {
             return response;
         }
 
-        Competition competition = optionalCompetition.get();
+        AssociationCompetition competition = optionalCompetition.get();
 
 
 

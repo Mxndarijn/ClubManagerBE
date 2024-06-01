@@ -29,7 +29,7 @@ public class CompetitionUser {
     @ManyToOne
     @MapsId("competitionId")
     @JoinColumn(name = "competition_id")
-    private Competition competition;
+    private AssociationCompetition competition;
 
     @OneToMany(mappedBy = "competitionUser", cascade = CascadeType.ALL)
     private Set<CompetitionScore> scores;

@@ -14,7 +14,7 @@ import java.util.UUID;
 @Setter
 @Entity
 @Table(name = "competition")
-public class Competition {
+public class AssociationCompetition {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
