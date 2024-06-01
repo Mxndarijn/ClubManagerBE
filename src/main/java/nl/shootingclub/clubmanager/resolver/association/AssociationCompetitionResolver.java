@@ -2,10 +2,7 @@
 package nl.shootingclub.clubmanager.resolver.association;
 
 import nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData;
-import nl.shootingclub.clubmanager.dto.CompetitionDTO;
-import nl.shootingclub.clubmanager.dto.CompetitionScoreDTO;
-import nl.shootingclub.clubmanager.dto.CompetitionUserDTO;
-import nl.shootingclub.clubmanager.dto.InputAssociationInviteDTO;
+import nl.shootingclub.clubmanager.dto.*;
 import nl.shootingclub.clubmanager.dto.response.CompetitionResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.model.*;
@@ -68,6 +65,56 @@ public class AssociationCompetitionResolver {
     }
 
     @SchemaMapping(typeName = "AssociationCompetitionMutations")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_COMPETITIONS)")
+    public DefaultBooleanResponseDTO deleteCompetition(@Argument UUID competitionId, @Argument UUID associationID) {
+        DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
+
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        if(optionalAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("association-not-found");
+            return response;
+        }
+
+        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(competitionId);
+        if(optionalCompetition.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("competition-not-found");
+            return response;
+        }
+        associationCompetitionService.deleteCompetition(optionalCompetition.get());
+        response.setSuccess(true);
+
+        return response;
+    }
+
+    @SchemaMapping(typeName = "AssociationCompetitionMutations")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_COMPETITIONS)")
+    public CompetitionResponseDTO stopCompetition(@Argument UUID competitionId, @Argument UUID associationID) {
+        CompetitionResponseDTO response = new CompetitionResponseDTO();
+
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        if(optionalAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("association-not-found");
+            return response;
+        }
+
+        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(competitionId);
+        if(optionalCompetition.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("competition-not-found");
+            return response;
+        }
+        optionalCompetition.get().setActive(false);
+        associationCompetitionService.saveCompetition(optionalCompetition.get());
+        response.setSuccess(true);
+        response.setCompetition(optionalCompetition.get());
+
+        return response;
+    }
+
+    @SchemaMapping(typeName = "AssociationCompetitionMutations")
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).COMPETITION_SCORE_MANAGER)")
     public CompetitionResponseDTO addUser(@Argument CompetitionUserDTO dto, @Argument UUID associationID) {
         CompetitionResponseDTO response = new CompetitionResponseDTO();
@@ -97,6 +144,41 @@ public class AssociationCompetitionResolver {
         associationCompetitionService.addUser(competition, optionalUserAssociation.get().getUser());
 
         response.setSuccess(true);
+        response.setCompetition(competition);
+
+        return response;
+    }
+
+    @SchemaMapping(typeName = "AssociationCompetitionMutations")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).COMPETITION_SCORE_MANAGER)")
+    public CompetitionResponseDTO removeUser(@Argument CompetitionUserDTO dto, @Argument UUID associationID) {
+        CompetitionResponseDTO response = new CompetitionResponseDTO();
+
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        if(optionalAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("association-not-found");
+            return response;
+        }
+
+        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
+        if(optionalCompetition.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("competition-not-found");
+            return response;
+        }
+        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(dto.getUserID(), associationID);
+        if(optionalUserAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("user-not-found");
+            return response;
+        }
+
+        Competition competition = optionalCompetition.get();
+
+
+
+        response.setSuccess( associationCompetitionService.removeUser(competition, optionalUserAssociation.get().getUser()));
         response.setCompetition(competition);
 
         return response;
@@ -139,6 +221,48 @@ public class AssociationCompetitionResolver {
         associationCompetitionService.addUserScore(optionalCompetitionUser.get(), dto.getScore(), dto.getScoreDate());
 
         response.setSuccess(true);
+        response.setCompetition(competition);
+
+        return response;
+    }
+
+    @SchemaMapping(typeName = "AssociationCompetitionMutations")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).COMPETITION_SCORE_MANAGER)")
+    public CompetitionResponseDTO removeUserScore(@Argument CompetitionRemoveScoreDTO dto, @Argument UUID associationID) {
+        CompetitionResponseDTO response = new CompetitionResponseDTO();
+
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        if(optionalAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("association-not-found");
+            return response;
+        }
+
+        Optional<Competition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
+        if(optionalCompetition.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("competition-not-found");
+            return response;
+        }
+        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(dto.getUserID(), associationID);
+        if(optionalUserAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("user-not-found");
+            return response;
+        }
+
+        Optional<CompetitionUser> optionalCompetitionUser = associationCompetitionService.getCompetitionUser(dto.getCompetitionID(), dto.getUserID());
+        if(optionalCompetitionUser.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("user-competition-not-found");
+            return response;
+        }
+
+        Competition competition = optionalCompetition.get();
+
+
+
+        response.setSuccess(associationCompetitionService.removeUserScore(optionalCompetitionUser.get(), dto.getScoreId()));
         response.setCompetition(competition);
 
         return response;

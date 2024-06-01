@@ -35,6 +35,15 @@ public class AssociationCompetitionService {
         return associationCompetitionRepository.save(competition);
     }
 
+
+    public boolean removeUser(Competition competition, User user) {
+        Optional<CompetitionUser> compUser = competitionUserRepository.findByUserIdAndCompetitionId(user.getId(), competition.getId());
+        if(compUser.isPresent()) {
+            competitionUserRepository.delete(compUser.get());
+            return true;
+        }
+        return false;
+    }
     public CompetitionUser addUser(Competition competition, User user) {
         Optional<CompetitionUser> compUser = competitionUserRepository.findByUserIdAndCompetitionId(user.getId(), competition.getId());
         if(compUser.isPresent()) {
@@ -50,6 +59,17 @@ public class AssociationCompetitionService {
 
         competitionUser.getCompetition().recalculateRanking();
         return competitionUser;
+    }
+
+    public boolean removeUserScore(CompetitionUser competitionUser, UUID competitionScoreId) {
+        List<CompetitionScore> list = competitionUser.getScores().stream().filter(c -> {
+            return c.getId().equals(competitionScoreId);
+        }).toList();
+        if(list.isEmpty())
+            return false;
+        list.forEach(competitionUser.getScores()::remove);
+
+        return true;
     }
 
     public CompetitionUser addUserScore(CompetitionUser competitionUser, long score, LocalDateTime date) {
@@ -77,5 +97,13 @@ public class AssociationCompetitionService {
 
     public List<Competition> getCompetitionsThatNeedToBeInactive() {
         return associationCompetitionRepository.findAllByEndDateBeforeAndActiveTrue(LocalDateTime.now());
+    }
+
+    public void deleteCompetition(Competition competition) {
+        associationCompetitionRepository.delete(competition);
+    }
+
+    public void saveCompetition(Competition competition) {
+        associationCompetitionRepository.save(competition);
     }
 }
