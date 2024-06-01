@@ -18,6 +18,7 @@ type AssociationCompetition {
     scoreType: CompetitionScoreType!
     ranking: CompetitionRanking!
     competitionUsers: [CompetitionUser]
+    active: Boolean!
 }
 
 input CompetitionRemoveScoreDTO {

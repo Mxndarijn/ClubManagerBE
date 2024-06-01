@@ -6,6 +6,7 @@ import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.AssociationCompetitionRepository;
 import nl.shootingclub.clubmanager.repository.CompetitionUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
@@ -31,6 +32,8 @@ public class AssociationCompetitionService {
         competition.setScoreType(competitionDTO.getCompetitionScoreType());
         competition.setStartDate(competitionDTO.getStartDate());
         competition.setEndDate(competitionDTO.getEndDate());
+        LocalDateTime now = LocalDateTime.now();
+            competition.setActive(now.isAfter(competitionDTO.getStartDate()) && now.isBefore(competitionDTO.getEndDate()));
 
         return associationCompetitionRepository.save(competition);
     }
