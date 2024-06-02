@@ -1,0 +1,8 @@
+query validateToken {
+    authenticationQueries {
+        validateToken {
+            message
+            success
+        }
+    }
+}

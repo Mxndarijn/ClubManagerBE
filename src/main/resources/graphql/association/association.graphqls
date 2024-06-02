@@ -1,5 +1,5 @@
 type AssociationQueries {
-    getAssociationDetails(associationID: ID!): Association
+    getAssociationDetails(associationID: ID!): Association!
     getAssociationStatistics(associationID: ID!): AssociationStatisticsDTO
 
     associationWeaponQueries: AssociationWeaponQueries!

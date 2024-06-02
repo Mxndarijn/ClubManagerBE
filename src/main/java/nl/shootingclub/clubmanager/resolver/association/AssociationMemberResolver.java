@@ -186,6 +186,7 @@ public class AssociationMemberResolver {
             associationInviteService.removeAssociationInvite(invite);
             if(userAssociation != null) {
                 response.setSuccess(true);
+                response.setMessage("ok");
             }
 
         } else {

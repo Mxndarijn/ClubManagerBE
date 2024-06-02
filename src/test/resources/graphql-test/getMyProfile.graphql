@@ -1,0 +1,13 @@
+query MyQuery {
+    userQueries {
+        getMyProfile {
+            email
+            fullName
+            id
+            language
+            role {
+                name
+            }
+        }
+    }
+}

@@ -26,7 +26,7 @@ public class AccountRole {
     @OneToMany(mappedBy = "role")
     private Set<User> users;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable()
     private Set<AccountPermission> permissions;
 

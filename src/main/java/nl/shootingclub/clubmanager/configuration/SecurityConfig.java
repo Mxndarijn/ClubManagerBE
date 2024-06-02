@@ -34,6 +34,7 @@ public class SecurityConfig {
     private JwtAuthFilter jwtAuthFilter;
 
 
+
     /**
      * Creates a {@link SecurityFilterChain} for the given {@link HttpSecurity} object.
      * Disables CSRF protection, configures CORS, disables HTTP basic authentication.

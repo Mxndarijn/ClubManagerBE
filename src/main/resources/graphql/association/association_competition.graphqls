@@ -40,7 +40,7 @@ enum CompetitionRanking {
 
 type CompetitionUser {
     id: CompetitionUserId!
-    user: User!
+    user: PrivateUser!
     competition: AssociationCompetition!
     rank: Int!
     scores: [CompetitionScore]

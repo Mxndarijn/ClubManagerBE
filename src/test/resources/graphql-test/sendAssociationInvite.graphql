@@ -1,0 +1,26 @@
+mutation MyMutation($dto: CreateAssociationInviteInput!) {
+    associationMutations {
+        associationMemberMutations {
+            sendAssociationInvite(
+                dto: $dto
+            ) {
+                message
+                success
+                associationInvite {
+                    associationRole {
+                        id
+                        name
+                    }
+                    createdAt
+                    id {
+                        associationId
+                        userId
+                    }
+                    user {
+                        id
+                    }
+                }
+            }
+        }
+    }
+}

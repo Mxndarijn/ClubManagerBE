@@ -1,0 +1,8 @@
+mutation login($loginRequest: LoginDTOInput!) {
+    authenticationMutations {
+        login(loginRequest: $loginRequest) {
+            success
+            message
+        }
+    }
+}

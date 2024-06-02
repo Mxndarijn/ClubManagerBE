@@ -1,0 +1,16 @@
+mutation MyMutation($dto : CompetitionDTO!, $associationID: ID!) {
+    associationMutations {
+        associationCompetitionMutations {
+            createCompetition(
+                associationID: $associationID
+                dto: $dto
+            ) {
+                success
+                message
+                competition {
+                    id
+                }
+            }
+        }
+    }
+}

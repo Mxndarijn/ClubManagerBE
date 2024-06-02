@@ -2,9 +2,18 @@ package nl.shootingclub.clubmanager.configuration;
 
 import graphql.analysis.MaxQueryDepthInstrumentation;
 import graphql.execution.instrumentation.Instrumentation;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.graphql.server.webmvc.GraphQlHttpHandler;
+import org.springframework.http.MediaType;
+import org.springframework.web.servlet.function.RouterFunction;
+import org.springframework.web.servlet.function.RouterFunctions;
+import org.springframework.web.servlet.function.ServerResponse;
+
+import static org.springframework.web.servlet.function.RequestPredicates.accept;
 
 @Configuration
 public class GraphQLConfiguration {
@@ -26,4 +35,5 @@ public class GraphQLConfiguration {
             maxQueryDepth = 10;
         return new MaxQueryDepthInstrumentation(maxQueryDepth);
     }
+
 }

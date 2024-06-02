@@ -1,0 +1,7 @@
+query MyQuery {
+    userQueries {
+        getMyProfile {
+            id
+        }
+    }
+}

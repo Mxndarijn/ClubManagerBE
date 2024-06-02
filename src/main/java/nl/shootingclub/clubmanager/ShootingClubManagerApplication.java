@@ -26,32 +26,32 @@ import java.util.Optional;
 @EnableScheduling
 public class ShootingClubManagerApplication {
 
-	@Autowired
-	private EmailService emailService;
+	private final AccountPermissionRepository accountPermissionRepository;
 
-	@Autowired
-	private PasswordEncoder encoder;
+	private final AssociationPermissionRepository associationPermissionRepository;
 
-	@Autowired
-	private AccountPermissionRepository accountPermissionRepository;
+	private final AssociationRoleRepository associationRoleRepository;
 
-	@Autowired
-	private AssociationPermissionRepository associationPermissionRepository;
+	private final AccountRoleRepository accountRoleRepository;
 
-	@Autowired
-	private AssociationRoleRepository associationRoleRepository;
+	private final DefaultImageRepository defaultImageRepository;
 
-	@Autowired
-	private AccountRoleRepository accountRoleRepository;
+	private final WeaponTypeRepository weaponTypeRepository;
 
-	@Autowired
-	private DefaultImageRepository defaultImageRepository;
+	private final ColorPresetRepository colorPresetRepository;
 
-	@Autowired
-	private WeaponTypeRepository weaponTypeRepository;
+	private final PasswordEncoder passwordEncoder;
 
-	@Autowired
-	private ColorPresetRepository colorPresetRepository;
+	public ShootingClubManagerApplication(AccountPermissionRepository accountPermissionRepository, AssociationPermissionRepository associationPermissionRepository, AssociationRoleRepository associationRoleRepository, AccountRoleRepository accountRoleRepository, DefaultImageRepository defaultImageRepository, WeaponTypeRepository weaponTypeRepository, ColorPresetRepository colorPresetRepository, PasswordEncoder passwordEncoder) {
+		this.accountPermissionRepository = accountPermissionRepository;
+		this.associationPermissionRepository = associationPermissionRepository;
+		this.associationRoleRepository = associationRoleRepository;
+		this.accountRoleRepository = accountRoleRepository;
+		this.defaultImageRepository = defaultImageRepository;
+		this.weaponTypeRepository = weaponTypeRepository;
+		this.colorPresetRepository = colorPresetRepository;
+        this.passwordEncoder = passwordEncoder;
+    }
 
 
 	public static void main(String[] args) {
@@ -105,6 +105,26 @@ public class ShootingClubManagerApplication {
 					accountRole.setCanBeDeleted(false);
 					accountRoleRepository.save(accountRole);
 				}
+				optionalAccountRole = accountRoleRepository.findByName(role.getName());
+				if(optionalAccountRole.isEmpty()) {
+					throw new Exception("Could not create Default Role: " + role.getName());
+				}
+				for(AccountPermissionData data : role.getPermissions()) {
+					AccountPermission permission = accountPermissionRepository.findByNameEquals(data.getName()).orElseThrow();
+                    optionalAccountRole.get().getPermissions().add(permission);
+				}
+				accountRoleRepository.save(optionalAccountRole.get());
+			}
+
+			// Load permissions for associations into database
+			for (AssociationPermissionData perm : AssociationPermissionData.values()) {
+				Optional<AssociationPermission> optionalAccountPermission = associationPermissionRepository.findByName(perm.getName());
+				if(optionalAccountPermission.isEmpty()) {
+					AssociationPermission permission = new AssociationPermission();
+					permission.setName(perm.getName());
+					permission.setDescription(perm.getDescription());
+					associationPermissionRepository.save(permission);
+				}
 			}
 
 			//Association Roles
@@ -116,16 +136,15 @@ public class ShootingClubManagerApplication {
 					associationRole.setCanBeDeleted(false);
 					associationRoleRepository.save(associationRole);
 				}
-			}
-			// Load permissions for associations into database
-			for (AssociationPermissionData perm : AssociationPermissionData.values()) {
-				Optional<AssociationPermission> optionalAccountPermission = associationPermissionRepository.findByName(perm.getName());
-				if(optionalAccountPermission.isEmpty()) {
-					AssociationPermission permission = new AssociationPermission();
-					permission.setName(perm.getName());
-					permission.setDescription(perm.getDescription());
-					associationPermissionRepository.save(permission);
+				optionalAccountRole = associationRoleRepository.findByName(role.getName());
+				if(optionalAccountRole.isEmpty()) {
+					throw new Exception("Could not create Default Role: " + role.getName());
 				}
+				for(AssociationPermissionData data : role.getPermissions()) {
+					AssociationPermission permission = associationPermissionRepository.findByName(data.getName()).orElseThrow();
+					optionalAccountRole.get().getPermissions().add(permission);
+				}
+				associationRoleRepository.save(optionalAccountRole.get());
 			}
 
 			for (DefaultWeaponType weapon : DefaultWeaponType.values()) {
@@ -147,6 +166,22 @@ public class ShootingClubManagerApplication {
 					preset.setSecondaryColor(color.getSecondary());
 					colorPresetRepository.save(preset);
 				}
+			}
+
+			for(AdminAccount admin : AdminAccount.values()) {
+				User user = new User();
+				user.setEmail(admin.getEmail());
+				user.setPassword(passwordEncoder.encode(admin.getPassword()));
+                user.setFullName(admin.getName());
+                user.setRole(accountRoleRepository.findByName(DefaultRoleAccount.ADMIN.getName()).orElseThrow());
+				user.setLanguage(admin.getLanguage());
+				Optional<DefaultImage> image = defaultImageRepository.findByName(DefaultImageData.PROFILE_PICTURE.getName());
+				if (image.isPresent()) {
+					Image i = new Image();
+					i.setEncoded(image.get().getImage().getEncoded());
+					user.setImage(i);
+				}
+                userService.saveUser(user);
 			}
 		};
 	}

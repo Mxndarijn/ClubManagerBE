@@ -1,0 +1,10 @@
+
+
+mutation changeProfile($dto:  UpdateMyProfileDTO!) {
+userMutations {
+    updateMyProfile(dto: $dto) {
+        message
+        success
+    }
+}
+}

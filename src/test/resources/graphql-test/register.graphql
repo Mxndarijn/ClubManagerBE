@@ -1,0 +1,8 @@
+mutation login($registerRequest: RegisterDTOInput!) {
+    authenticationMutations {
+        register(registerRequest: $registerRequest) {
+            message
+            success
+        }
+    }
+}

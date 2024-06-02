@@ -1,0 +1,10 @@
+mutation MyMutation($inviteId: AssociationInviteInput!) {
+    associationMutations {
+        associationMemberMutations {
+            acceptAssociationInvite(inviteId: $inviteId) {
+                success
+                message
+            }
+        }
+    }
+}

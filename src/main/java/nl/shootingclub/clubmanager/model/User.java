@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UserDetails;
  @Getter
 @Setter
 @Entity
-@Table(name = "user")
+@Table(name = "LedenCentraalUser")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

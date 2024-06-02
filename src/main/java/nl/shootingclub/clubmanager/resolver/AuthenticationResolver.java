@@ -123,7 +123,10 @@ public class AuthenticationResolver {
     public DefaultBooleanResponseDTO login(@Argument @Valid LoginDTO loginRequest) {
         Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthenticationResolver::createBucketForIp);
         if (bucket == null || !bucket.tryConsume(1)) {
-            throw new TooManyRequestsException("Too many requests for login");
+            DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
+            response.setSuccess(false);
+            response.setMessage("too-many-requests");
+            return response;
         }
         // Authenticatieproces
         Optional<Authentication> auth = authenticationManager.authenticateOptional(
@@ -132,7 +135,6 @@ public class AuthenticationResolver {
             DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
             response.setSuccess(false);
             response.setMessage("account-bad-credentials");
-            System.out.println("false");
             return response;
         }
         SecurityContextHolder.getContext().setAuthentication(auth.get());
@@ -153,7 +155,10 @@ public class AuthenticationResolver {
         try {
             Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthenticationResolver::createBucketForIp);
             if (bucket == null || !bucket.tryConsume(1)) {
-                throw new TooManyRequestsException("too many requests for login");
+                DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
+                response.setSuccess(false);
+                response.setMessage("too-many-requests");
+                return response;
             }
 
             DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();

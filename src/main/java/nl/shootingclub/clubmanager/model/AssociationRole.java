@@ -21,7 +21,7 @@ public class AssociationRole {
     @Column(unique = true)
     private String name;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable()
     private Set<AssociationPermission> permissions;
 

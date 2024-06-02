@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -38,10 +39,13 @@ public class CompetitionUser {
     private int competitionRank;
 
     public CompetitionUser() {
-        scores = new HashSet<>();
+        this.scores = new HashSet<>();
     }
 
     public List<Long> getNumericValues() {
+        if(scores == null || scores.isEmpty()) {
+            return Collections.emptyList();
+        }
         return scores.stream().map(CompetitionScore::getNumericValue).toList();
     }
 

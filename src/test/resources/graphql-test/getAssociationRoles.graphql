@@ -1,0 +1,8 @@
+query MyQuery {
+    utilQueries {
+        getAssociationRoles {
+            id
+            name
+        }
+    }
+}
