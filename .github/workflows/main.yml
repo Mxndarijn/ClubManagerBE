@@ -34,6 +34,17 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
+      - name: Run Spring Boot application
+        run: java -jar ./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar &
+        env:
+          SPRING_PROFILES_ACTIVE: dev
+
+      - name: Wait for application to start
+        run: sleep 20  # Pas dit aan op de werkelijke opstarttijd van je app
+
+      - name: Execute tests
+        run: ./gradlew test
+
       - name: Get project name and version
         id: gradle-info
         run: |
