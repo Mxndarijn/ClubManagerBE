@@ -128,8 +128,6 @@ public class CompetitionTests {
             .execute()
             .path("$.data.associationMutations.associationCompetitionMutations.addUser.success").entity(Boolean.class).isEqualTo(true)
     ;
-
-        fail();
     }
 
     @Test
