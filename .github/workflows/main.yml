@@ -34,6 +34,12 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build -x test
 
+      - name: Get project name and version
+        id: gradle-info
+        run: |
+          echo "PROJECT_NAME=$(./gradlew -q printProjectName)" >> $GITHUB_ENV
+          echo "PROJECT_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
+
       - name: Run Spring Boot application
         run: java -jar ./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar &
         env:
@@ -44,12 +50,7 @@ jobs:
 
       - name: Execute tests
         run: ./gradlew test
-
-      - name: Get project name and version
-        id: gradle-info
-        run: |
-          echo "PROJECT_NAME=$(./gradlew -q printProjectName)" >> $GITHUB_ENV
-          echo "PROJECT_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
+        
       - name: Define Docker Image Name
         run: echo "IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/${{ env.PROJECT_NAME }}:${{ github.run_number }}" >> $GITHUB_ENV
 
