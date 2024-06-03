@@ -177,6 +177,7 @@ public class AssociationCompetitionResolver {
 
 
         response.setSuccess( associationCompetitionService.removeUser(competition, optionalUserAssociation.get().getUser()));
+        response.setMessage("");
         response.setCompetition(competition);
 
         return response;

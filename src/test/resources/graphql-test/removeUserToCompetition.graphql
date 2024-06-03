@@ -1,0 +1,10 @@
+mutation MyMutation($associationID : ID!, $dto: CompetitionUserDTO!) {
+    associationMutations {
+        associationCompetitionMutations {
+            removeUser(associationID: $associationID, dto: $dto) {
+                success
+                message
+            }
+        }
+    }
+}

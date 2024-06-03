@@ -3,6 +3,7 @@ package nl.shootingclub.clubmanager.helper.competition;
 import nl.shootingclub.clubmanager.configuration.data.CompetitionRanking;
 import nl.shootingclub.clubmanager.model.AssociationCompetition;
 import nl.shootingclub.clubmanager.model.CompetitionUser;
+import nl.shootingclub.clubmanager.repository.CompetitionUserRepository;
 
 import java.util.Comparator;
 import java.util.List;
@@ -11,7 +12,7 @@ import java.util.stream.Collectors;
 
 public class CompetitionScoreHandlerPoint implements CompetitionScoreHandler {
     @Override
-    public void recalculateRanking(AssociationCompetition competition) {
+    public void recalculateRanking(AssociationCompetition competition, CompetitionUserRepository repo) {
         CompetitionRanking ranking = competition.getRanking();
 
         Map<CompetitionUser, List<Long>> map = competition.getCompetitionUsers().stream()
@@ -58,6 +59,12 @@ public class CompetitionScoreHandlerPoint implements CompetitionScoreHandler {
             CompetitionUser user = entry.getKey();
             user.setCompetitionRank(rank++);
         }
+
+        repo.saveAll(
+                sortedEntries.stream()
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList())
+        );
 
 
     }

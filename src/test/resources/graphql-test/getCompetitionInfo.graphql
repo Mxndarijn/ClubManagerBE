@@ -11,7 +11,7 @@ query MyQuery($associationID: ID!) {
                 description
                 active
                 competitionUsers {
-                    rank
+                    competitionRank
                     id {
                         competitionId
                         userId

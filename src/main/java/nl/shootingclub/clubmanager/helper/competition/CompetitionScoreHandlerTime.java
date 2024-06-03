@@ -3,6 +3,9 @@ package nl.shootingclub.clubmanager.helper.competition;
 import nl.shootingclub.clubmanager.configuration.data.CompetitionRanking;
 import nl.shootingclub.clubmanager.model.AssociationCompetition;
 import nl.shootingclub.clubmanager.model.CompetitionUser;
+import nl.shootingclub.clubmanager.repository.CompetitionUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
@@ -12,7 +15,7 @@ import java.util.stream.Collectors;
 public class CompetitionScoreHandlerTime implements CompetitionScoreHandler {
 
     @Override
-    public void recalculateRanking(AssociationCompetition competition) {
+    public void recalculateRanking(AssociationCompetition competition, CompetitionUserRepository repo) {
         CompetitionRanking ranking = competition.getRanking();
 
         Map<CompetitionUser, List<Long>> map = competition.getCompetitionUsers().stream()
@@ -20,6 +23,8 @@ public class CompetitionScoreHandlerTime implements CompetitionScoreHandler {
                         user -> user,  // key is de CompetitionUser zelf
                         CompetitionUser::getNumericValues  // value is de lijst van numerieke waarden
                 ));
+
+        System.out.println("Size: " + map.size());
 
         Map<CompetitionUser, Double> scoresMap = switch (ranking) {
             case BEST -> map.entrySet().stream()
@@ -59,6 +64,14 @@ public class CompetitionScoreHandlerTime implements CompetitionScoreHandler {
             CompetitionUser user = entry.getKey();
             user.setCompetitionRank(rank++);
         }
+
+        repo.saveAll(
+                sortedEntries.stream()
+                        .map(Map.Entry::getKey)
+                        .collect(Collectors.toList())
+        );
+
+
 
 
     }

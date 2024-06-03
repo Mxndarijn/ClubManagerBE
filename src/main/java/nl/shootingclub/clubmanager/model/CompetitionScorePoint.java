@@ -14,7 +14,7 @@ import lombok.Setter;
 public class CompetitionScorePoint extends CompetitionScore<CompetitionScorePoint> {
 
     @Column(name = "score")
-    private int score;
+    private long score;
 
     public CompetitionScorePoint() {
 
@@ -22,7 +22,7 @@ public class CompetitionScorePoint extends CompetitionScore<CompetitionScorePoin
 
     @Override
     public int compareTo(CompetitionScorePoint o) {
-        return Integer.compare(this.score, o.score);
+        return Long.compare(this.score, o.score);
     }
 
     @Override

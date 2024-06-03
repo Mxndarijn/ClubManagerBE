@@ -9,6 +9,8 @@ import graphql.language.IntValue;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.time.Duration;
+
 @Configuration
 public class LongScalarConfiguration {
 
@@ -20,8 +22,11 @@ public class LongScalarConfiguration {
                 .coercing(new Coercing<Long, String>() {
                     @Override
                     public String serialize(Object dataFetcherResult) throws CoercingSerializeException {
-                        if (dataFetcherResult instanceof Long) {
+                        if (dataFetcherResult instanceof Long || dataFetcherResult instanceof Integer) {
                             return dataFetcherResult.toString();
+                        }
+                        if(dataFetcherResult instanceof Duration) {
+                             return ((Duration) dataFetcherResult).toNanos() + "";
                         }
                         throw new CoercingSerializeException("Expected a Long object.");
                     }

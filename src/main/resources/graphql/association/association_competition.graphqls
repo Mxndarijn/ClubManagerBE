@@ -42,7 +42,7 @@ type CompetitionUser {
     id: CompetitionUserId!
     user: PrivateUser!
     competition: AssociationCompetition!
-    rank: Int!
+    competitionRank: Int!
     scores: [CompetitionScore]
 }
 

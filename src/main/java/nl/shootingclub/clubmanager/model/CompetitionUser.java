@@ -36,7 +36,7 @@ public class CompetitionUser {
     private Set<CompetitionScore> scores;
 
     @Column
-    private int competitionRank;
+    private int competitionRank = -1;
 
     public CompetitionUser() {
         this.scores = new HashSet<>();

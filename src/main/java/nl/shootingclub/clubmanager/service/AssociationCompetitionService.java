@@ -3,8 +3,7 @@ package nl.shootingclub.clubmanager.service;
 
 import nl.shootingclub.clubmanager.dto.CompetitionDTO;
 import nl.shootingclub.clubmanager.model.*;
-import nl.shootingclub.clubmanager.repository.AssociationCompetitionRepository;
-import nl.shootingclub.clubmanager.repository.CompetitionUserRepository;
+import nl.shootingclub.clubmanager.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
@@ -20,6 +19,12 @@ public class AssociationCompetitionService {
     private AssociationCompetitionRepository associationCompetitionRepository;
     @Autowired
     private CompetitionUserRepository competitionUserRepository;
+    @Autowired
+    private CompetitionScoreRepository competitionScoreRepository;
+    @Autowired
+    private CompetitionScorePointRepository competitionScorePointRepository;
+    @Autowired
+    private CompetitionScoreTimeRepository competitionScoreTimeRepository;
 
     public AssociationCompetition createCompetition(CompetitionDTO competitionDTO, Association association) {
 
@@ -58,9 +63,10 @@ public class AssociationCompetitionService {
                 .id(CompetitionUserId.builder().competitionId(competition.getId()).userId(user.getId()).build())
                 .build();
 
-        competition.getCompetitionUsers().add(competitionUser);
 
-        competitionUser.getCompetition().recalculateRanking();
+        competitionUserRepository.save(competitionUser);
+
+        competitionUser.getCompetition().recalculateRanking(competitionUserRepository);
         return competitionUser;
     }
 
@@ -70,8 +76,10 @@ public class AssociationCompetitionService {
         }).toList();
         if(list.isEmpty())
             return false;
-        list.forEach(competitionUser.getScores()::remove);
-
+        list.forEach(d -> {
+            competitionScoreRepository.delete(d);
+            competitionUser.getScores().remove(d);
+        });
         return true;
     }
 
@@ -84,9 +92,10 @@ public class AssociationCompetitionService {
         competitionScore.setCompetitionUser(competitionUser);
         competitionScore.setScoreDate(date);
 
+        competitionScoreRepository.save(competitionScore);
         competitionUser.getScores().add(competitionScore);
 
-        competitionUser.getCompetition().recalculateRanking();
+        competitionUser.getCompetition().recalculateRanking(competitionUserRepository);
         return competitionUser;
     }
 

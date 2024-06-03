@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nl.shootingclub.clubmanager.configuration.data.CompetitionRanking;
 import nl.shootingclub.clubmanager.configuration.data.CompetitionScoreType;
+import nl.shootingclub.clubmanager.repository.CompetitionUserRepository;
 
 import java.time.LocalDateTime;
 import java.util.Set;
@@ -50,8 +51,8 @@ public class AssociationCompetition {
     private boolean active;
 
 
-    public void recalculateRanking() {
-        getScoreType().getHandlerInstance().recalculateRanking(this);
+    public void recalculateRanking(CompetitionUserRepository repo) {
+        getScoreType().getHandlerInstance().recalculateRanking(this, repo);
 
     }
 
