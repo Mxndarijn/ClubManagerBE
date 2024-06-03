@@ -42,6 +42,8 @@ public class ShootingClubManagerApplication {
 
 	private final PasswordEncoder passwordEncoder;
 
+	private final UserRepository userRepository;
+
 	public ShootingClubManagerApplication(AccountPermissionRepository accountPermissionRepository, AssociationPermissionRepository associationPermissionRepository, AssociationRoleRepository associationRoleRepository, AccountRoleRepository accountRoleRepository, DefaultImageRepository defaultImageRepository, WeaponTypeRepository weaponTypeRepository, ColorPresetRepository colorPresetRepository, PasswordEncoder passwordEncoder) {
 		this.accountPermissionRepository = accountPermissionRepository;
 		this.associationPermissionRepository = associationPermissionRepository;
@@ -51,6 +53,7 @@ public class ShootingClubManagerApplication {
 		this.weaponTypeRepository = weaponTypeRepository;
 		this.colorPresetRepository = colorPresetRepository;
         this.passwordEncoder = passwordEncoder;
+        userRepository = null;
     }
 
 
@@ -167,8 +170,10 @@ public class ShootingClubManagerApplication {
 					colorPresetRepository.save(preset);
 				}
 			}
-
 			for(AdminAccount admin : AdminAccount.values()) {
+				Optional<User> optionalUser = userService.loadUserByEmail(admin.getEmail());
+				if(optionalUser.isPresent())
+					continue;
 				User user = new User();
 				user.setEmail(admin.getEmail());
 				user.setPassword(passwordEncoder.encode(admin.getPassword()));
