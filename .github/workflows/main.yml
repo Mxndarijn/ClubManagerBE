@@ -64,7 +64,6 @@ jobs:
         run: |
           docker build -t  ${{ env.IMAGE_NAME }} \
           --build-arg JAR_FILE=./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar \
-          --build-arg SPRING_PROFILES_ACTIVE=prod \
           .
       - name: Push Docker Image
         run: |
