@@ -19,7 +19,14 @@ public class ReservationUserService {
     @Autowired
     private ReservationUserRepository reservationRepository;
 
+    @Autowired
+    private ReservationUserRepository reservationUserRepository;
+
     public Optional<ReservationUser> findReservationUserByReservationAndUser(Reservation reservation, User user) {
         return reservationRepository.findReservationUserByReservationAndUser(reservation, user);
+    }
+
+    public ReservationUser saveReservationUser(ReservationUser reservationUser) {
+        return reservationUserRepository.save(reservationUser);
     }
 }

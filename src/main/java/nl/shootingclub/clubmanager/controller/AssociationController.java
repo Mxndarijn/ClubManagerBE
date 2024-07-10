@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -71,6 +72,7 @@ public class AssociationController {
             UserAssociation userAssociation = new UserAssociation();
             userAssociation.setAssociation(a);
             userAssociation.setUser(u);
+            userAssociation.setMemberSince(LocalDateTime.now());
 
             associationRoleRepository.findByName(DefaultRoleAssociation.ADMIN.getName()).ifPresent(userAssociation::setAssociationRole);
             userAssociation.createID();

@@ -2,6 +2,7 @@ package nl.shootingclub.clubmanager.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @Embeddable
+@Builder
 public class ReservationUserId implements Serializable {
 
     @Column(name = "user_id")
@@ -19,6 +21,15 @@ public class ReservationUserId implements Serializable {
 
     @Column(name = "competition_id")
     private UUID reservationId;
+
+    public ReservationUserId() {
+
+    }
+
+    public ReservationUserId(UUID userId, UUID reservationId) {
+        this.userId = userId;
+        this.reservationId = reservationId;
+    }
 
     @Override
     public boolean equals(Object o) {

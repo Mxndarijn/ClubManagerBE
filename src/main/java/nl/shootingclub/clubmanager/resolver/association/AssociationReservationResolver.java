@@ -325,7 +325,7 @@ public class AssociationReservationResolver {
 
     @SchemaMapping(typeName = "AssociationReservationMutations")
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_RESERVATIONS)")
-    public ReservationResponseDTO participateReservation(@Argument UUID associationID, UUID reservationID, boolean join) {
+    public ReservationResponseDTO participateReservation(@Argument UUID associationID, @Argument UUID reservationID, @Argument boolean join) {
         Reservation reservation = getEntityOrThrow(
                 () -> reservationService.getByID(reservationID),
                 "reservation-not-found"
@@ -344,9 +344,12 @@ public class AssociationReservationResolver {
             ReservationUser reservationUser = new ReservationUser();
             reservationUser.setReservation(reservation);
             reservationUser.setUser(user);
+            reservationUser.setId(ReservationUserId.builder().reservationId(reservationID).userId(user.getId()).build());
             reservation.getReservationUsers().add(reservationUser);
 
+            reservationUserService.saveReservationUser(reservationUser);
             reservationService.saveReservation(reservation);
+
 
             responseDTO.setSuccess(true);
             return responseDTO;
