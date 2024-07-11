@@ -68,19 +68,6 @@ public class AssociationResolver {
             return null;
         UserAssociation userAssociation = optionalUserAssociation.get();
         Association association = userAssociation.getAssociation();
-        association.getUsers().forEach(ui -> {
-            ui.getUser().setAssociations(null);
-            ui.getUser().setPresences(null);
-            association.getInvites().forEach(invite -> {
-                invite.getUser().setAssociations(null);
-                invite.getUser().setImage(null);
-                invite.getUser().setRole(null);
-                invite.getUser().setPresences(null);
-                invite.getUser().setKnsaMembershipNumber(null);
-                invite.getUser().setKnsaMembershipNumber(null);
-            });
-        });
-        //TODO security filters
 
         return association;
     }
