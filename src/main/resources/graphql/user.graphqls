@@ -10,16 +10,14 @@ type UserMutations {
 
 
 type User {
-    id: ID
+    id: ID!
     email: String!
-    fullName: String!
-    language: String!
-    knsaMembershipNumber: Int
-    knsaMemberSince: String
+    fullName: String
+    language: String
     image: Image
     associations: [UserAssociation]
     presences: [UserPresence]
-    reservations: [Reservation]
+    reservations: [ReservationUser]
     role: AccountRole
     invites: [AssociationInvite]
 }

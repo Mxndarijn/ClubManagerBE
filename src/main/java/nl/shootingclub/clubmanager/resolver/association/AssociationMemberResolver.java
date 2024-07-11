@@ -203,6 +203,7 @@ public class AssociationMemberResolver {
      * @param inviteId The ID of the association invite to reject.
      * @return A DefaultBooleanResponseDTO indicating the success of the operation and an optional message.
      */
+    //TODO Not safe, wordt niet gecheckt of het id van de invite ook van de user is
     @SchemaMapping(typeName = "AssociationMemberMutations")
     public DefaultBooleanResponseDTO rejectAssociationInvite(@Argument InputAssociationInviteDTO inviteId) {
 
