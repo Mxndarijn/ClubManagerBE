@@ -1,27 +1,27 @@
-package nl.shootingclub.clubmanager.configuration.datafetcher;
+package nl.shootingclub.clubmanager.configuration.datafetcher.user;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import nl.shootingclub.clubmanager.model.AssociationInvite;
 import nl.shootingclub.clubmanager.model.User;
-import nl.shootingclub.clubmanager.model.UserAssociation;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Set;
 
-public class UserAssociationsDataFetcher implements DataFetcher<Set<UserAssociation>> {
+public class UserInvitesDataFetcher implements DataFetcher<Set<AssociationInvite>> {
 
     @Bean
-    public static UserAssociationsDataFetcher userAssociationsDataFetcher() {
-        return new UserAssociationsDataFetcher();
+    public static UserInvitesDataFetcher userInvitesDataFetcher() {
+        return new UserInvitesDataFetcher();
     }
     @Override
-    public Set<UserAssociation> get(DataFetchingEnvironment environment) throws Exception {
+    public Set<AssociationInvite> get(DataFetchingEnvironment environment) throws Exception {
         User user = environment.getSource();
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User contextUser) {
             if(contextUser.getId().equals(user.getId())) {
-                return user.getAssociations();
+                return user.getInvites();
             }
         }
         throw new AccessDeniedException("You do not have permission to view this data");

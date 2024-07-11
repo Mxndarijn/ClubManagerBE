@@ -5,6 +5,7 @@ import nl.shootingclub.clubmanager.model.UserAssociation;
 import nl.shootingclub.clubmanager.model.UserAssociationId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,4 +13,5 @@ public interface UserAssociationRepository extends JpaRepository<UserAssociation
 
     Optional<UserAssociation> findByUserIdAndAssociationId(UUID userId, UUID associationId);
 
+    List<UserAssociation> findByUserId(UUID id);
 }

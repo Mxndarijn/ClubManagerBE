@@ -1,29 +1,24 @@
-package nl.shootingclub.clubmanager.configuration.datafetcher;
+package nl.shootingclub.clubmanager.configuration.datafetcher.user;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
-import nl.shootingclub.clubmanager.model.Reservation;
-import nl.shootingclub.clubmanager.model.ReservationUser;
 import nl.shootingclub.clubmanager.model.User;
-import nl.shootingclub.clubmanager.model.UserPresence;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import java.util.Set;
-
-public class UserReservationsDataFetcher implements DataFetcher<Set<ReservationUser>> {
+public class UserLanguageDataFetcher implements DataFetcher<String> {
 
     @Bean
-    public static UserReservationsDataFetcher userReservationsDataFetcher() {
-        return new UserReservationsDataFetcher();
+    public static UserLanguageDataFetcher userLanguageDataFetcher() {
+        return new UserLanguageDataFetcher();
     }
     @Override
-    public Set<ReservationUser> get(DataFetchingEnvironment environment) throws Exception {
+    public String get(DataFetchingEnvironment environment) throws Exception {
         User user = environment.getSource();
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User contextUser) {
             if(contextUser.getId().equals(user.getId())) {
-                return user.getReservations();
+                return user.getLanguage();
             }
         }
         throw new AccessDeniedException("You do not have permission to view this data");

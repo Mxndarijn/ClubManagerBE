@@ -1,5 +1,6 @@
 package nl.shootingclub.clubmanager.service;
 
+import jakarta.transaction.Transactional;
 import nl.shootingclub.clubmanager.UserInfoDetails;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.UserRepository;
