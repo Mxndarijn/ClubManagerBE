@@ -12,12 +12,12 @@ type AssociationCompetition {
     id: ID!
     name: String!
     description: String!
-    association: PrivateAssociation!
+    association: Association!
     startDate: LocalDateTime!
     endDate: LocalDateTime!
     scoreType: CompetitionScoreType!
     ranking: CompetitionRanking!
-    competitionUsers: [CompetitionUser]
+    competitionUsers: [CompetitionUser]!
     active: Boolean!
 }
 
@@ -40,7 +40,7 @@ enum CompetitionRanking {
 
 type CompetitionUser {
     id: CompetitionUserId!
-    user: PrivateUser!
+    user: User!
     competition: AssociationCompetition!
     competitionRank: Int!
     scores: [CompetitionScore]
