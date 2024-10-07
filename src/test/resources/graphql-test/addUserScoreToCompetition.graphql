@@ -10,6 +10,7 @@ mutation MyMutation($dto : CompetitionScoreDTO!, $associationID: ID!) {
                 competition {
                     active
                     competitionUsers {
+                        calculatedScore
                         competitionRank
                         id {
                             competitionId

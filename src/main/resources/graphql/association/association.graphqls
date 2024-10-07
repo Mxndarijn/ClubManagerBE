@@ -5,6 +5,8 @@ type AssociationQueries {
     associationWeaponQueries: AssociationWeaponQueries!
     associationTrackQueries: AssociationTrackQueries!
     associationReservationQueries: AssociationReservationQueries!
+
+    associationCompetitionQueries: AssociationCompetitionQueries!
 }
 
 type AssociationMutations {

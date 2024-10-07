@@ -1,6 +1,7 @@
 package nl.shootingclub.clubmanager;
 
-import nl.shootingclub.clubmanager.model.*;
+import nl.shootingclub.clubmanager.model.AssociationCompetition;
+import nl.shootingclub.clubmanager.model.AssociationRole;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;
@@ -14,7 +15,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class CompetitionTests {
 
@@ -152,6 +154,7 @@ public class CompetitionTests {
                 .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.competition").hasValue()
                 .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.competition.competitionUsers[0].competitionRank").hasValue().entity(Integer.class).isEqualTo(1)
                 .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.competition.competitionUsers[0].scores[0].score").hasValue().entity(String.class).isEqualTo("30")
+                .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.competition.competitionUsers[0].calculatedScore").hasValue().entity(String.class).isNotEqualTo("")
         ;
     }
 

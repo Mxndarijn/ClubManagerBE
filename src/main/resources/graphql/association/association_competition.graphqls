@@ -8,6 +8,10 @@ type AssociationCompetitionMutations {
     removeUserScore(dto: CompetitionRemoveScoreDTO!, associationID: ID!): CompetitionResponseDTO
 }
 
+type AssociationCompetitionQueries {
+    getCompetitionInformation(associationID: ID!, competitionID: ID!) : CompetitionResponseDTO
+}
+
 type AssociationCompetition {
     id: ID!
     name: String!

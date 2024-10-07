@@ -1,10 +1,16 @@
 
 package nl.shootingclub.clubmanager.resolver.association;
 
-import nl.shootingclub.clubmanager.dto.*;
+import nl.shootingclub.clubmanager.dto.CompetitionDTO;
+import nl.shootingclub.clubmanager.dto.CompetitionRemoveScoreDTO;
+import nl.shootingclub.clubmanager.dto.CompetitionScoreDTO;
+import nl.shootingclub.clubmanager.dto.CompetitionUserDTO;
 import nl.shootingclub.clubmanager.dto.response.CompetitionResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
-import nl.shootingclub.clubmanager.model.*;
+import nl.shootingclub.clubmanager.model.Association;
+import nl.shootingclub.clubmanager.model.AssociationCompetition;
+import nl.shootingclub.clubmanager.model.CompetitionUser;
+import nl.shootingclub.clubmanager.model.UserAssociation;
 import nl.shootingclub.clubmanager.repository.UserAssociationRepository;
 import nl.shootingclub.clubmanager.repository.UserRepository;
 import nl.shootingclub.clubmanager.service.AssociationCompetitionService;
@@ -268,4 +274,28 @@ public class AssociationCompetitionResolver {
     }
 
 
+    @SchemaMapping(typeName = "AssociationCompetitionQueries")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_RESERVATIONS)") //TODO MAKE OWN PERMISSION
+    public CompetitionResponseDTO getCompetitionInformation(@Argument UUID associationID, @Argument UUID competitionID) {
+        CompetitionResponseDTO response = new CompetitionResponseDTO();
+
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        if (optionalAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("association-not-found");
+            return response;
+        }
+
+        Optional<AssociationCompetition> optionalCompetition = associationCompetitionService.getCompetitionById(competitionID);
+        if (optionalCompetition.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("competition-not-found");
+            return response;
+        }
+
+
+        response.setSuccess(true);
+        response.setCompetition(optionalCompetition.get());
+        return response;
+    }
 }
