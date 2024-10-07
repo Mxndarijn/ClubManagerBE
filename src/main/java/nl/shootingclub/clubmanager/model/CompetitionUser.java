@@ -27,6 +27,7 @@ public class CompetitionUser {
     @JoinColumn(name = "user_id")
     private User user;
 
+
     @ManyToOne
     @MapsId("competitionId")
     @JoinColumn(name = "competition_id")
@@ -34,6 +35,9 @@ public class CompetitionUser {
 
     @OneToMany(mappedBy = "competitionUser", cascade = CascadeType.ALL)
     private Set<CompetitionScore> scores;
+
+    @Column
+    private String calculatedScore = "Geen Score";
 
     @Column
     private int competitionRank = -1;

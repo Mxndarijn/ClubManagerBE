@@ -49,7 +49,9 @@ public class CompetitionScoreHandlerPoint implements CompetitionScoreHandler {
                                     .orElse(0.0)  // Direct als Double
                     ));
         };
-
+        scoresMap.forEach((u, value) -> {
+            u.setCalculatedScore(value.toString());
+        });
         List<Map.Entry<CompetitionUser, Double>> sortedEntries = scoresMap.entrySet().stream()
                 .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
                 .toList();

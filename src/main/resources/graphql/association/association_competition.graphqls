@@ -43,6 +43,7 @@ type CompetitionUser {
     user: User!
     competition: AssociationCompetition!
     competitionRank: Int!
+    calculatedScore: String!
     scores: [CompetitionScore]
 }
 
