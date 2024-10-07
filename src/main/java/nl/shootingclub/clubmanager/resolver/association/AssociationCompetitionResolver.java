@@ -43,6 +43,11 @@ public class AssociationCompetitionResolver {
         return this;
     }
 
+    @SchemaMapping(typeName = "AssociationQueries")
+    public AssociationCompetitionResolver associationCompetitionQueries() {
+        return this;
+    }
+
     @SchemaMapping(typeName = "AssociationCompetitionMutations")
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_COMPETITIONS)")
     public CompetitionResponseDTO createCompetition(@Argument CompetitionDTO dto, @Argument UUID associationID) {
