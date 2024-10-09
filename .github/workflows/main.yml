@@ -40,13 +40,18 @@ jobs:
           echo "PROJECT_NAME=$(./gradlew -q printProjectName)" >> $GITHUB_ENV
           echo "PROJECT_VERSION=$(./gradlew -q printVersion)" >> $GITHUB_ENV
 
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
       - name: Run Spring Boot application
         run: java -jar ./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar &
         env:
           SPRING_PROFILES_ACTIVE: dev
 
       - name: Wait for application to start
-        run: sleep 30  # Pas dit aan op de werkelijke opstarttijd van je app
+        run: sleep 20  # Pas dit aan op de werkelijke opstarttijd van je app
 
       - name: Execute tests
         run: ./gradlew test
@@ -69,10 +74,6 @@ jobs:
         run: |
           docker push ${{ env.IMAGE_NAME }}
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Update Azure Container App
         uses: Azure/cli@v1.0.7
