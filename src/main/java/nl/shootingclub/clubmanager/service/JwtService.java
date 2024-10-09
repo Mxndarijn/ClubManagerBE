@@ -20,7 +20,7 @@ import java.util.function.Function;
 public class JwtService {
 
     @Value( "${jwt.secret}")
-    public static String SECRET;
+    private String SECRET;
     public String generateToken(String userName) {
         Map<String, Object> claims = new HashMap<>();
         return createToken(claims, userName);
