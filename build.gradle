@@ -42,6 +42,8 @@ dependencies {
 	implementation 'com.bucket4j:bucket4j-core:8.1.0'
 	implementation 'com.github.ben-manes.caffeine:caffeine:2.7.0'
 
+	implementation 'com.azure.spring:azure-spring-boot-starter-keyvault-secrets:4.0.0'
+
 	compileOnly 'org.projectlombok:lombok'
 
 	runtimeOnly 'com.mysql:mysql-connector-j'
