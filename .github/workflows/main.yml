@@ -46,7 +46,7 @@ jobs:
           SPRING_PROFILES_ACTIVE: dev
 
       - name: Wait for application to start
-        run: sleep 20  # Pas dit aan op de werkelijke opstarttijd van je app
+        run: sleep 30  # Pas dit aan op de werkelijke opstarttijd van je app
 
       - name: Execute tests
         run: ./gradlew test
