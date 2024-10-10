@@ -43,7 +43,7 @@ jobs:
       - name: Login to Azure
         uses: azure/login@v1
         with:
-          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          creds: ${{ secrets.SECRET_AZURE_CREDENTIALS }}
 
       - name: Run Spring Boot application
         run: java -jar ./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar &
@@ -55,6 +55,9 @@ jobs:
 
       - name: Execute tests
         run: ./gradlew test
+
+      - name: Logout from Azure
+        run: az logout
         
       - name: Define Docker Image Name
         run: echo "IMAGE_NAME=${{ secrets.DOCKER_USERNAME }}/${{ env.PROJECT_NAME }}:${{ github.run_number }}" >> $GITHUB_ENV
@@ -74,6 +77,10 @@ jobs:
         run: |
           docker push ${{ env.IMAGE_NAME }}
 
+      - name: Login to Azure
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
 
       - name: Update Azure Container App
         uses: Azure/cli@v1.0.7
