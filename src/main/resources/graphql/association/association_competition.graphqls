@@ -26,13 +26,13 @@ type AssociationCompetition {
     active: Boolean!
 }
 
-type CompetitionScoresDTO {
+input CompetitionScoresDTO {
     userID: ID!
     competitionID: ID!
-    scores: [SmallCompetitionScoreDTO]
+    scores: [SmallCompetitionScoreDTO]!
 }
 
-type SmallCompetitionScoreDTO {
+input SmallCompetitionScoreDTO {
     score: Long
     scoreDate: LocalDate
 }
