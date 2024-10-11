@@ -148,7 +148,7 @@ public class CompetitionTests {
                 .path("$.data.associationMutations.associationCompetitionMutations.addUser.success").entity(Boolean.class).isEqualTo(true)
         ;
         graphQlTesterWithAdminAccount.documentName("addUserScoreToCompetition")
-                .variable("dto", Map.of("userID", userID, "competitionID", compID, "score", "30", "scoreDate", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+                .variable("dto", Map.of("userID", userID, "competitionID", compID, "score", "30", "scoreDate", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
                 .variable("associationID", associationID)
                 .execute()
                 .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.success").entity(Boolean.class).isEqualTo(true)
@@ -176,7 +176,7 @@ public class CompetitionTests {
                 .path("$.data.associationMutations.associationCompetitionMutations.addUser.success").entity(Boolean.class).isEqualTo(true)
         ;
         String id = graphQlTesterWithAdminAccount.documentName("addUserScoreToCompetition")
-                .variable("dto", Map.of("userID", userID, "competitionID", compID, "score", "30", "scoreDate", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+                .variable("dto", Map.of("userID", userID, "competitionID", compID, "score", "30", "scoreDate", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
                 .variable("associationID", associationID)
                 .execute()
                 .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.success").entity(Boolean.class).isEqualTo(true)

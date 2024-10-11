@@ -2,6 +2,7 @@ type AssociationCompetitionMutations {
     createCompetition(dto: CompetitionDTO!, associationID: ID!): CompetitionResponseDTO
     addUser(dto: CompetitionUserDTO!, associationID: ID!): CompetitionResponseDTO
     addUserScore(dto: CompetitionScoreDTO!, associationID: ID!): CompetitionResponseDTO
+    addUserScores(dto: CompetitionScoresDTO!, associationID: ID!): CompetitionResponseDTO
     deleteCompetition(competitionId: ID!, associationID: ID!): DefaultBooleanResponseDTO
     stopCompetition(competitionId: ID!, associationID: ID!): CompetitionResponseDTO
     removeUser(dto: CompetitionUserDTO!, associationID: ID!): CompetitionResponseDTO
@@ -23,6 +24,17 @@ type AssociationCompetition {
     ranking: CompetitionRanking!
     competitionUsers: [CompetitionUser]!
     active: Boolean!
+}
+
+type CompetitionScoresDTO {
+    userID: ID!
+    competitionID: ID!
+    scores: [SmallCompetitionScoreDTO]
+}
+
+type SmallCompetitionScoreDTO {
+    score: Long
+    scoreDate: LocalDate
 }
 
 input CompetitionRemoveScoreDTO {
@@ -59,7 +71,7 @@ type CompetitionUserId {
 type CompetitionScore {
     id: ID!
     competitionUser: CompetitionUser!
-    scoreDate: LocalDateTime!
+    scoreDate: LocalDate!
     score: Long!
     competitionRank: Int
 }
