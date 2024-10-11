@@ -48,6 +48,7 @@ jobs:
 
       - name: Run Spring Boot application
         run: java -jar ./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar &
+             sleep 20
         env:
           SPRING_PROFILES_ACTIVE: dev
 
