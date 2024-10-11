@@ -5,12 +5,15 @@ import nl.shootingclub.clubmanager.dto.CompetitionDTO;
 import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
 
 @Service
 public class AssociationCompetitionService {
@@ -83,7 +86,7 @@ public class AssociationCompetitionService {
         return true;
     }
 
-    public CompetitionUser addUserScore(CompetitionUser competitionUser, long score, LocalDateTime date) {
+    public CompetitionUser addUserScore(CompetitionUser competitionUser, long score, LocalDate date) {
         CompetitionScore competitionScore = switch (competitionUser.getCompetition().getScoreType()) {
             case TIME -> CompetitionScoreTime.builder().score(Duration.ofNanos(score)).build();
             case POINT -> CompetitionScorePoint.builder().score((int) score).build();

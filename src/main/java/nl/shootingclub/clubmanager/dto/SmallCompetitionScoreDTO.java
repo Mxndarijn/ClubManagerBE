@@ -5,16 +5,10 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
-import java.util.UUID;
 
 @Getter
 @Setter
-public class CompetitionScoreDTO {
-    @NotNull
-    private UUID competitionID;
-    @NotNull
-    private UUID userID;
-
+public class SmallCompetitionScoreDTO {
     @NotNull
     private long score;
 

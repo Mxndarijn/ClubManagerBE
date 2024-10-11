@@ -4,21 +4,22 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
-public class CompetitionScoreDTO {
+public class CompetitionScoresDTO {
     @NotNull
     private UUID competitionID;
     @NotNull
     private UUID userID;
 
     @NotNull
-    private long score;
+    private List<SmallCompetitionScoreDTO> scores;
 
     @NotNull
-    private LocalDate scoreDate;
+    private LocalDateTime scoreDate;
 
 }

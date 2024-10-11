@@ -4,8 +4,7 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.Comparator;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Setter
@@ -26,7 +25,7 @@ public abstract class CompetitionScore<T> implements Comparable<T> {
     private CompetitionUser competitionUser;
 
     @Column
-    private LocalDateTime scoreDate;
+    private LocalDate scoreDate;
 
     abstract long getNumericValue();
 }

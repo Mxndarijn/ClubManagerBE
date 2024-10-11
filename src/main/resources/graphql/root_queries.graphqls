@@ -16,6 +16,7 @@ type Query {
 # A custom scalar to handle date and time
 scalar LocalDateTime
 scalar Long
+scalar LocalDate
 
 # Represents a collection of mutations for the clubmanager application
 type Mutation {

@@ -88,5 +88,5 @@ input CompetitionScoreDTO {
     userID: ID!
     competitionID: ID!
     score: Long!
-    scoreDate: LocalDateTime!
+    scoreDate: LocalDate!
 }
