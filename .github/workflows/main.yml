@@ -48,12 +48,9 @@ jobs:
 
       - name: Run Spring Boot application
         run: java -jar ./build/libs/${{ env.PROJECT_NAME }}-${{ env.PROJECT_VERSION }}.jar &
-             sleep 20
+             sleep 30
         env:
           SPRING_PROFILES_ACTIVE: dev
-
-      - name: Wait for application to start
-        run: sleep 20  # Pas dit aan op de werkelijke opstarttijd van je app
 
       - name: Execute tests
         run: ./gradlew test
