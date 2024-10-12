@@ -1,24 +1,18 @@
 
 package nl.shootingclub.clubmanager.resolver.association;
 
+import io.micrometer.observation.annotation.Observed;
 import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
-import nl.shootingclub.clubmanager.dto.AssociationStatisticsDTO;
 import nl.shootingclub.clubmanager.dto.CreateReservationDTO;
 import nl.shootingclub.clubmanager.dto.EditReservationSeriesDTO;
 import nl.shootingclub.clubmanager.dto.response.CreateReservationResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.GetReservationResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.ReservationResponseDTO;
-import nl.shootingclub.clubmanager.exceptions.UserNotFoundException;
 import nl.shootingclub.clubmanager.model.*;
-import nl.shootingclub.clubmanager.repository.UserAssociationRepository;
-import nl.shootingclub.clubmanager.repository.UserRepository;
 import nl.shootingclub.clubmanager.service.*;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.MutationMapping;
-import org.springframework.graphql.data.method.annotation.QueryMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -63,6 +57,7 @@ public class AssociationReservationResolver {
         return this;
     }
 
+    @Observed
     @SchemaMapping(typeName = "AssociationReservationQueries")
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_RESERVATIONS)")
     public GetReservationResponseDTO getReservationsBetween(@Argument UUID associationID, @Argument LocalDateTime startDate, @Argument LocalDateTime endDate) {
@@ -75,8 +70,6 @@ public class AssociationReservationResolver {
 
         response.setSuccess(true);
         response.setReservations(reservationService.getAllReservations(associationID, startDate, endDate));
-
-
         return response;
 
     }

@@ -28,7 +28,7 @@ public class Track {
     @JoinColumn(name = "association_id", referencedColumnName = "id")
     private Association association;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable()
     private Set<WeaponType> allowedWeaponTypes;
 }

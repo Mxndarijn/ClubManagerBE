@@ -1,13 +1,11 @@
 package nl.shootingclub.clubmanager.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Set;
 import java.util.UUID;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.repository.cdi.Eager;
 
 @Getter
 @Setter
@@ -50,6 +48,7 @@ public class Association {
 
     @OneToMany(mappedBy = "association")
     private Set<AssociationCompetition> competitions;
+
 
 
 }

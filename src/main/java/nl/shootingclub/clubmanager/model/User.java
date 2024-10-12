@@ -1,14 +1,13 @@
  package nl.shootingclub.clubmanager.model;
 
-import jakarta.persistence.*;
+ import jakarta.persistence.*;
+ import lombok.Getter;
+ import lombok.Setter;
 
-import java.time.LocalDateTime;
-import java.util.*;
-
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
+ import java.time.LocalDateTime;
+ import java.util.HashSet;
+ import java.util.Set;
+ import java.util.UUID;
 
  @Getter
 @Setter

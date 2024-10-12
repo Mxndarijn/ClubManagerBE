@@ -2,6 +2,7 @@ package nl.shootingclub.clubmanager.configuration.datafetcher.user;
 
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
+import io.micrometer.observation.annotation.Observed;
 import nl.shootingclub.clubmanager.model.ReservationUser;
 import nl.shootingclub.clubmanager.model.User;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ public class UserReservationsDataFetcher implements DataFetcher<Set<ReservationU
         return new UserReservationsDataFetcher();
     }
     @Override
+    @Observed
     public Set<ReservationUser> get(DataFetchingEnvironment environment) throws Exception {
         User user = environment.getSource();
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User contextUser) {
