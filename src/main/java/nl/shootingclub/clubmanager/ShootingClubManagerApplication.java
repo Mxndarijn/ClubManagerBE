@@ -1,5 +1,6 @@
 package nl.shootingclub.clubmanager;
 
+import nl.shootingclub.clubmanager.configuration.AzureKeyVaultService;
 import nl.shootingclub.clubmanager.configuration.data.*;
 import nl.shootingclub.clubmanager.configuration.weapons.DefaultWeaponType;
 import nl.shootingclub.clubmanager.model.*;
@@ -39,7 +40,10 @@ public class ShootingClubManagerApplication {
 
 	private final UserRepository userRepository;
 
-	public ShootingClubManagerApplication(AccountPermissionRepository accountPermissionRepository, AssociationPermissionRepository associationPermissionRepository, AssociationRoleRepository associationRoleRepository, AccountRoleRepository accountRoleRepository, DefaultImageRepository defaultImageRepository, WeaponTypeRepository weaponTypeRepository, ColorPresetRepository colorPresetRepository, PasswordEncoder passwordEncoder) {
+	private final AzureKeyVaultService secretService;
+
+
+	public ShootingClubManagerApplication(AccountPermissionRepository accountPermissionRepository, AssociationPermissionRepository associationPermissionRepository, AssociationRoleRepository associationRoleRepository, AccountRoleRepository accountRoleRepository, DefaultImageRepository defaultImageRepository, WeaponTypeRepository weaponTypeRepository, ColorPresetRepository colorPresetRepository, PasswordEncoder passwordEncoder, AzureKeyVaultService secretService) {
 		this.accountPermissionRepository = accountPermissionRepository;
 		this.associationPermissionRepository = associationPermissionRepository;
 		this.associationRoleRepository = associationRoleRepository;
@@ -48,7 +52,9 @@ public class ShootingClubManagerApplication {
 		this.weaponTypeRepository = weaponTypeRepository;
 		this.colorPresetRepository = colorPresetRepository;
         this.passwordEncoder = passwordEncoder;
+        this.secretService = secretService;
         userRepository = null;
+
     }
 
 
