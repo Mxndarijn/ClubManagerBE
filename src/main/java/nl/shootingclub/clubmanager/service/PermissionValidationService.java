@@ -3,9 +3,7 @@ package nl.shootingclub.clubmanager.service;
 import nl.shootingclub.clubmanager.configuration.data.AccountPermissionData;
 import nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData;
 import nl.shootingclub.clubmanager.model.AccountPermission;
-import nl.shootingclub.clubmanager.model.AssociationPermission;
 import nl.shootingclub.clubmanager.model.User;
-import nl.shootingclub.clubmanager.model.UserAssociation;
 import nl.shootingclub.clubmanager.repository.AccountPermissionRepository;
 import nl.shootingclub.clubmanager.repository.AssociationPermissionRepository;
 import nl.shootingclub.clubmanager.repository.UserAssociationRepository;
@@ -52,18 +50,6 @@ public class PermissionValidationService {
      */
     @Cacheable(value = "validateAssociationPermissionCache", key = "#associationUUID + '-' + #associationPermissionData.name + '-' + #user.id")
     public boolean validateAssociationPermissionSecondLayer(User user, UUID associationUUID, AssociationPermissionData associationPermissionData) {
-        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(user.getId(), associationUUID);
-        if (optionalUserAssociation.isEmpty()) {
-            return false;
-        }
-
-        UserAssociation userAssociation = optionalUserAssociation.get();
-        Optional<AssociationPermission> optionalAssociationPermission = associationPermissionRepository.findByName(associationPermissionData.getName());
-        if (optionalAssociationPermission.isEmpty()) {
-            return false;
-        }
-
-        AssociationPermission associationPermission = optionalAssociationPermission.get();
-        return userAssociation.getAssociationRole().getPermissions().contains(associationPermission);
+        return associationPermissionRepository.hasPermissionForAssociation(user.getId(), associationUUID, associationPermissionData.getName());
     }
 }
