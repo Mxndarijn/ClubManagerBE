@@ -1,8 +1,6 @@
 package nl.shootingclub.clubmanager.filter;
 
 import io.jsonwebtoken.JwtException;
-import io.micrometer.tracing.Span;
-import io.micrometer.tracing.Tracer;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +9,6 @@ import nl.shootingclub.clubmanager.configuration.CustomUsernamePasswordAuthentic
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.service.JwtService;
 import nl.shootingclub.clubmanager.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -28,9 +25,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     private final UserService userDetailsService;
 
 
-    @Autowired
-    private Tracer tracer;
-
     public JwtAuthFilter(JwtService jwtService, UserService userDetailsService) {
         this.jwtService = jwtService;
         this.userDetailsService = userDetailsService;
@@ -40,7 +34,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 //    @Observed
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        Span span = tracer.nextSpan().name("doFilterInternal").start();
         if(header != null) {
             String[] authElements = header.split(" ");
 
@@ -65,7 +58,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             }
         }
-        span.end();
         filterChain.doFilter(request, response);
     }
 }
