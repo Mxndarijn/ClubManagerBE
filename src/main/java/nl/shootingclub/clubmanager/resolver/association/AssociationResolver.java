@@ -1,16 +1,15 @@
 
 package nl.shootingclub.clubmanager.resolver.association;
 
+import io.micrometer.observation.annotation.Observed;
 import nl.shootingclub.clubmanager.dto.AssociationStatisticsDTO;
 import nl.shootingclub.clubmanager.exceptions.UserNotFoundException;
 import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.model.User;
-import nl.shootingclub.clubmanager.model.UserAssociation;
+import nl.shootingclub.clubmanager.repository.AssociationRepository;
 import nl.shootingclub.clubmanager.repository.UserAssociationRepository;
 import nl.shootingclub.clubmanager.repository.UserRepository;
 import nl.shootingclub.clubmanager.service.AssociationService;
-import nl.shootingclub.clubmanager.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -28,11 +27,13 @@ public class AssociationResolver {
     private final AssociationService associationService;
     private final UserRepository userRepository;
     private final UserAssociationRepository userAssociationRepository;
+    private final AssociationRepository associationRepository;
 
-    public AssociationResolver(AssociationService associationService, UserRepository userRepository, UserAssociationRepository userAssociationRepository) {
+    public AssociationResolver(AssociationService associationService, UserRepository userRepository, UserAssociationRepository userAssociationRepository, AssociationRepository associationRepository) {
         this.associationService = associationService;
         this.userRepository = userRepository;
         this.userAssociationRepository = userAssociationRepository;
+        this.associationRepository = associationRepository;
     }
 
     @QueryMapping
@@ -53,9 +54,10 @@ public class AssociationResolver {
      *         Returns null if the user does not have permission to manage the association or if the association is not found.
      * @throws UserNotFoundException If the authenticated user is not found in the user repository.
      */
-    //TODO bekijk hier nog eens goed naar, permission klopt???? en t data hiden???
+    //TODO bekijk hier nog eens goed naar, permission klopt????
     @SchemaMapping(typeName = "AssociationQueries")
-    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_MEMBERS)")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_TRACKS)")
+    @Observed
     public Association getAssociationDetails(@Argument UUID associationID) {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<User> optionalUser = userRepository.findByEmailEquals(user.getEmail());
@@ -63,13 +65,10 @@ public class AssociationResolver {
             throw new UserNotFoundException("user-not-found");
         }
         User u = optionalUser.get();
-        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(u.getId(), associationID);
-        if(optionalUserAssociation.isEmpty())
-            return null;
-        UserAssociation userAssociation = optionalUserAssociation.get();
-        Association association = userAssociation.getAssociation();
+        Optional<Association> optionalAssociation = associationRepository.findByUserIDAndAssociationID(u.getId(), associationID);
+        System.out.println(optionalAssociation.get().getName());
+        return optionalAssociation.orElse(null);
 
-        return association;
     }
 
     /**

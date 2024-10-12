@@ -2,7 +2,8 @@ package nl.shootingclub.clubmanager.service;
 
 import nl.shootingclub.clubmanager.configuration.data.AccountPermissionData;
 import nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData;
-import nl.shootingclub.clubmanager.model.*;
+import nl.shootingclub.clubmanager.model.AccountPermission;
+import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.repository.AccountPermissionRepository;
 import nl.shootingclub.clubmanager.repository.AssociationPermissionRepository;
 import nl.shootingclub.clubmanager.repository.UserAssociationRepository;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -31,18 +31,15 @@ public class PermissionService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PermissionValidationService permissionValidationService;
+
     public boolean validatePermission(AccountPermissionData accountPermissionData) {
         try {
             if(!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User tempUser)) {
                 return false;
             }
-            Optional<User> optionalUser = userRepository.findById(tempUser.getId());
-            if(optionalUser.isEmpty()) {
-                return false;
-            }
-            User user = optionalUser.get();
-            Optional<AccountPermission> perm = accountPermissionRepository.findByNameEquals(accountPermissionData.getName());
-            return perm.filter(accountPermission -> user.getRole().getPermissions().contains(accountPermission)).isPresent();
+            return permissionValidationService.validatePermissionSecondLayer(tempUser, accountPermissionData);
         } catch (Exception e) {
             return false;
         }
@@ -53,16 +50,7 @@ public class PermissionService {
             if(!(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User tempUser)) {
                 return false;
             }
-            Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(tempUser.getId(), associationUUID);
-            if(optionalUserAssociation.isEmpty())
-                return false;
-            UserAssociation userAssociation = optionalUserAssociation.get();
-            Optional<AssociationPermission> optionalAssociationPermission = associationPermissionRepository.findByName(associationPermissionData.getName());
-            if(optionalAssociationPermission.isEmpty()) {
-                return false;
-            }
-            AssociationPermission associationPermission = optionalAssociationPermission.get();
-            return userAssociation.getAssociationRole().getPermissions().contains(associationPermission);
+            return permissionValidationService.validateAssociationPermissionSecondLayer(tempUser, associationUUID, associationPermissionData);
         } catch (Exception e) {
             e.printStackTrace();
             return false;

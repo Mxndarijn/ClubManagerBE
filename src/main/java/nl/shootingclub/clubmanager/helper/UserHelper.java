@@ -1,31 +1,23 @@
 package nl.shootingclub.clubmanager.helper;
 
+import io.micrometer.observation.annotation.Observed;
 import nl.shootingclub.clubmanager.model.User;
-import nl.shootingclub.clubmanager.model.UserAssociation;
-import nl.shootingclub.clubmanager.repository.UserAssociationRepository;
+import nl.shootingclub.clubmanager.repository.AssociationRepository;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 @Component
 public class UserHelper {
 
-    private final UserAssociationRepository userAssociationRepository;
+    private final AssociationRepository associationRepository;
 
-    public UserHelper(UserAssociationRepository userAssociationRepository) {
-        this.userAssociationRepository = userAssociationRepository;
+    public UserHelper(AssociationRepository associationRepository) {
+        this.associationRepository = associationRepository;
     }
 
+    @Observed
+    @Cacheable(value = "doUsersHaveSharedAssociation", key = "#user.id + '-' + #user2.id")
     public boolean doUsersHaveSharedAssociation(User user, User user2) {
-        List<UserAssociation> userUserAssociationList = userAssociationRepository.findByUserId(user.getId());
-        List<UserAssociation> contextUserUserAssociationList = userAssociationRepository.findByUserId(user2.getId());
-
-        boolean hasSharedAssociation = userUserAssociationList.stream()
-                .map(UserAssociation::getAssociation)
-                .anyMatch(association -> contextUserUserAssociationList.stream()
-                        .map(UserAssociation::getAssociation)
-                        .anyMatch(userAssociation -> userAssociation.getId().equals(association.getId()))
-                );
-        return hasSharedAssociation;
+        return !associationRepository.findSharedAssociations(user.getId(), user2.getId()).isEmpty();
     }
 }
