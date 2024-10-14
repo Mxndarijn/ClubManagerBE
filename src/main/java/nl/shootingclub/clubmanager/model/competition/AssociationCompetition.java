@@ -1,10 +1,11 @@
-package nl.shootingclub.clubmanager.model;
+package nl.shootingclub.clubmanager.model.competition;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import nl.shootingclub.clubmanager.configuration.data.CompetitionRanking;
 import nl.shootingclub.clubmanager.configuration.data.CompetitionScoreType;
+import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.repository.CompetitionUserRepository;
 
 import java.time.LocalDateTime;

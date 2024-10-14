@@ -1,7 +1,6 @@
 package nl.shootingclub.clubmanager.repository;
 
-import nl.shootingclub.clubmanager.model.ReservationSeries;
-import nl.shootingclub.clubmanager.model.User;
+import nl.shootingclub.clubmanager.model.reservation.ReservationSeries;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.UUID;

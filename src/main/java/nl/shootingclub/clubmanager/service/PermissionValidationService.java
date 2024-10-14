@@ -2,8 +2,8 @@ package nl.shootingclub.clubmanager.service;
 
 import nl.shootingclub.clubmanager.configuration.data.AccountPermissionData;
 import nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData;
-import nl.shootingclub.clubmanager.model.AccountPermission;
 import nl.shootingclub.clubmanager.model.User;
+import nl.shootingclub.clubmanager.model.account.AccountPermission;
 import nl.shootingclub.clubmanager.repository.AccountPermissionRepository;
 import nl.shootingclub.clubmanager.repository.AssociationPermissionRepository;
 import nl.shootingclub.clubmanager.repository.UserAssociationRepository;

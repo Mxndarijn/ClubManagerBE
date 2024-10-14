@@ -2,8 +2,7 @@ package nl.shootingclub.clubmanager.dto.response;
 
 import lombok.Getter;
 import lombok.Setter;
-import nl.shootingclub.clubmanager.model.Reservation;
-import nl.shootingclub.clubmanager.model.UserAssociation;
+import nl.shootingclub.clubmanager.model.reservation.Reservation;
 
 import java.util.Set;
 

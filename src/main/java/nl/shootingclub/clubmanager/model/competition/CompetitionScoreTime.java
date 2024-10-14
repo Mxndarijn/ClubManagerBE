@@ -1,6 +1,8 @@
-package nl.shootingclub.clubmanager.model;
+package nl.shootingclub.clubmanager.model.competition;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
+import jakarta.persistence.Entity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

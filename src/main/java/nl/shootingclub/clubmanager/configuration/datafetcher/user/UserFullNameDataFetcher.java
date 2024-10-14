@@ -3,7 +3,6 @@ package nl.shootingclub.clubmanager.configuration.datafetcher.user;
 import graphql.schema.DataFetcher;
 import graphql.schema.DataFetchingEnvironment;
 import nl.shootingclub.clubmanager.helper.UserHelper;
-import nl.shootingclub.clubmanager.model.Image;
 import nl.shootingclub.clubmanager.model.User;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;

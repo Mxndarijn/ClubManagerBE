@@ -1,10 +1,11 @@
-package nl.shootingclub.clubmanager.model;
+package nl.shootingclub.clubmanager.model.competition;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nl.shootingclub.clubmanager.model.User;
 
 import java.util.Collections;
 import java.util.HashSet;

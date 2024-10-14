@@ -1,6 +1,6 @@
 package nl.shootingclub.clubmanager.service;
 
-import nl.shootingclub.clubmanager.model.ColorPreset;
+import nl.shootingclub.clubmanager.model.data.ColorPreset;
 import nl.shootingclub.clubmanager.repository.ColorPresetRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

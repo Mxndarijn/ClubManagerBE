@@ -1,8 +1,8 @@
 package nl.shootingclub.clubmanager.helper.competition;
 
 import nl.shootingclub.clubmanager.configuration.data.CompetitionRanking;
-import nl.shootingclub.clubmanager.model.AssociationCompetition;
-import nl.shootingclub.clubmanager.model.CompetitionUser;
+import nl.shootingclub.clubmanager.model.competition.AssociationCompetition;
+import nl.shootingclub.clubmanager.model.competition.CompetitionUser;
 import nl.shootingclub.clubmanager.repository.CompetitionUserRepository;
 
 import java.util.Comparator;

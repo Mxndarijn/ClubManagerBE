@@ -1,6 +1,7 @@
 package nl.shootingclub.clubmanager.repository;
 
-import nl.shootingclub.clubmanager.model.*;
+import nl.shootingclub.clubmanager.model.competition.CompetitionUser;
+import nl.shootingclub.clubmanager.model.competition.CompetitionUserId;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

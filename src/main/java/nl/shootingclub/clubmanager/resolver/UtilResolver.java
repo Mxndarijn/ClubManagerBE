@@ -2,8 +2,8 @@
 package nl.shootingclub.clubmanager.resolver;
 
 import nl.shootingclub.clubmanager.model.AssociationRole;
-import nl.shootingclub.clubmanager.model.ColorPreset;
 import nl.shootingclub.clubmanager.model.WeaponType;
+import nl.shootingclub.clubmanager.model.data.ColorPreset;
 import nl.shootingclub.clubmanager.repository.AssociationRoleRepository;
 import nl.shootingclub.clubmanager.repository.ColorPresetRepository;
 import nl.shootingclub.clubmanager.repository.WeaponTypeRepository;

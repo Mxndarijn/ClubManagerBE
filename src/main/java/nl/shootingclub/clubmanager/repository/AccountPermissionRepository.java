@@ -1,6 +1,6 @@
 package nl.shootingclub.clubmanager.repository;
 
-import nl.shootingclub.clubmanager.model.AccountPermission;
+import nl.shootingclub.clubmanager.model.account.AccountPermission;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -1,22 +1,14 @@
 
 package nl.shootingclub.clubmanager.resolver;
 
-import com.github.benmanes.caffeine.cache.Cache;
-import com.github.benmanes.caffeine.cache.Caffeine;
-import io.github.bucket4j.Bandwidth;
-import io.github.bucket4j.Bucket;
-import io.github.bucket4j.Refill;
-import jakarta.servlet.http.HttpServletRequest;
 import nl.shootingclub.clubmanager.configuration.data.Language;
 import nl.shootingclub.clubmanager.dto.ChangeProfilePictureDTO;
 import nl.shootingclub.clubmanager.dto.UpdateMyProfileDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
-import nl.shootingclub.clubmanager.exceptions.TooManyRequestsException;
 import nl.shootingclub.clubmanager.helper.ImageHelper;
-import nl.shootingclub.clubmanager.model.Image;
 import nl.shootingclub.clubmanager.model.User;
+import nl.shootingclub.clubmanager.model.data.Image;
 import nl.shootingclub.clubmanager.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -26,7 +18,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.io.IOException;
-import java.time.Duration;
 import java.util.Optional;
 
 @Controller

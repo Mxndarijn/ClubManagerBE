@@ -18,8 +18,13 @@ import nl.shootingclub.clubmanager.dto.RegisterDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
 import nl.shootingclub.clubmanager.exceptions.AccountValidationException;
 import nl.shootingclub.clubmanager.exceptions.TooManyRequestsException;
-import nl.shootingclub.clubmanager.model.*;
-import nl.shootingclub.clubmanager.repository.*;
+import nl.shootingclub.clubmanager.model.User;
+import nl.shootingclub.clubmanager.model.account.AccountRole;
+import nl.shootingclub.clubmanager.model.data.DefaultImage;
+import nl.shootingclub.clubmanager.model.data.Image;
+import nl.shootingclub.clubmanager.repository.AccountRoleRepository;
+import nl.shootingclub.clubmanager.repository.DefaultImageRepository;
+import nl.shootingclub.clubmanager.repository.UserRepository;
 import nl.shootingclub.clubmanager.security.CustomAuthenticationProvider;
 import nl.shootingclub.clubmanager.service.EmailService;
 import nl.shootingclub.clubmanager.service.JwtService;
@@ -41,7 +46,7 @@ import java.util.Optional;
 
 @Controller
 public class AuthenticationResolver {
-    private Cache<String, Bucket> ipBucketCache;
+    private final Cache<String, Bucket> ipBucketCache;
 
     private final UserService userService;
 

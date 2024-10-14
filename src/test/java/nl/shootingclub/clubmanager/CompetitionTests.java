@@ -1,7 +1,7 @@
 package nl.shootingclub.clubmanager;
 
-import nl.shootingclub.clubmanager.model.AssociationCompetition;
 import nl.shootingclub.clubmanager.model.AssociationRole;
+import nl.shootingclub.clubmanager.model.competition.AssociationCompetition;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.graphql.test.tester.HttpGraphQlTester;

@@ -3,9 +3,9 @@ package nl.shootingclub.clubmanager.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import nl.shootingclub.clubmanager.model.data.ColorPreset;
 
 import java.time.LocalDateTime;
-import java.util.Set;
 import java.util.UUID;
 
 @Getter

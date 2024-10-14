@@ -1,7 +1,6 @@
 package nl.shootingclub.clubmanager.repository;
 
-import nl.shootingclub.clubmanager.model.AccountRole;
-import nl.shootingclub.clubmanager.model.DefaultImage;
+import nl.shootingclub.clubmanager.model.data.DefaultImage;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

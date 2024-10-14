@@ -3,6 +3,9 @@
  import jakarta.persistence.*;
  import lombok.Getter;
  import lombok.Setter;
+ import nl.shootingclub.clubmanager.model.account.AccountRole;
+ import nl.shootingclub.clubmanager.model.data.Image;
+ import nl.shootingclub.clubmanager.model.reservation.ReservationUser;
 
  import java.time.LocalDateTime;
  import java.util.HashSet;

@@ -1,17 +1,13 @@
 package nl.shootingclub.clubmanager.service;
 
-import nl.shootingclub.clubmanager.model.Reservation;
-import nl.shootingclub.clubmanager.model.ReservationUser;
 import nl.shootingclub.clubmanager.model.User;
-import nl.shootingclub.clubmanager.repository.ReservationRepository;
+import nl.shootingclub.clubmanager.model.reservation.Reservation;
+import nl.shootingclub.clubmanager.model.reservation.ReservationUser;
 import nl.shootingclub.clubmanager.repository.ReservationUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
 
 @Service
 public class ReservationUserService {

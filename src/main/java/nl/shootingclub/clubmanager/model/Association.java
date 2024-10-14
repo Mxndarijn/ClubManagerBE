@@ -3,6 +3,8 @@ package nl.shootingclub.clubmanager.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import nl.shootingclub.clubmanager.model.competition.AssociationCompetition;
+import nl.shootingclub.clubmanager.model.data.Image;
 
 import java.util.Set;
 import java.util.UUID;

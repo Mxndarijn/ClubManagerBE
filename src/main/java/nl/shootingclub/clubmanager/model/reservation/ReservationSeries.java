@@ -1,8 +1,9 @@
-package nl.shootingclub.clubmanager.model;
+package nl.shootingclub.clubmanager.model.reservation;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import nl.shootingclub.clubmanager.model.Association;
 
 import java.util.HashSet;
 import java.util.Set;

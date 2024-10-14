@@ -2,7 +2,9 @@
 package nl.shootingclub.clubmanager.service;
 
 import nl.shootingclub.clubmanager.dto.CompetitionDTO;
-import nl.shootingclub.clubmanager.model.*;
+import nl.shootingclub.clubmanager.model.Association;
+import nl.shootingclub.clubmanager.model.User;
+import nl.shootingclub.clubmanager.model.competition.*;
 import nl.shootingclub.clubmanager.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

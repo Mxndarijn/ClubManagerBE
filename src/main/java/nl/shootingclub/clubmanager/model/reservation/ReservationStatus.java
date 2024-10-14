@@ -1,4 +1,4 @@
-package nl.shootingclub.clubmanager.model;
+package nl.shootingclub.clubmanager.model.reservation;
 
 public enum ReservationStatus {
     IDK

@@ -1,6 +1,6 @@
 package nl.shootingclub.clubmanager.service;
 
-import nl.shootingclub.clubmanager.model.Reservation;
+import nl.shootingclub.clubmanager.model.reservation.Reservation;
 import nl.shootingclub.clubmanager.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -1,7 +1,8 @@
-package nl.shootingclub.clubmanager.model;
+package nl.shootingclub.clubmanager.model.competition;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,37 +12,33 @@ import java.util.Objects;
 import java.util.UUID;
 
 @Getter
+@Builder
+@AllArgsConstructor
 @Setter
 @Embeddable
-@Builder
-public class ReservationUserId implements Serializable {
+public class CompetitionUserId implements Serializable {
 
-    @Column(name = "user_id")
+    @Column(name = "competition_id")
     private UUID userId;
 
     @Column(name = "competition_id")
-    private UUID reservationId;
+    private UUID competitionId;
 
-    public ReservationUserId() {
+    public CompetitionUserId() {
 
-    }
-
-    public ReservationUserId(UUID userId, UUID reservationId) {
-        this.userId = userId;
-        this.reservationId = reservationId;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ReservationUserId that = (ReservationUserId) o;
+        CompetitionUserId that = (CompetitionUserId) o;
         return Objects.equals(userId, that.userId) &&
-                Objects.equals(reservationId, that.reservationId);
+                Objects.equals(competitionId, that.competitionId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userId, reservationId);
+        return Objects.hash(userId, competitionId);
     }
 }

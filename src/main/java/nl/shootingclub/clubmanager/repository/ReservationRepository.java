@@ -1,7 +1,7 @@
 package nl.shootingclub.clubmanager.repository;
 
 import io.micrometer.observation.annotation.Observed;
-import nl.shootingclub.clubmanager.model.Reservation;
+import nl.shootingclub.clubmanager.model.reservation.Reservation;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.time.LocalDateTime;

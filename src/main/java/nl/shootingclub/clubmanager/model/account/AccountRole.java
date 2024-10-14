@@ -1,10 +1,9 @@
-package nl.shootingclub.clubmanager.model;
+package nl.shootingclub.clubmanager.model.account;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import nl.shootingclub.clubmanager.model.User;
 
 import java.util.Set;
 import java.util.UUID;

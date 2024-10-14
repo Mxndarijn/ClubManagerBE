@@ -1,6 +1,6 @@
 package nl.shootingclub.clubmanager.configuration.scheduledtask;
 
-import nl.shootingclub.clubmanager.model.AssociationCompetition;
+import nl.shootingclub.clubmanager.model.competition.AssociationCompetition;
 import nl.shootingclub.clubmanager.service.AssociationCompetitionService;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
