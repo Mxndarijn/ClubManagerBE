@@ -47,7 +47,7 @@ input CompetitionRemoveScoreDTO {
 input CompetitionRemoveScoresDTO {
     userID: ID!
     competitionID: ID!
-    scoreId: [ID]!
+    scores: [ID]!
 }
 
 enum CompetitionScoreType {
