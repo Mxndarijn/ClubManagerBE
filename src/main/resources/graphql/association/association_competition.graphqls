@@ -7,6 +7,7 @@ type AssociationCompetitionMutations {
     stopCompetition(competitionId: ID!, associationID: ID!): CompetitionResponseDTO
     removeUser(dto: CompetitionUserDTO!, associationID: ID!): CompetitionResponseDTO
     removeUserScore(dto: CompetitionRemoveScoreDTO!, associationID: ID!): CompetitionResponseDTO
+    removeUserScores(dto: CompetitionRemoveScoreDTO!, associationID: ID!): CompetitionResponseDTO
 }
 
 type AssociationCompetitionQueries {
@@ -41,6 +42,12 @@ input CompetitionRemoveScoreDTO {
     userID: ID!
     competitionID: ID!
     scoreId: ID!
+}
+
+input CompetitionRemoveScoresDTO {
+    userID: ID!
+    competitionID: ID!
+    scoreId: [ID]!
 }
 
 enum CompetitionScoreType {

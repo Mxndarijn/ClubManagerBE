@@ -19,6 +19,7 @@ import org.springframework.stereotype.Controller;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 public class AssociationCompetitionResolver {
@@ -313,6 +314,54 @@ public class AssociationCompetitionResolver {
 
 
         response.setSuccess(associationCompetitionService.removeUserScore(optionalCompetitionUser.get(), dto.getScoreId()));
+        response.setCompetition(competition);
+
+        return response;
+    }
+
+    @SchemaMapping(typeName = "AssociationCompetitionMutations")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).COMPETITION_SCORE_MANAGER)")
+    public CompetitionResponseDTO removeUserScores(@Argument CompetitionRemoveScoresDTO dto, @Argument UUID associationID) {
+        CompetitionResponseDTO response = new CompetitionResponseDTO();
+
+        Optional<Association> optionalAssociation = associationService.getByID(associationID);
+        if(optionalAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("association-not-found");
+            return response;
+        }
+
+        Optional<AssociationCompetition> optionalCompetition = associationCompetitionService.getCompetitionById(dto.getCompetitionID());
+        if(optionalCompetition.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("competition-not-found");
+            return response;
+        }
+        Optional<UserAssociation> optionalUserAssociation = userAssociationRepository.findByUserIdAndAssociationId(dto.getUserID(), associationID);
+        if(optionalUserAssociation.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("user-not-found");
+            return response;
+        }
+
+        Optional<CompetitionUser> optionalCompetitionUser = associationCompetitionService.getCompetitionUser(dto.getCompetitionID(), dto.getUserID());
+        if(optionalCompetitionUser.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("user-competition-not-found");
+            return response;
+        }
+
+        AssociationCompetition competition = optionalCompetition.get();
+
+
+        AtomicBoolean success = new AtomicBoolean(true);
+        dto.getScores().forEach(score -> {
+            if(!associationCompetitionService.removeUserScore(optionalCompetitionUser.get(), score)) {
+                success.set(false);
+            }
+        });
+
+        response.setSuccess(success.get());
         response.setCompetition(competition);
 
         return response;
