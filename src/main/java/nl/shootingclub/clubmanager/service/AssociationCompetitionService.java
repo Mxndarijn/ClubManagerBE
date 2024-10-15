@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class AssociationCompetitionService {
@@ -88,10 +89,16 @@ public class AssociationCompetitionService {
     private boolean deleteScores(List<CompetitionScore> list) {
         if(list.isEmpty())
             return true;
-        if(list.get(0) instanceof CompetitionScoreTime) {
-            competitionScoreTimeRepository.deleteAll((Iterable<? extends CompetitionScoreTime>) list);
-        } else if(list.get(0) instanceof CompetitionScorePoint) {
-            competitionScorePointRepository.deleteAll((Iterable<? extends CompetitionScorePoint>) list);
+        if (list.get(0) instanceof CompetitionScoreTime) {
+            List<CompetitionScoreTime> timeScores = list.stream()
+                    .map(score -> (CompetitionScoreTime) score)
+                    .collect(Collectors.toList());
+            competitionScoreTimeRepository.deleteAll(timeScores);
+        } else if (list.get(0) instanceof CompetitionScorePoint) {
+            List<CompetitionScorePoint> pointScores = list.stream()
+                    .map(score -> (CompetitionScorePoint) score)
+                    .collect(Collectors.toList());
+            competitionScorePointRepository.deleteAll(pointScores);
         }
         return false;
     }
