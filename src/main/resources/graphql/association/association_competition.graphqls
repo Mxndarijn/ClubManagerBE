@@ -7,7 +7,7 @@ type AssociationCompetitionMutations {
     stopCompetition(competitionId: ID!, associationID: ID!): CompetitionResponseDTO
     removeUser(dto: CompetitionUserDTO!, associationID: ID!): CompetitionResponseDTO
     removeUserScore(dto: CompetitionRemoveScoreDTO!, associationID: ID!): CompetitionResponseDTO
-    removeUserScores(dto: CompetitionRemoveScoreDTO!, associationID: ID!): CompetitionResponseDTO
+    removeUserScores(dto: CompetitionRemoveScoresDTO!, associationID: ID!): CompetitionResponseDTO
 }
 
 type AssociationCompetitionQueries {
