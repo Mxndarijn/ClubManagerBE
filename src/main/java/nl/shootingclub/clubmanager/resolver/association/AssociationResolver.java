@@ -66,7 +66,6 @@ public class AssociationResolver {
         }
         User u = optionalUser.get();
         Optional<Association> optionalAssociation = associationRepository.findByUserIDAndAssociationID(u.getId(), associationID);
-        System.out.println(optionalAssociation.get().getName());
         return optionalAssociation.orElse(null);
 
     }

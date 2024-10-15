@@ -79,13 +79,28 @@ public class AssociationCompetitionService {
         List<CompetitionScore> list = competitionUser.getScores().stream().filter(c -> {
             return c.getId().equals(competitionScoreId);
         }).toList();
-        if(list.isEmpty())
-            return false;
-        list.forEach(d -> {
-            competitionScoreRepository.delete(d);
-            competitionUser.getScores().remove(d);
-        });
+        if (deleteScores(list)) return false;
+
+        competitionScoreRepository.deleteAll(list);
         return true;
+    }
+
+    private boolean deleteScores(List<CompetitionScore> list) {
+        if(list.isEmpty())
+            return true;
+        if(list.get(0) instanceof CompetitionScoreTime) {
+            competitionScoreTimeRepository.deleteAll((Iterable<? extends CompetitionScoreTime>) list);
+        } else if(list.get(0) instanceof CompetitionScorePoint) {
+            competitionScorePointRepository.deleteAll((Iterable<? extends CompetitionScorePoint>) list);
+        }
+        return false;
+    }
+
+    public boolean removeUserScores(CompetitionUser competitionUser, List<UUID> ids) {
+        List<CompetitionScore> list = competitionUser.getScores().stream()
+                .filter(c -> ids.contains(c.getId()))
+                .toList();
+        return !deleteScores(list);
     }
 
     public CompetitionUser addUserScore(CompetitionUser competitionUser, long score, LocalDate date) {
