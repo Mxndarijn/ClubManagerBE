@@ -19,7 +19,6 @@ import org.springframework.stereotype.Controller;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 @Controller
 public class AssociationCompetitionResolver {
@@ -354,14 +353,7 @@ public class AssociationCompetitionResolver {
         AssociationCompetition competition = optionalCompetition.get();
 
 
-        AtomicBoolean success = new AtomicBoolean(true);
-        dto.getScores().forEach(score -> {
-            if(!associationCompetitionService.removeUserScore(optionalCompetitionUser.get(), score)) {
-                success.set(false);
-            }
-        });
-
-        response.setSuccess(success.get());
+        response.setSuccess(associationCompetitionService.removeUserScores(optionalCompetitionUser.get(), dto.getScores()));
         response.setCompetition(competition);
 
         return response;

@@ -44,8 +44,8 @@ public class Reservation {
     @Lob
     private String description;
 
-    @Column()
-    private boolean membersCanChooseTheirOwnPosition;
+//    @Column()
+//    private boolean membersCanChooseTheirOwnPosition;
 
 //    @Column
 //    @Enumerated(EnumType.STRING)

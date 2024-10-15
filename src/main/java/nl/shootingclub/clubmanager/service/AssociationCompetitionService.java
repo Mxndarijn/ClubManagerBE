@@ -8,6 +8,7 @@ import nl.shootingclub.clubmanager.model.competition.*;
 import nl.shootingclub.clubmanager.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
 import java.time.LocalDate;
@@ -76,38 +77,49 @@ public class AssociationCompetitionService {
         return competitionUser;
     }
 
+    @Transactional
     public boolean removeUserScore(CompetitionUser competitionUser, UUID competitionScoreId) {
         List<CompetitionScore> list = competitionUser.getScores().stream().filter(c -> {
             return c.getId().equals(competitionScoreId);
         }).toList();
-        if (deleteScores(list)) return false;
-
-        competitionScoreRepository.deleteAll(list);
-        return true;
+        return competitionUser.getScores().removeIf(c -> c.getId().equals(competitionScoreId));
     }
 
-    private boolean deleteScores(List<CompetitionScore> list) {
+    protected boolean deleteScores(List<CompetitionScore> list) {
         if(list.isEmpty())
             return true;
+        competitionScoreRepository.deleteAll(list);
+        competitionScoreRepository.flush();
         if (list.get(0) instanceof CompetitionScoreTime) {
             List<CompetitionScoreTime> timeScores = list.stream()
                     .map(score -> (CompetitionScoreTime) score)
                     .collect(Collectors.toList());
             competitionScoreTimeRepository.deleteAll(timeScores);
+
+            // Overweeg het verwijderen van deze regel:
+            // competitionScoreRepository.deleteAll(list);
+            System.out.println("times removed");
+            return true;
         } else if (list.get(0) instanceof CompetitionScorePoint) {
             List<CompetitionScorePoint> pointScores = list.stream()
                     .map(score -> (CompetitionScorePoint) score)
                     .collect(Collectors.toList());
             competitionScorePointRepository.deleteAll(pointScores);
+            // Overweeg het verwijderen van deze regel:
+            // competitionScoreRepository.deleteAll(list);
+            System.out.println("points removed");
+            return true;
         }
+        System.out.println("returning");
         return false;
     }
 
+    @Transactional
     public boolean removeUserScores(CompetitionUser competitionUser, List<UUID> ids) {
         List<CompetitionScore> list = competitionUser.getScores().stream()
                 .filter(c -> ids.contains(c.getId()))
                 .toList();
-        return !deleteScores(list);
+        return competitionUser.getScores().removeIf(c -> ids.contains(c.getId()));
     }
 
     public CompetitionUser addUserScore(CompetitionUser competitionUser, long score, LocalDate date) {
