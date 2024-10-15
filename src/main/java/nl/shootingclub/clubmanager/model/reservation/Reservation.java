@@ -6,6 +6,7 @@ import lombok.Setter;
 import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.model.Track;
 import nl.shootingclub.clubmanager.model.WeaponType;
+import nl.shootingclub.clubmanager.model.data.ColorPreset;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
