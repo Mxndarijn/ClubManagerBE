@@ -9,8 +9,7 @@ import nl.shootingclub.clubmanager.model.WeaponType;
 import nl.shootingclub.clubmanager.model.data.ColorPreset;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -21,7 +20,7 @@ import java.util.UUID;
 public class Reservation {
 
     public Reservation() {
-        this.reservationUsers = new HashMap<>();
+        this.reservationUsers = new HashSet<>();
     }
 
     @Id
@@ -57,7 +56,7 @@ public class Reservation {
 
     @OneToMany(mappedBy = "reservation")
     @MapKeyColumn(name = "user_number")
-    private Map<Integer, ReservationUser> reservationUsers;
+    private Set<ReservationUser> reservationUsers;
 
     @ManyToMany
     @JoinTable()

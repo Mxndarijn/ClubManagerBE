@@ -342,7 +342,7 @@ public class AssociationReservationResolver {
 
         if(dto.isJoin()) {
 
-            List<Integer> positionList = new ArrayList<>(reservation.getReservationUsers().keySet());
+            List<Integer> positionList = reservation.getReservationUsers().stream().map(ReservationUser::getPosition).toList();
             OptionalInt earliestAvailablePosition = IntStream.range(0, reservation.getMaxSize())
                     .filter(position -> !positionList.contains(position))
                     .findFirst();
@@ -357,9 +357,11 @@ public class AssociationReservationResolver {
                     responseDTO.setSuccess(false);
                     return responseDTO;
                 }
-                ReservationUser currentReservationUser = reservation.getReservationUsers().get(dto.getPosition());
+                Optional<ReservationUser> currentReservationUser = reservation.getReservationUsers().stream().filter(r ->
+                                r.getPosition().equals(dto.getPosition()))
+                        .findFirst();
 
-                if (currentReservationUser != null) {
+                if (currentReservationUser.isPresent()) {
                     responseDTO.setSuccess(false);
                     return responseDTO;
                 }
@@ -373,7 +375,7 @@ public class AssociationReservationResolver {
                 reservationUser.setUser(user);
                 reservationUser.setPosition(position);
                 reservationUser.setId(ReservationUserId.builder().reservationId(dto.getReservationID()).userId(user.getId()).build());
-                reservation.getReservationUsers().put(position, reservationUser);
+                reservation.getReservationUsers().add(reservationUser);
 
                 reservationUserService.saveReservationUser(reservationUser);
                 reservationService.saveReservation(reservation);
