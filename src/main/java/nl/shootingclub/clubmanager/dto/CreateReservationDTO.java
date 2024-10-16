@@ -1,6 +1,9 @@
 package nl.shootingclub.clubmanager.dto;
 
-import jakarta.validation.constraints.*;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.Setter;
 import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
@@ -57,6 +60,9 @@ public class CreateReservationDTO {
     @NotBlank(message = "empty")
     @Length(max = 200, message = "length-max-exceeded")
     private String description;
+
+    @NotNull
+    private boolean userCanChooseOwnPosition;
 
     @Override
     public String toString() {

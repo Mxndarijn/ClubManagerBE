@@ -29,9 +29,10 @@ type ReservationSeries {
 
 type ReservationUser {
     id: ReservationUserId!
-    user: PrivateUser
-    reservation: Reservation
+    user: PrivateUser!
+    reservation: Reservation!
     registerDate: LocalDateTime!
+    position: Int!
 }
 
 type ReservationUserId {

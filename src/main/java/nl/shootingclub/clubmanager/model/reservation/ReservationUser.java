@@ -29,4 +29,7 @@ public class ReservationUser {
     @Column
     private LocalDateTime registerDate;
 
+    @Column(name = "user_number")
+    private Integer position;
+
 }

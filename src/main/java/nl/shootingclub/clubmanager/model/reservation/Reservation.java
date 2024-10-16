@@ -9,7 +9,8 @@ import nl.shootingclub.clubmanager.model.WeaponType;
 import nl.shootingclub.clubmanager.model.data.ColorPreset;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,7 +21,7 @@ import java.util.UUID;
 public class Reservation {
 
     public Reservation() {
-        this.reservationUsers = new HashSet<>();
+        this.reservationUsers = new HashMap<>();
     }
 
     @Id
@@ -44,8 +45,8 @@ public class Reservation {
     @Lob
     private String description;
 
-//    @Column()
-//    private boolean membersCanChooseTheirOwnPosition;
+    @Column()
+    private boolean membersCanChooseTheirOwnPosition;
 
 //    @Column
 //    @Enumerated(EnumType.STRING)
@@ -55,7 +56,8 @@ public class Reservation {
     private Integer maxSize;
 
     @OneToMany(mappedBy = "reservation")
-    private Set<ReservationUser> reservationUsers;
+    @MapKeyColumn(name = "user_number")
+    private Map<Integer, ReservationUser> reservationUsers;
 
     @ManyToMany
     @JoinTable()

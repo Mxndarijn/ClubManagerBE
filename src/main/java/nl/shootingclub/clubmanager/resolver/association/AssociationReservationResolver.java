@@ -3,6 +3,7 @@ package nl.shootingclub.clubmanager.resolver.association;
 
 import io.micrometer.observation.annotation.Observed;
 import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
+import nl.shootingclub.clubmanager.dto.CompetitionParticipateDTO;
 import nl.shootingclub.clubmanager.dto.CreateReservationDTO;
 import nl.shootingclub.clubmanager.dto.EditReservationSeriesDTO;
 import nl.shootingclub.clubmanager.dto.response.CreateReservationResponseDTO;
@@ -28,11 +29,10 @@ import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.Optional;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Controller
 public class AssociationReservationResolver {
@@ -200,7 +200,7 @@ public class AssociationReservationResolver {
     }
 
     private CreateReservationResponseDTO createSingleReservation(CreateReservationDTO dto, Association association, Set<Track> tracks, Set<WeaponType> allowedWeaponTypes, ColorPreset preset) {
-        Reservation reservation = buildReservation(dto.getStartTime(), dto.getEndTime(), association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset);
+        Reservation reservation = buildReservation(dto.getStartTime(), dto.getEndTime(), association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset, dto.isUserCanChooseOwnPosition());
         reservation = reservationService.createReservation(reservation);
 
         CreateReservationResponseDTO responseDTO = new CreateReservationResponseDTO();
@@ -226,7 +226,7 @@ public class AssociationReservationResolver {
 
         while (currentDate.isBefore(repeatUntil.get())) {
             LocalDateTime reservationEnd = currentDate.plus(period);
-            Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset);
+            Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(),preset,  dto.isUserCanChooseOwnPosition());
             serie.getReservations().add(reservationService.createReservation(reservation));
             currentDate = currentDate.plusDays(7);
         }
@@ -254,7 +254,7 @@ public class AssociationReservationResolver {
         ReservationSeries serie = new ReservationSeries();
         while (currentDate.isBefore(dto.getRepeatUntil().get())) {
             LocalDateTime reservationEnd = currentDate.plus(period);
-            Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset);
+            Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset, dto.isUserCanChooseOwnPosition());
             reservation = reservationService.createReservation(reservation);
             serie.getReservations().add(reservation);
             currentDate = currentDate.plusDays(dto.getCustomDaysBetween().get());
@@ -309,7 +309,7 @@ public class AssociationReservationResolver {
                 .collect(Collectors.toSet());
     }
 
-    private Reservation buildReservation(LocalDateTime start, LocalDateTime end, Association association, Set<Track> tracks, Set<WeaponType> allowedWeaponTypes, String title, String description, int maxSize, ColorPreset preset) {
+    private Reservation buildReservation(LocalDateTime start, LocalDateTime end, Association association, Set<Track> tracks, Set<WeaponType> allowedWeaponTypes, String title, String description, int maxSize, ColorPreset preset, boolean userCanChooseOwnPosition) {
         Reservation reservation = new Reservation();
         reservation.setAssociation(association);
         reservation.setTracks(tracks);
@@ -320,15 +320,15 @@ public class AssociationReservationResolver {
         reservation.setDescription(description);
         reservation.setMaxSize(maxSize);
         reservation.setColorPreset(preset);
+        reservation.setMembersCanChooseTheirOwnPosition(userCanChooseOwnPosition);
         return reservation;
     }
 
-
     @SchemaMapping(typeName = "AssociationReservationMutations")
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_RESERVATIONS)")
-    public ReservationResponseDTO participateReservation(@Argument UUID associationID, @Argument UUID reservationID, @Argument boolean join) {
+    public ReservationResponseDTO participateReservation(@Argument UUID associationID, @Argument CompetitionParticipateDTO dto) {
         Reservation reservation = getEntityOrThrow(
-                () -> reservationService.getByID(reservationID),
+                () -> reservationService.getByID(dto.getReservationID()),
                 "reservation-not-found"
         );
 
@@ -340,22 +340,50 @@ public class AssociationReservationResolver {
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         Optional<ReservationUser> optionalReservationUser = reservationUserService.findReservationUserByReservationAndUser(reservation, user);
 
-        responseDTO.setReservation(reservation);
-        if(optionalReservationUser.isEmpty() && join) {
-            ReservationUser reservationUser = new ReservationUser();
-            reservationUser.setReservation(reservation);
-            reservationUser.setUser(user);
-            reservationUser.setId(ReservationUserId.builder().reservationId(reservationID).userId(user.getId()).build());
-            reservation.getReservationUsers().add(reservationUser);
+        if(dto.isJoin()) {
 
-            reservationUserService.saveReservationUser(reservationUser);
-            reservationService.saveReservation(reservation);
+            List<Integer> positionList = new ArrayList<>(reservation.getReservationUsers().keySet());
+            OptionalInt earliestAvailablePosition = IntStream.range(0, reservation.getMaxSize())
+                    .filter(position -> !positionList.contains(position))
+                    .findFirst();
+            if(earliestAvailablePosition.isEmpty()) {
+                responseDTO.setSuccess(false);
+                return responseDTO;
+            }
+            int position = earliestAvailablePosition.getAsInt();
+
+            if(reservation.isMembersCanChooseTheirOwnPosition()) {
+                if (dto.getPosition() == null || dto.getPosition() < 0 || dto.getPosition() >= reservation.getMaxSize()) {
+                    responseDTO.setSuccess(false);
+                    return responseDTO;
+                }
+                ReservationUser currentReservationUser = reservation.getReservationUsers().get(dto.getPosition());
+
+                if (currentReservationUser != null) {
+                    responseDTO.setSuccess(false);
+                    return responseDTO;
+                }
+                position = dto.getPosition();
+            }
+
+            responseDTO.setReservation(reservation);
+            if(optionalReservationUser.isEmpty() && dto.isJoin()) {
+                ReservationUser reservationUser = new ReservationUser();
+                reservationUser.setReservation(reservation);
+                reservationUser.setUser(user);
+                reservationUser.setPosition(position);
+                reservationUser.setId(ReservationUserId.builder().reservationId(dto.getReservationID()).userId(user.getId()).build());
+                reservation.getReservationUsers().put(position, reservationUser);
+
+                reservationUserService.saveReservationUser(reservationUser);
+                reservationService.saveReservation(reservation);
 
 
-            responseDTO.setSuccess(true);
-            return responseDTO;
+                responseDTO.setSuccess(true);
+                return responseDTO;
+            }
         }
-        if(optionalReservationUser.isPresent() && !join) {
+        if(optionalReservationUser.isPresent() && !dto.isJoin()) {
             reservation.getReservationUsers().remove(optionalReservationUser.get());
 
             reservationService.saveReservation(reservation);
