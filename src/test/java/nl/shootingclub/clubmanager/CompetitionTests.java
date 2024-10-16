@@ -222,6 +222,52 @@ public class CompetitionTests {
                 .path("$.data.associationMutations.associationCompetitionMutations.removeUserScore.competition").hasValue()
                 .path("$.data.associationMutations.associationCompetitionMutations.removeUserScore.competition.competitionUsers[0].competitionRank").hasValue()
                 .path("$.data.associationMutations.associationCompetitionMutations.removeUserScore.competition.competitionUsers[0].scores").hasValue().entityList(Object.class).hasSize(0);
+        graphQlTesterWithAdminAccount.documentName("getCompetitionInformation")
+                .variable("associationID", associationID)
+                .variable("competitionID", compID)
+                .execute()
+                .path("$.data.associationQueries.associationCompetitionQueries.getCompetitionInformation.competition.competitionUsers[0].scores").hasValue().entityList(Object.class).hasSize(0);
+
+    }
+
+    @Test
+    public void testRemoveUserScoresToCompetition() {
+        String compID = graphQlTesterWithAdminAccount.documentName("createCompetition")
+                .variable("dto", Map.of("name", "Test", "description", "TestDescription","competitionRanking", "BEST", "competitionScoreType", "TIME", "startDate", LocalDateTime.now().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME), "endDate", LocalDateTime.now().plusMonths(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME)))
+                .variable("associationID", associationID)
+                .execute()
+                .path("$.data.associationMutations.associationCompetitionMutations.createCompetition.success").entity(Boolean.class).isEqualTo(true)
+                .path("$.data.associationMutations.associationCompetitionMutations.createCompetition.competition").hasValue()
+                .path("$.data.associationMutations.associationCompetitionMutations.createCompetition.competition.id").hasValue().entity(String.class).get();
+
+        graphQlTesterWithAdminAccount.documentName("addUserToCompetition")
+                .variable("dto", Map.of("userID", userID, "competitionID", compID))
+                .variable("associationID", associationID)
+                .execute()
+                .path("$.data.associationMutations.associationCompetitionMutations.addUser.success").entity(Boolean.class).isEqualTo(true)
+        ;
+        String id = graphQlTesterWithAdminAccount.documentName("addUserScoreToCompetition")
+                .variable("dto", Map.of("userID", userID, "competitionID", compID, "score", "30", "scoreDate", LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)))
+                .variable("associationID", associationID)
+                .execute()
+                .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.success").entity(Boolean.class).isEqualTo(true)
+                .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.competition").hasValue()
+                .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.competition.competitionUsers[0].competitionRank").hasValue().entity(Integer.class).isEqualTo(1)
+                .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.competition.competitionUsers[0].scores[0].score").hasValue().entity(String.class).isEqualTo("30")
+                .path("$.data.associationMutations.associationCompetitionMutations.addUserScore.competition.competitionUsers[0].scores[0].id").hasValue().entity(String.class).get();
+        graphQlTesterWithAdminAccount.documentName("removeUserScoresToCompetition")
+                .variable("dto", Map.of("userID", userID, "competitionID", compID, "scores", List.of(id)))
+                .variable("associationID", associationID)
+                .execute()
+                .path("$.data.associationMutations.associationCompetitionMutations.removeUserScores.success").entity(Boolean.class).isEqualTo(true)
+                .path("$.data.associationMutations.associationCompetitionMutations.removeUserScores.competition").hasValue()
+                .path("$.data.associationMutations.associationCompetitionMutations.removeUserScores.competition.competitionUsers[0].competitionRank").hasValue()
+                .path("$.data.associationMutations.associationCompetitionMutations.removeUserScores.competition.competitionUsers[0].scores").hasValue().entityList(Object.class).hasSize(0);
+        graphQlTesterWithAdminAccount.documentName("getCompetitionInformation")
+                .variable("associationID", associationID)
+                .variable("competitionID", compID)
+                .execute()
+                .path("$.data.associationQueries.associationCompetitionQueries.getCompetitionInformation.competition.competitionUsers[0].scores").hasValue().entityList(Object.class).hasSize(0);
     }
 
     @Test

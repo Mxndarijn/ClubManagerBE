@@ -1,0 +1,38 @@
+query MyQuery($associationID: ID!, $competitionID: ID!) {
+    associationQueries {
+        associationCompetitionQueries {
+            getCompetitionInformation(associationID: $associationID, competitionID: $competitionID) {
+                competition {
+                    active
+                    description
+                    endDate
+                    id
+                    name
+                    ranking
+                    scoreType
+                    startDate
+                    competitionUsers {
+                        calculatedScore
+                        competitionRank
+                        id {
+                            competitionId
+                            userId
+                        }
+                        scores {
+                            competitionRank
+                            id
+                            score
+                            scoreDate
+                        }
+                        user {
+                            email
+                            fullName
+                        }
+                    }
+                }
+                message
+                success
+            }
+        }
+    }
+}

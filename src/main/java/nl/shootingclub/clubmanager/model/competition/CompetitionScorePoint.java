@@ -30,4 +30,11 @@ public class CompetitionScorePoint extends CompetitionScore<CompetitionScorePoin
     long getNumericValue() {
         return score;
     }
+
+    @Override
+    public String toString() {
+        return "CompetitionScorePoint{" +
+                "score=" + score +
+                '}';
+    }
 }

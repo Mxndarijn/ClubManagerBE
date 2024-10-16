@@ -1,0 +1,39 @@
+mutation MyMutation($dto : CompetitionRemoveScoresDTO!, $associationID: ID!) {
+    associationMutations {
+        associationCompetitionMutations {
+            removeUserScores(
+                associationID: $associationID
+                dto: $dto
+            ) {
+                competition {
+                    startDate
+                    scoreType
+                    ranking
+                    name
+                    id
+                    endDate
+                    description
+                    active
+                    competitionUsers {
+                        competitionRank
+                        id {
+                            competitionId
+                            userId
+                        }
+                        scores {
+                            competitionRank
+                            id
+                            score
+                            scoreDate
+                        }
+                        user {
+                            id
+                        }
+                    }
+                }
+                success
+                message
+            }
+        }
+    }
+}

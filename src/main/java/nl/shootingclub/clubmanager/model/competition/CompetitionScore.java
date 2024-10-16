@@ -28,4 +28,13 @@ public abstract class CompetitionScore<T> implements Comparable<T> {
     private LocalDate scoreDate;
 
     abstract long getNumericValue();
+
+    @Override
+    public String toString() {
+        return "CompetitionScore{" +
+                "id=" + id +
+                ", competitionUser=" + competitionUser +
+                ", scoreDate=" + scoreDate +
+                '}';
+    }
 }
