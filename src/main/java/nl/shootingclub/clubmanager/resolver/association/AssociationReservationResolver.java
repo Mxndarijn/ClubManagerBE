@@ -390,6 +390,8 @@ public class AssociationReservationResolver {
 
             reservationService.saveReservation(reservation);
 
+
+            responseDTO.setReservation(reservation);
             responseDTO.setSuccess(true);
             return responseDTO;
         }
