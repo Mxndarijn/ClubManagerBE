@@ -10,4 +10,12 @@ public class ReservationResponseDTO {
 
     private boolean success;
     private Reservation reservation;
+
+    @Override
+    public String toString() {
+        return "ReservationResponseDTO{" +
+                "success=" + success +
+                ", reservation=" + reservation +
+                '}';
+    }
 }

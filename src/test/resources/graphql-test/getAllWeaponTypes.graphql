@@ -1,0 +1,8 @@
+query MyQuery {
+    utilQueries {
+        getAllWeaponTypes {
+            id
+            name
+        }
+    }
+}

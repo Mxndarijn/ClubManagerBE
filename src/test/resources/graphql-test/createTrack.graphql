@@ -1,0 +1,13 @@
+mutation MyMutation2($associationID: ID!, $dto: TrackDTO!) {
+    associationMutations {
+        associationTrackMutations {
+            createTrackForAssociation(
+                associationID: $associationID
+                dto: $dto
+            ) {
+                success
+                message
+            }
+        }
+    }
+}

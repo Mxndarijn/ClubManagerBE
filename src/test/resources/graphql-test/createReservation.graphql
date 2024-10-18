@@ -1,0 +1,51 @@
+mutation MyMutation($dto: CreateReservationDTO!) {
+    associationMutations {
+        associationReservationMutations {
+            createReservations(dto: $dto) {
+                reservations {
+                    membersCanChooseTheirOwnPosition
+                    allowedWeaponTypes {
+                        id
+                        name
+                    }
+                    association {
+                        id
+                        name
+                    }
+                    colorPreset {
+                        colorName
+                        id
+                        primaryColor
+                        secondaryColor
+                    }
+                    description
+                    endDate
+                    id
+                    maxSize
+                    reservationUsers {
+                        position
+                        registerDate
+                        id {
+                            reservationId
+                            userId
+                        }
+                        user {
+                            email
+                            id
+                        }
+                    }
+                    startDate
+                    status
+                    title
+                    tracks {
+                        name
+                        id
+                        description
+                    }
+                }
+                message
+                success
+            }
+        }
+    }
+}

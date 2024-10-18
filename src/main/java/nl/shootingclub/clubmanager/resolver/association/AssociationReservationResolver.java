@@ -47,7 +47,7 @@ public class AssociationReservationResolver {
     private final ReservationUserService reservationUserService;
     private final ReservationUserRepository reservationUserRepository;
 
-    public AssociationReservationResolver(ReservationService reservationService, AssociationService associationService, ReservationSeriesService reservationSeriesService, ColorPresetService colorPresetService, WeaponTypeService weaponTypeService, TrackService trackService, ReservationUserService reservationUserService, ReservationUserRepository reservationUserRepository) {
+    public AssociationReservationResolver(ReservationService reservationService, AssociationService associationService, ReservationSeriesService reservationSeriesService, ColorPresetService colorPresetService, WeaponTypeService weaponTypeService, TrackService trackService, ReservationUserService reservationUserService, ReservationUserRepository reservationUserRepository, ReservationUserRepository reservationUserRepository1) {
         this.reservationService = reservationService;
         this.associationService = associationService;
         this.reservationSeriesService = reservationSeriesService;
@@ -55,6 +55,7 @@ public class AssociationReservationResolver {
         this.weaponTypeService = weaponTypeService;
         this.trackService = trackService;
         this.reservationUserService = reservationUserService;
+        this.reservationUserRepository = reservationUserRepository1;
     }
 
     @SchemaMapping(typeName = "AssociationQueries")
@@ -375,6 +376,7 @@ public class AssociationReservationResolver {
                 reservationUser.setReservation(reservation);
                 reservationUser.setUser(user);
                 reservationUser.setPosition(position);
+                reservationUser.setRegisterDate(LocalDateTime.now());
                 reservationUser.setId(ReservationUserId.builder().reservationId(dto.getReservationID()).userId(user.getId()).build());
                 reservation.getReservationUsers().add(reservationUser);
 

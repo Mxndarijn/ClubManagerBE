@@ -1,0 +1,10 @@
+query MyQuery {
+    utilQueries {
+        getAllColorPresets {
+            colorName
+            id
+            primaryColor
+            secondaryColor
+        }
+    }
+}

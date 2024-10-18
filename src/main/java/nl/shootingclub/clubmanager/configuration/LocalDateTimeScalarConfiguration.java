@@ -6,7 +6,6 @@ import graphql.language.StringValue;
 import graphql.language.Value;
 import graphql.schema.*;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -52,7 +51,7 @@ public class LocalDateTimeScalarConfiguration {
                             try {
                                 return LocalDateTime.parse((String) input, DateTimeFormatter.ISO_LOCAL_DATE_TIME);
                             } catch (Exception e) {
-                                e.printStackTrace();
+//                                e.printStackTrace();
                                 return null;
                             }
                         } else {

@@ -1,0 +1,15 @@
+query MyQuery($associationID : ID!) {
+    associationQueries {
+        associationTrackQueries {
+            getTracksOfAssociation(associationID: $associationID) {
+                description
+                id
+                name
+                allowedWeaponTypes {
+                    id
+                    name
+                }
+            }
+        }
+    }
+}

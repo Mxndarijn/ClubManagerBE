@@ -1,0 +1,53 @@
+mutation MyMutation($associationID : ID!,$reservationID: ID!, $join : Boolean!, $position : Int!) {
+    associationMutations {
+        associationReservationMutations {
+            participateReservation(
+                associationID: $associationID
+                dto: { reservationID: $reservationID, join: $join, position: $position }
+            ) {
+                success
+                reservation {
+                    membersCanChooseTheirOwnPosition
+                    allowedWeaponTypes {
+                        id
+                        name
+                    }
+                    association {
+                        id
+                        name
+                    }
+                    colorPreset {
+                        colorName
+                        id
+                        primaryColor
+                        secondaryColor
+                    }
+                    description
+                    endDate
+                    id
+                    maxSize
+                    reservationUsers {
+                        position
+                        registerDate
+                        id {
+                            reservationId
+                            userId
+                        }
+                        user {
+                            email
+                            id
+                        }
+                    }
+                    startDate
+                    status
+                    title
+                    tracks {
+                        name
+                        id
+                        description
+                    }
+                }
+            }
+        }
+    }
+}
