@@ -7,7 +7,7 @@ type AssociationReservationMutations {
     editReservationSeries(dto: EditReservationSeriesDTO!): CreateReservationResponseDTO
     deleteReservationSeries(seriesID: ID!, associationID: ID!): DefaultBooleanResponseDTO
     deleteReservation(reservationID: ID!, associationID: ID!): DefaultBooleanResponseDTO
-    participateReservation(associationID: ID!, dto: CompetitionParticipateDTO!) : ReservationResponseDTO
+    participateReservation(associationID: ID!, dto: CompetitionParticipateDTO!) : ReservationResponseDTO!
 }
 
 enum ReservationRepeat {
@@ -27,8 +27,8 @@ type GetReservationResponseDTO {
 }
 
 type ReservationResponseDTO {
-    success: Boolean
-    reservation: Reservation
+    success: Boolean!
+    reservation: Reservation!
 }
 
 
