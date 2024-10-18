@@ -19,6 +19,7 @@ import nl.shootingclub.clubmanager.model.reservation.Reservation;
 import nl.shootingclub.clubmanager.model.reservation.ReservationSeries;
 import nl.shootingclub.clubmanager.model.reservation.ReservationUser;
 import nl.shootingclub.clubmanager.model.reservation.ReservationUserId;
+import nl.shootingclub.clubmanager.repository.ReservationUserRepository;
 import nl.shootingclub.clubmanager.service.*;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.graphql.data.method.annotation.Argument;
@@ -44,8 +45,9 @@ public class AssociationReservationResolver {
     private final WeaponTypeService weaponTypeService;
     private final TrackService trackService;
     private final ReservationUserService reservationUserService;
+    private final ReservationUserRepository reservationUserRepository;
 
-    public AssociationReservationResolver(ReservationService reservationService, AssociationService associationService, ReservationSeriesService reservationSeriesService, ColorPresetService colorPresetService, WeaponTypeService weaponTypeService, TrackService trackService, ReservationUserService reservationUserService) {
+    public AssociationReservationResolver(ReservationService reservationService, AssociationService associationService, ReservationSeriesService reservationSeriesService, ColorPresetService colorPresetService, WeaponTypeService weaponTypeService, TrackService trackService, ReservationUserService reservationUserService, ReservationUserRepository reservationUserRepository) {
         this.reservationService = reservationService;
         this.associationService = associationService;
         this.reservationSeriesService = reservationSeriesService;
@@ -368,7 +370,6 @@ public class AssociationReservationResolver {
                 position = dto.getPosition();
             }
 
-            responseDTO.setReservation(reservation);
             if(optionalReservationUser.isEmpty() && dto.isJoin()) {
                 ReservationUser reservationUser = new ReservationUser();
                 reservationUser.setReservation(reservation);
@@ -381,6 +382,7 @@ public class AssociationReservationResolver {
                 reservationService.saveReservation(reservation);
 
 
+                responseDTO.setReservation(reservation);
                 responseDTO.setSuccess(true);
                 return responseDTO;
             }
@@ -388,6 +390,7 @@ public class AssociationReservationResolver {
         if(optionalReservationUser.isPresent() && !dto.isJoin()) {
             reservation.getReservationUsers().remove(optionalReservationUser.get());
 
+            reservationUserRepository.deleteById(optionalReservationUser.get().getId());
             reservationService.saveReservation(reservation);
 
 

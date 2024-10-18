@@ -28,7 +28,7 @@ type GetReservationResponseDTO {
 
 type ReservationResponseDTO {
     success: Boolean!
-    reservation: Reservation!
+    reservation: Reservation
 }
 
 
