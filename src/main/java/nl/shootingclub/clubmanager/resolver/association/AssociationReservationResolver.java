@@ -183,11 +183,17 @@ public class AssociationReservationResolver {
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_TRACK_CONFIGURATION)")
     public DefaultBooleanResponseDTO deleteReservation(@Argument UUID reservationID, @Argument UUID associationID) {
         DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
-
-        Reservation reservation = getEntityOrThrow(
-                () -> reservationService.getByID(reservationID),
-                "reservation-not-found"
-        );
+        Reservation reservation;
+        try {
+            reservation = getEntityOrThrow(
+                    () -> reservationService.getByID(reservationID),
+                    "reservation-not-found"
+            );
+        } catch (IllegalArgumentException e) {
+            response.setSuccess(false);
+            response.setMessage("reservation-not-found");
+            return response;
+        }
 
         if(!reservation.getAssociation().getId().equals(associationID)) {
             response.setSuccess(false);
@@ -284,7 +290,7 @@ public class AssociationReservationResolver {
         return responseDTO;
     }
 
-    private <T> T getEntityOrThrow(Supplier<Optional<T>> supplier, String errorMessage) {
+    private <T> T getEntityOrThrow(Supplier<Optional<T>> supplier, String errorMessage) throws IllegalArgumentException{
         return supplier.get().orElseThrow(() -> new IllegalArgumentException(errorMessage));
     }
 
@@ -330,12 +336,18 @@ public class AssociationReservationResolver {
     @SchemaMapping(typeName = "AssociationReservationMutations")
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_RESERVATIONS)")
     public ReservationResponseDTO participateReservation(@Argument UUID associationID, @Argument CompetitionParticipateDTO dto) {
-        Reservation reservation = getEntityOrThrow(
-                () -> reservationService.getByID(dto.getReservationID()),
-                "reservation-not-found"
-        );
-
         ReservationResponseDTO responseDTO = new ReservationResponseDTO();
+        Reservation reservation;
+        try {
+            reservation = getEntityOrThrow(
+                    () -> reservationService.getByID(dto.getReservationID()),
+                    "reservation-not-found"
+            );
+        } catch (IllegalArgumentException e) {
+            responseDTO.setSuccess(false);
+            return responseDTO;
+        }
+
         if(!reservation.getAssociation().getId().equals(associationID)) {
             responseDTO.setSuccess(false);
             return responseDTO;

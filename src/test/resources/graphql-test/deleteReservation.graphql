@@ -1,0 +1,10 @@
+mutation MyMutation($associationID : ID!, $reservationID: ID!) {
+    associationMutations {
+        associationReservationMutations {
+            deleteReservation(associationID: $associationID, reservationID: $reservationID) {
+                message
+                success
+            }
+        }
+    }
+}

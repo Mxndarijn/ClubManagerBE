@@ -135,7 +135,7 @@ public class AuthenticationResolver {
         }
         // Authenticatieproces
         Optional<Authentication> auth = authenticationManager.authenticateOptional(
-                new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
+                new UsernamePasswordAuthenticationToken(loginRequest.getEmail().toLowerCase(), loginRequest.getPassword()));
         if(auth.isEmpty()) {
             DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
             response.setSuccess(false);
@@ -178,7 +178,7 @@ public class AuthenticationResolver {
 
             User user = new User();
             user.setFullName(registerRequest.getFullName());
-            user.setEmail(registerRequest.getEmail());
+            user.setEmail(registerRequest.getEmail().toLowerCase());
             user.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
 
             Optional<Language> optionalLanguage = Language.fromString(registerRequest.getLanguage());
