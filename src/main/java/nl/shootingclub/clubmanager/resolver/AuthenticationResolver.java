@@ -158,6 +158,7 @@ public class AuthenticationResolver {
     @SchemaMapping(typeName = "AuthenticationMutations")
     public DefaultBooleanResponseDTO register( @Argument @Valid RegisterDTO registerRequest) {
         try {
+            registerRequest.setEmail(registerRequest.getEmail().toLowerCase());
             Bucket bucket = ipBucketCache.get(request.getRemoteAddr(), AuthenticationResolver::createBucketForIp);
             if (bucket == null || !bucket.tryConsume(1)) {
                 DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
@@ -208,8 +209,20 @@ public class AuthenticationResolver {
 
             userService.createUser(user);
 
+            Optional<Authentication> auth = authenticationManager.authenticateOptional(
+                    new UsernamePasswordAuthenticationToken(user.getEmail(), registerRequest.getPassword()));
+            if(auth.isEmpty()) {
+                response.setSuccess(false);
+                response.setMessage("account-bad-credentials");
+                return response;
+            }
+            SecurityContextHolder.getContext().setAuthentication(auth.get());
 
-            final String token = userAuthProvider.createToken(new HashMap<>(), user.getEmail());
+            // Token creatie
+            final String token = userAuthProvider.createToken(new HashMap<>(), (String) auth.get().getPrincipal());
+
+
+//            final String token = userAuthProvider.createToken(new HashMap<>(), user.getEmail());
 
             response.setSuccess(true);
             response.setMessage(token);
