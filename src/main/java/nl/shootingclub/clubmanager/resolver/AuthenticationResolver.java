@@ -213,12 +213,13 @@ public class AuthenticationResolver {
 
             response.setSuccess(true);
             response.setMessage(token);
-            try {
-
-                emailService.sendHTMLMail(user.getEmail(), HTMLTemplate.REGISTERED, optionalLanguage.get(),  new HashMap<>());
-            } catch (MessagingException e) {
-                System.out.printf("Could not send registered mail to " + user.getEmail());
-            }
+            new Thread(() -> {
+                try {
+                    emailService.sendHTMLMail(user.getEmail(), HTMLTemplate.REGISTERED, optionalLanguage.get(), new HashMap<>());
+                } catch (MessagingException e) {
+                    System.out.printf("Could not send registered mail to " + user.getEmail());
+                }
+            }).start();
 
             return response;
 
