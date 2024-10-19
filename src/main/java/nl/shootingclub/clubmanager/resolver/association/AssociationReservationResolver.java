@@ -238,6 +238,7 @@ public class AssociationReservationResolver {
         while (currentDate.isBefore(repeatUntil.get())) {
             LocalDateTime reservationEnd = currentDate.plus(period);
             Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(),preset,  dto.isUserCanChooseOwnPosition());
+            reservation.setReservationSeries(serie);
             serie.getReservations().add(reservationService.createReservation(reservation));
             currentDate = currentDate.plusDays(7);
         }
@@ -266,6 +267,7 @@ public class AssociationReservationResolver {
         while (currentDate.isBefore(dto.getRepeatUntil().get())) {
             LocalDateTime reservationEnd = currentDate.plus(period);
             Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset, dto.isUserCanChooseOwnPosition());
+            reservation.setReservationSeries(serie);
             reservation = reservationService.createReservation(reservation);
             serie.getReservations().add(reservation);
             currentDate = currentDate.plusDays(dto.getCustomDaysBetween().get());
