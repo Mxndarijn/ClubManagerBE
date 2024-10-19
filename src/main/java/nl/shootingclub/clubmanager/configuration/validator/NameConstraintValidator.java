@@ -17,9 +17,11 @@ public class NameConstraintValidator implements ConstraintValidator<ValidName, S
         if(name == null) {
             return false;
         }
-        if(allowSpaces) {
-            return name.matches("^[a-zA-Z]+( [a-zA-Z]+)*$");
+        if (allowSpaces) {
+            return name.matches("^[a-zA-Zà-ÿÀ-Ÿ'\\-]+( [a-zA-Zà-ÿÀ-Ÿ'\\-]+)+$");
         }
-        return name.matches("^[a-zA-Z]+$");
+
+        return name.matches("^[a-zA-Zà-ÿÀ-Ÿ'\\-]+$");
+
     }
 }
