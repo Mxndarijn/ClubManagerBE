@@ -28,6 +28,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.*;
@@ -228,7 +229,8 @@ public class AssociationReservationResolver {
             throw new IllegalArgumentException("repeat-until-or-custom-days-missing");
         }
 
-        Period period = Period.between(startDate.toLocalDate(), endDate.toLocalDate());
+        Duration period = Duration.between(startDate.toLocalDate(), endDate.toLocalDate());
+
 
         ReservationSeries serie = new ReservationSeries();
         LocalDateTime currentDate = startDate;
@@ -254,7 +256,7 @@ public class AssociationReservationResolver {
 
     private CreateReservationResponseDTO createDailyRepeatingReservations(CreateReservationDTO dto, Association association, Set<Track> tracks, Set<WeaponType> allowedWeaponTypes, ColorPreset preset) {
         LocalDateTime currentDate = dto.getStartTime();
-        Period period = Period.between(dto.getStartTime().toLocalDate(), dto.getEndTime().toLocalDate());
+        Duration period = Duration.between(dto.getStartTime().toLocalDate(), dto.getEndTime().toLocalDate());
 
         if (dto.getRepeatUntil().isEmpty() || dto.getCustomDaysBetween().isEmpty()) {
             throw new IllegalArgumentException("repeat-until-or-custom-days-between-missing");
