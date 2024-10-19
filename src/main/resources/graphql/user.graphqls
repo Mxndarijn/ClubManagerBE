@@ -17,7 +17,7 @@ type User {
     image: Image
     associations: [UserAssociation]
     presences: [UserPresence]
-    reservations: [ReservationUser]
+    reservations(startDate: LocalDateTime, endDate: LocalDateTime): [ReservationUser]
     role: AccountRole
     invites: [AssociationInvite]
 }
