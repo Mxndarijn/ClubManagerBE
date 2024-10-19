@@ -15,4 +15,14 @@ public class CreateReservationResponseDTO {
     private String message;
     private Set<Reservation> reservations;
     private ReservationSeries reservationSeries;
+
+    @Override
+    public String toString() {
+        return "CreateReservationResponseDTO{" +
+                "success=" + success +
+                ", message='" + message + '\'' +
+                ", reservations=" + reservations +
+                ", reservationSeries=" + reservationSeries +
+                '}';
+    }
 }

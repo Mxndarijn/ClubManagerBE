@@ -3,7 +3,13 @@ query MyQuery($associationID: ID!, $endTime : LocalDateTime!, $startTime: LocalD
         associationReservationQueries {
             getReservationsBetween(associationID: $associationID, endDate: $endTime, startDate: $startTime) {
                 success
+
                 reservations {
+                    reservationSeries {
+                        id,
+                        title,
+                        description
+                    }
                     membersCanChooseTheirOwnPosition
                     allowedWeaponTypes {
                         id

@@ -1,10 +1,12 @@
 package nl.shootingclub.clubmanager;
 
+import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
 import nl.shootingclub.clubmanager.dto.ColorPresetDTO;
 import nl.shootingclub.clubmanager.dto.WeaponTypeDTO;
 import nl.shootingclub.clubmanager.dto.response.*;
 import nl.shootingclub.clubmanager.model.AssociationRole;
 import nl.shootingclub.clubmanager.model.reservation.Reservation;
+import nl.shootingclub.clubmanager.model.reservation.ReservationSeries;
 import nl.shootingclub.clubmanager.model.reservation.ReservationUser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
@@ -17,7 +19,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ReservationTests {
 
@@ -525,6 +527,106 @@ public class ReservationTests {
         Assertions.assertFalse(checkResponse1.isSuccess(), "Response should indicate failure for non-existing reservation.");
 
 
+
+    }
+
+    @Test
+    public void testCreateReservationSeries() {
+        ReservationSeries reservationSeries = createReservationSeries();
+    }
+
+    public ReservationSeries createReservationSeries() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        String title = random.ints(20, 'A', 'Z' + 1)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+        String description = random.ints(32, 'A', 'Z' + 1)
+                .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+                .toString();
+
+        List<ColorPresetDTO> colorPresets = graphQlTesterWithAdminAccount.documentName("getColorPresets")
+                .execute()
+                .path("$.data.utilQueries.getAllColorPresets").hasValue().entityList(ColorPresetDTO.class).get();
+
+        List<WeaponTypeDTO> weaponTypes = graphQlTesterWithAdminAccount.documentName("getAllWeaponTypes")
+                .execute()
+                .path("$.data.utilQueries.getAllWeaponTypes").hasValue().entityList(WeaponTypeDTO.class).get();
+
+        graphQlTesterWithAdminAccount.documentName("createTrack")
+                .variable("associationID", associationID)
+                .variable("dto", Map.of("name", "TestTrack", "description", "TestDescription", "allowedWeaponTypes", List.of(weaponTypes.get(0).getId().toString())))
+                .execute();
+
+        List<TrackDTOFull> tracks = graphQlTesterWithAdminAccount.documentName("getAllTracks")
+                .variable("associationID", associationID)
+                .execute()
+                .path("$.data.associationQueries.associationTrackQueries.getTracksOfAssociation").hasValue().entityList(TrackDTOFull.class).get();
+
+        Assertions.assertFalse(colorPresets.isEmpty(), "ColorPresets list should not be empty.");
+        Assertions.assertFalse(weaponTypes.isEmpty(), "weaponTypes list should not be empty.");
+        Assertions.assertFalse(tracks.isEmpty(), "tracks list should not be empty.");
+
+        LocalDateTime startDate = LocalDateTime.now().plusDays(2).withHour(10).withMinute(0).withSecond(0).withNano(0);
+        System.out.println(startDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        LocalDateTime endDate = startDate.withHour(14).withMinute(0).withSecond(0).withNano(0);
+        System.out.println(endDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        Map<String, Object> dto = new HashMap<>();
+        dto.put("title", title);
+        dto.put("description", description);
+        dto.put("startTime", startDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        dto.put("endTime", endDate.format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        dto.put("maxSize", "2");
+        dto.put("repeatType", ReservationRepeat.DAY);
+        dto.put("associationID", associationID);
+        dto.put("userCanChooseOwnPosition", false);
+        dto.put("customDaysBetween", 1);
+        dto.put("repeatUntil", endDate.plusDays(5).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME));
+        dto.put("colorPreset", colorPresets.get(0).getId().toString());
+        dto.put("allowedWeaponTypes", List.of(weaponTypes.get(0).getId().toString()));
+        dto.put("tracks", List.of(tracks.get(0).getId().toString()));
+
+        CreateReservationResponseDTO response = graphQlTesterWithAdminAccount.documentName("createReservation")
+                .variable("dto", dto)
+                .execute()
+                .path("$.data.associationMutations.associationReservationMutations.createReservations")
+                .entity(CreateReservationResponseDTO.class)
+                .get();
+        Assertions.assertTrue(response.isSuccess(), "Should return success.");
+        assertFalse(response.getReservations().isEmpty(), "List should contain one reservation.");
+        System.out.println(response);
+        Assertions.assertNotNull(response.getReservationSeries(), "Should have reservationseries.");
+
+        Reservation reservation = response.getReservations().stream()
+                .min(Comparator.comparing(Reservation::getStartDate))
+                .orElseThrow(() -> new NoSuchElementException("No reservations found"));
+
+        LocalDateTime expectedStartTime = LocalDateTime.parse((String) dto.get("startTime"), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        LocalDateTime expectedEndTime = LocalDateTime.parse((String) dto.get("endTime"), DateTimeFormatter.ISO_LOCAL_DATE_TIME);
+        Assertions.assertEquals(expectedStartTime, reservation.getStartDate(), "Start times should match.");
+        Assertions.assertEquals(expectedEndTime, reservation.getEndDate(), "End times should match.");
+        assertNotNull(reservation.getReservationSeries());
+        
+        String reservationID = reservation.getId().toString();
+
+        GetReservationResponseDTO checkResponse2 = graphQlTesterWithAdminAccount.documentName("getReservationsBetween")
+                .variable("associationID", associationID)
+                .variable("startTime", reservation.getStartDate().minusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                .variable("endTime", reservation.getEndDate().plusDays(1).format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                .execute()
+                .path("$.data.associationQueries.associationReservationQueries.getReservationsBetween")
+                .entity(GetReservationResponseDTO.class)
+                .get();
+        
+        
+
+        Optional<Reservation> reservationCheck = checkResponse2.getReservations().stream()
+                .filter(r -> r.getId().toString().equals(reservationID))
+                .findFirst();
+
+        assertTrue(reservationCheck.isPresent());
+        assertNotNull(reservationCheck.get().getReservationSeries());
+
+        return response.getReservationSeries();
 
     }
 

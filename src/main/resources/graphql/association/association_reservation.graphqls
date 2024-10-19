@@ -3,10 +3,10 @@ type AssociationReservationQueries {
 }
 
 type AssociationReservationMutations {
-    createReservations(dto: CreateReservationDTO!): CreateReservationResponseDTO
-    editReservationSeries(dto: EditReservationSeriesDTO!): CreateReservationResponseDTO
-    deleteReservationSeries(seriesID: ID!, associationID: ID!): DefaultBooleanResponseDTO
-    deleteReservation(reservationID: ID!, associationID: ID!): DefaultBooleanResponseDTO
+    createReservations(dto: CreateReservationDTO!): CreateReservationResponseDTO!
+    editReservationSeries(dto: EditReservationSeriesDTO!): CreateReservationResponseDTO!
+    deleteReservationSeries(seriesID: ID!, associationID: ID!): DefaultBooleanResponseDTO!
+    deleteReservation(reservationID: ID!, associationID: ID!): DefaultBooleanResponseDTO!
     participateReservation(associationID: ID!, dto: CompetitionParticipateDTO!) : ReservationResponseDTO!
 }
 

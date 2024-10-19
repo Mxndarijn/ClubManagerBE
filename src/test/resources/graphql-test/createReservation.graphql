@@ -2,6 +2,13 @@ mutation MyMutation($dto: CreateReservationDTO!) {
     associationMutations {
         associationReservationMutations {
             createReservations(dto: $dto) {
+                reservationSeries {
+                    reservations {
+                        id
+                    }
+                    description
+                    title
+                }
                 reservations {
                     membersCanChooseTheirOwnPosition
                     allowedWeaponTypes {
@@ -41,6 +48,9 @@ mutation MyMutation($dto: CreateReservationDTO!) {
                         name
                         id
                         description
+                    }
+                    reservationSeries {
+                        id
                     }
                 }
                 message

@@ -19,6 +19,7 @@ import nl.shootingclub.clubmanager.model.reservation.Reservation;
 import nl.shootingclub.clubmanager.model.reservation.ReservationSeries;
 import nl.shootingclub.clubmanager.model.reservation.ReservationUser;
 import nl.shootingclub.clubmanager.model.reservation.ReservationUserId;
+import nl.shootingclub.clubmanager.repository.ReservationRepository;
 import nl.shootingclub.clubmanager.repository.ReservationUserRepository;
 import nl.shootingclub.clubmanager.service.*;
 import org.jetbrains.annotations.NotNull;
@@ -47,8 +48,9 @@ public class AssociationReservationResolver {
     private final TrackService trackService;
     private final ReservationUserService reservationUserService;
     private final ReservationUserRepository reservationUserRepository;
+    private final ReservationRepository reservationRepository;
 
-    public AssociationReservationResolver(ReservationService reservationService, AssociationService associationService, ReservationSeriesService reservationSeriesService, ColorPresetService colorPresetService, WeaponTypeService weaponTypeService, TrackService trackService, ReservationUserService reservationUserService, ReservationUserRepository reservationUserRepository, ReservationUserRepository reservationUserRepository1) {
+    public AssociationReservationResolver(ReservationService reservationService, AssociationService associationService, ReservationSeriesService reservationSeriesService, ColorPresetService colorPresetService, WeaponTypeService weaponTypeService, TrackService trackService, ReservationUserService reservationUserService, ReservationUserRepository reservationUserRepository, ReservationUserRepository reservationUserRepository1, ReservationRepository reservationRepository) {
         this.reservationService = reservationService;
         this.associationService = associationService;
         this.reservationSeriesService = reservationSeriesService;
@@ -57,6 +59,7 @@ public class AssociationReservationResolver {
         this.trackService = trackService;
         this.reservationUserService = reservationUserService;
         this.reservationUserRepository = reservationUserRepository1;
+        this.reservationRepository = reservationRepository;
     }
 
     @SchemaMapping(typeName = "AssociationQueries")
@@ -257,7 +260,7 @@ public class AssociationReservationResolver {
 
     private CreateReservationResponseDTO createDailyRepeatingReservations(CreateReservationDTO dto, Association association, Set<Track> tracks, Set<WeaponType> allowedWeaponTypes, ColorPreset preset) {
         LocalDateTime currentDate = dto.getStartTime();
-        Duration period = Duration.between(dto.getStartTime().toLocalDate(), dto.getEndTime().toLocalDate());
+        Duration period = Duration.between(dto.getStartTime(), dto.getEndTime());
 
         if (dto.getRepeatUntil().isEmpty() || dto.getCustomDaysBetween().isEmpty()) {
             throw new IllegalArgumentException("repeat-until-or-custom-days-between-missing");
@@ -267,18 +270,23 @@ public class AssociationReservationResolver {
         while (currentDate.isBefore(dto.getRepeatUntil().get())) {
             LocalDateTime reservationEnd = currentDate.plus(period);
             Reservation reservation = buildReservation(currentDate, reservationEnd, association, tracks, allowedWeaponTypes, dto.getTitle(), dto.getDescription(), dto.getMaxSize(), preset, dto.isUserCanChooseOwnPosition());
-            reservation.setReservationSeries(serie);
-            reservation = reservationService.createReservation(reservation);
             serie.getReservations().add(reservation);
             currentDate = currentDate.plusDays(dto.getCustomDaysBetween().get());
         }
 
         if (!serie.getReservations().isEmpty()) {
+            System.out.println("not empty");
             serie.setTitle(dto.getTitle());
             serie.setDescription(dto.getDescription());
             serie.setMaxUsers(dto.getMaxSize());
             serie.setAssociation(association);
             serie = reservationSeriesService.createReservationSeries(serie);
+            ReservationSeries finalSerie = serie;
+            serie.getReservations().forEach(res -> {
+                res.setReservationSeries(finalSerie);
+            });
+
+            reservationRepository.saveAll(serie.getReservations());
         }
 
         return createReservationResponseDTO(serie);
@@ -291,6 +299,8 @@ public class AssociationReservationResolver {
         responseDTO.setSuccess(true);
         responseDTO.setReservations(serie.getReservations());
         responseDTO.setReservationSeries(serie);
+
+        System.out.println(responseDTO);
         return responseDTO;
     }
 
