@@ -220,6 +220,7 @@ public class AuthenticationResolver {
 
             // Token creatie
             final String token = userAuthProvider.createToken(new HashMap<>(), (String) auth.get().getPrincipal());
+            System.out.println("token: " + token);
 
 
 //            final String token = userAuthProvider.createToken(new HashMap<>(), user.getEmail());
