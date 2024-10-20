@@ -6,8 +6,6 @@ import io.micrometer.observation.annotation.Observed;
 import nl.shootingclub.clubmanager.model.User;
 import nl.shootingclub.clubmanager.model.reservation.ReservationUser;
 import nl.shootingclub.clubmanager.service.ReservationUserService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -18,13 +16,12 @@ import java.util.Set;
 @Component
 public class UserReservationsDataFetcher implements DataFetcher<Set<ReservationUser>> {
 
-    @Autowired
-    private ReservationUserService reservationUserService;
+    private final ReservationUserService reservationUserService;
 
-    @Bean
-    public static UserReservationsDataFetcher userReservationsDataFetcher() {
-        return new UserReservationsDataFetcher();
+    public UserReservationsDataFetcher(ReservationUserService reservationUserService) {
+        this.reservationUserService = reservationUserService;
     }
+
     @Override
     @Observed
     public Set<ReservationUser> get(DataFetchingEnvironment environment) throws Exception {
@@ -32,23 +29,8 @@ public class UserReservationsDataFetcher implements DataFetcher<Set<ReservationU
         if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof User contextUser) {
             if(contextUser.getId().equals(user.getId())) {
 
-                String startDateArg = environment.getArgument("startDate");
-                String endDateArg = environment.getArgument("endDate");
-
-                LocalDateTime startDate = null;
-                LocalDateTime endDate = null;
-                try {
-                    if (startDateArg != null) {
-                        startDate = LocalDateTime.parse(startDateArg);
-                    }
-                } catch (Exception ignored) {
-                }
-                try {
-                    if (endDateArg != null) {
-                        endDate = LocalDateTime.parse(endDateArg);
-                    }
-                } catch (Exception ignored) {
-                }
+                LocalDateTime startDate = environment.getArgument("startDate");
+                LocalDateTime endDate = environment.getArgument("endDate");
 
                 if(startDate == null && endDate == null) {
                     return user.getReservations();

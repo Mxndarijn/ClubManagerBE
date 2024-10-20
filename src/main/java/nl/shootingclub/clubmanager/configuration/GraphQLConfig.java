@@ -4,6 +4,7 @@ import graphql.schema.idl.TypeRuntimeWiring;
 import nl.shootingclub.clubmanager.configuration.datafetcher.association.*;
 import nl.shootingclub.clubmanager.configuration.datafetcher.user.UserFullNameDataFetcher;
 import nl.shootingclub.clubmanager.configuration.datafetcher.user.UserImageDataFetcher;
+import nl.shootingclub.clubmanager.configuration.datafetcher.user.UserReservationsDataFetcher;
 import nl.shootingclub.clubmanager.configuration.datafetcher.userassociation.UserAssociationAssociationRoleDataFetcher;
 import nl.shootingclub.clubmanager.configuration.datafetcher.userassociation.UserAssociationMemberSinceDataFetcher;
 import nl.shootingclub.clubmanager.configuration.datafetcher.userassociation.UserAssociationUserDataFetcher;
@@ -14,7 +15,6 @@ import org.springframework.graphql.execution.RuntimeWiringConfigurer;
 import static nl.shootingclub.clubmanager.configuration.datafetcher.user.UserInvitesDataFetcher.userInvitesDataFetcher;
 import static nl.shootingclub.clubmanager.configuration.datafetcher.user.UserLanguageDataFetcher.userLanguageDataFetcher;
 import static nl.shootingclub.clubmanager.configuration.datafetcher.user.UserPresencesDataFetcher.userPresencesDataFetcher;
-import static nl.shootingclub.clubmanager.configuration.datafetcher.user.UserReservationsDataFetcher.userReservationsDataFetcher;
 import static nl.shootingclub.clubmanager.configuration.datafetcher.user.UserRoleDataFetcher.userRoleDataFetcher;
 import static nl.shootingclub.clubmanager.configuration.datafetcher.userassociation.UserAssociationsDataFetcher.userAssociationsDataFetcher;
 
@@ -37,8 +37,9 @@ public class GraphQLConfig {
     private final AssociationActiveDataFetcher associationActiveDataFetcher;
     private final AssociationUsersDataFetcher associationUsersDataFetcher;
     private final AssociationWelcomeMessageDataFetcher associationWelcomeMessageDataFetcher;
+    private final UserReservationsDataFetcher userReservationsDataFetcher;
 
-    public GraphQLConfig(LocalDateTimeScalarConfiguration localDateTimeScalarConfiguration, LongScalarConfiguration longScalarConfiguration, LocalDateScalarConfiguration localDateScalarConfiguration, UserImageDataFetcher userImageDataFetcher, UserFullNameDataFetcher userFullNameDataFetcher, UserAssociationUserDataFetcher userAssociationUserDataFetcher, UserAssociationMemberSinceDataFetcher userAssociationMemberSinceDataFetcher, UserAssociationAssociationRoleDataFetcher userAssociationAssociationRoleDataFetcher, AssociationInvitesDataFetcher associationInvitesDataFetcher, AssociationCompetitionsDataFetcher associationCompetitionsDataFetcher, AssociationContactEmailDataFetcher associationContactEmailDataFetcher, AssociationActiveDataFetcher associationActiveDataFetcher, AssociationUsersDataFetcher associationUsersDataFetcher, AssociationWelcomeMessageDataFetcher associationWelcomeMessageDataFetcher) {
+    public GraphQLConfig(LocalDateTimeScalarConfiguration localDateTimeScalarConfiguration, LongScalarConfiguration longScalarConfiguration, LocalDateScalarConfiguration localDateScalarConfiguration, UserImageDataFetcher userImageDataFetcher, UserFullNameDataFetcher userFullNameDataFetcher, UserAssociationUserDataFetcher userAssociationUserDataFetcher, UserAssociationMemberSinceDataFetcher userAssociationMemberSinceDataFetcher, UserAssociationAssociationRoleDataFetcher userAssociationAssociationRoleDataFetcher, AssociationInvitesDataFetcher associationInvitesDataFetcher, AssociationCompetitionsDataFetcher associationCompetitionsDataFetcher, AssociationContactEmailDataFetcher associationContactEmailDataFetcher, AssociationActiveDataFetcher associationActiveDataFetcher, AssociationUsersDataFetcher associationUsersDataFetcher, AssociationWelcomeMessageDataFetcher associationWelcomeMessageDataFetcher, UserReservationsDataFetcher userReservationsDataFetcher) {
         this.localDateTimeScalarConfiguration = localDateTimeScalarConfiguration;
         this.longScalarConfiguration = longScalarConfiguration;
         this.localDateScalarConfiguration = localDateScalarConfiguration;
@@ -53,6 +54,7 @@ public class GraphQLConfig {
         this.associationActiveDataFetcher = associationActiveDataFetcher;
         this.associationUsersDataFetcher = associationUsersDataFetcher;
         this.associationWelcomeMessageDataFetcher = associationWelcomeMessageDataFetcher;
+        this.userReservationsDataFetcher = userReservationsDataFetcher;
     }
 
     /**
@@ -70,7 +72,7 @@ public class GraphQLConfig {
                         .dataFetcher("language", userLanguageDataFetcher())
                         .dataFetcher("invites", userInvitesDataFetcher())
                         .dataFetcher("role", userRoleDataFetcher())
-                        .dataFetcher("reservations", userReservationsDataFetcher())
+                        .dataFetcher("reservations", userReservationsDataFetcher)
                         .dataFetcher("presences", userPresencesDataFetcher())
                         .dataFetcher("associations", userAssociationsDataFetcher())
                         .dataFetcher("fullName", userFullNameDataFetcher)
