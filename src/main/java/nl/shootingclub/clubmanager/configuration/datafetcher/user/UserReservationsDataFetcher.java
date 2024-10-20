@@ -41,6 +41,9 @@ public class UserReservationsDataFetcher implements DataFetcher<Set<ReservationU
                     if (startDateArg != null) {
                         startDate = LocalDateTime.parse(startDateArg);
                     }
+                } catch (Exception ignored) {
+                }
+                try {
                     if (endDateArg != null) {
                         endDate = LocalDateTime.parse(endDateArg);
                     }
