@@ -18,15 +18,16 @@ public class ReservationUser {
 
     @ManyToOne
     @MapsId("userId")
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @ManyToOne
     @MapsId("reservationId")
-    @JoinColumn(name = "reservation_id")
+    @JoinColumn(name = "reservation_id", nullable = false)
+
     private Reservation reservation;
 
-    @Column
+    @Column(nullable = false)
     private LocalDateTime registerDate;
 
     @Column(name = "user_number")
