@@ -32,10 +32,11 @@ import org.springframework.stereotype.Controller;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.*;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 @Controller
 public class AssociationReservationResolver {
@@ -371,15 +372,12 @@ public class AssociationReservationResolver {
 
         if(dto.isJoin()) {
 
-            List<Integer> positionList = reservation.getReservationUsers().stream().map(ReservationUser::getPosition).toList();
-            OptionalInt earliestAvailablePosition = IntStream.range(0, reservation.getMaxSize())
-                    .filter(position -> !positionList.contains(position))
-                    .findFirst();
+            Optional<Integer> earliestAvailablePosition = reservation.getOpenPositions().stream().findFirst();
             if(earliestAvailablePosition.isEmpty()) {
                 responseDTO.setSuccess(false);
                 return responseDTO;
             }
-            int position = earliestAvailablePosition.getAsInt();
+            int position = earliestAvailablePosition.get();
 
             if(reservation.isMembersCanChooseTheirOwnPosition()) {
                 if (dto.getPosition() == null || dto.getPosition() < 0 || dto.getPosition() >= reservation.getMaxSize()) {
@@ -406,6 +404,8 @@ public class AssociationReservationResolver {
                 reservationUser.setId(ReservationUserId.builder().reservationId(dto.getReservationID()).userId(user.getId()).build());
                 reservation.getReservationUsers().add(reservationUser);
 
+                reservation.getOpenPositions().remove(position);
+
                 reservationUserService.saveReservationUser(reservationUser);
                 reservationService.saveReservation(reservation);
 
@@ -417,6 +417,9 @@ public class AssociationReservationResolver {
         }
         if(optionalReservationUser.isPresent() && !dto.isJoin()) {
             reservation.getReservationUsers().remove(optionalReservationUser.get());
+
+            int pos = optionalReservationUser.get().getPosition();
+            reservation.getOpenPositions().add(pos);
 
             reservationUserRepository.deleteById(optionalReservationUser.get().getId());
             reservationService.saveReservation(reservation);

@@ -77,6 +77,20 @@ public class Reservation {
     @JoinColumn(name = "color_preset_id", referencedColumnName = "id")
     private ColorPreset colorPreset;
 
+    @ElementCollection
+    @CollectionTable(name = "reservation_open_positions", joinColumns = @JoinColumn(name = "reservation_id"))
+    @Column(name = "position")
+    private Set<Integer> openPositions = new HashSet<>();
+
+    @PrePersist
+    @PreUpdate
+    private void initializeOpenPositions() {
+        if (maxSize != null && openPositions.isEmpty()) {
+            for (int i = 0; i < maxSize; i++) {
+                openPositions.add(i);
+            }
+        }
+    }
 
 
 }
