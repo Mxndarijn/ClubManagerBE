@@ -1,11 +1,8 @@
 package nl.shootingclub.clubmanager.configuration;
 
-import graphql.schema.Coercing;
-import graphql.schema.CoercingParseLiteralException;
-import graphql.schema.CoercingParseValueException;
-import graphql.schema.CoercingSerializeException;
-import graphql.schema.GraphQLScalarType;
 import graphql.language.IntValue;
+import graphql.schema.*;
+import io.micrometer.observation.annotation.Observed;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -14,6 +11,7 @@ import java.time.Duration;
 @Configuration
 public class LongScalarConfiguration {
 
+    @Observed
     @Bean
     public GraphQLScalarType longScalar() {
         return GraphQLScalarType.newScalar()

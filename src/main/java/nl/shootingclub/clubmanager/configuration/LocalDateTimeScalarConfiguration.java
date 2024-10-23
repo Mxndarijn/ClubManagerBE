@@ -5,6 +5,7 @@ import graphql.execution.CoercedVariables;
 import graphql.language.StringValue;
 import graphql.language.Value;
 import graphql.schema.*;
+import io.micrometer.observation.annotation.Observed;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,6 +22,7 @@ public class LocalDateTimeScalarConfiguration {
      *
      * @return The created GraphQLScalarType.
      */
+    @Observed
     @Bean
     public GraphQLScalarType localDateTimeScalar() {
         return GraphQLScalarType.newScalar()

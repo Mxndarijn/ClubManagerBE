@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nl.shootingclub.clubmanager.model.competition.AssociationCompetition;
 import nl.shootingclub.clubmanager.model.data.Image;
+import nl.shootingclub.clubmanager.model.reservation.Reservation;
 
 import java.util.Set;
 import java.util.UUID;
@@ -50,6 +51,9 @@ public class Association {
 
     @OneToMany(mappedBy = "association")
     private Set<AssociationCompetition> competitions;
+
+    @OneToMany(mappedBy = "association")
+    private Set<Reservation> reservations;
 
 
 

@@ -69,6 +69,7 @@ public class ShootingClubManagerApplication {
 
 
 	public static void main(String[] args) {
+		
 		SpringApplication.run(ShootingClubManagerApplication.class, args);
 	}
 

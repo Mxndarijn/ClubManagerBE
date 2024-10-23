@@ -11,4 +11,10 @@ import java.util.UUID;
 public interface ReservationRepository extends JpaRepository<Reservation, UUID> {
     @Observed
     Set<Reservation> findAllByAssociationIdAndStartDateGreaterThanEqualAndEndDateLessThanEqual(UUID associationID, LocalDateTime startDate, LocalDateTime endDate);
+
+    Set<Reservation> findByAssociationIdAndStartDateAfter(UUID id, LocalDateTime startDate);
+
+    Set<Reservation> findByAssociationIdAndEndDateBefore(UUID id, LocalDateTime endDate);
+
+    Set<Reservation> findByAssociationId(UUID id);
 }

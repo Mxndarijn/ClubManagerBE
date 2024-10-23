@@ -28,6 +28,7 @@ type Association {
     users: [UserAssociation]
     invites: [AssociationInvite]
     competitions: [AssociationCompetition]
+    reservations(startDate: LocalDateTime, endDate: LocalDateTime) : [Reservation]
 }
 
 type AssociationPermissionDTO {
