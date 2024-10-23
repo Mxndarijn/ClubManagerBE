@@ -372,7 +372,7 @@ public class AssociationReservationResolver {
 
         if(dto.isJoin()) {
 
-            Optional<Integer> earliestAvailablePosition = reservation.getOpenPositions().stream().findFirst();
+            Optional<Integer> earliestAvailablePosition = reservation.getOpenPositions().stream().min(Integer::compareTo);
             if(earliestAvailablePosition.isEmpty()) {
                 responseDTO.setSuccess(false);
                 return responseDTO;
