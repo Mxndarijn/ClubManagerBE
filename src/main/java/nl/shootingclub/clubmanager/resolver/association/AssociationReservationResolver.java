@@ -90,6 +90,22 @@ public class AssociationReservationResolver {
 
     }
 
+    @Observed
+    @SchemaMapping(typeName = "AssociationReservationQueries")
+    @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_RESERVATIONS)")
+    public GetReservationResponseDTO getReservation(@Argument UUID associationID, @Argument UUID reservationID) {
+        GetReservationResponseDTO response = new GetReservationResponseDTO();
+        response.setReservations(Set.of());
+
+        reservationService.getByID(reservationID).ifPresentOrElse(res -> {
+            response.setSuccess(true);
+            response.setReservations(Set.of(res));  // Assuming you want to return the found reservation
+        }, () -> response.setSuccess(false));
+
+        return response;
+
+    }
+
     @SchemaMapping(typeName = "AssociationReservationMutations")
     @PreAuthorize("@permissionService.validateAssociationPermission(#dto.associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).MANAGE_TRACK_CONFIGURATION)")
     public CreateReservationResponseDTO createReservations(@Argument CreateReservationDTO dto) {

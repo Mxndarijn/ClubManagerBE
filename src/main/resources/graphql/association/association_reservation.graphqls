@@ -1,5 +1,6 @@
 type AssociationReservationQueries {
     getReservationsBetween(associationID: ID!, startDate: LocalDateTime!, endDate: LocalDateTime!): GetReservationResponseDTO
+    getReservation(associationID: ID!, reservationID: ID!): GetReservationResponseDTO
 }
 
 type AssociationReservationMutations {
