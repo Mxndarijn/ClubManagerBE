@@ -12,7 +12,8 @@ type Reservation {
     allowedWeaponTypes: [WeaponType]!
     reservationSeries: ReservationSeries
     membersCanChooseTheirOwnPosition: Boolean!
-    colorPreset: ColorPreset
+    colorPreset: ColorPreset!
+    openPositions: [Int]!
 }
 
 enum ReservationStatus {
