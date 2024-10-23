@@ -57,7 +57,7 @@ public class Reservation {
     @Column(name = "max_size")
     private Integer maxSize;
 
-    @OneToMany(mappedBy = "reservation")
+    @OneToMany(mappedBy = "reservation", orphanRemoval = true)
     @MapKeyColumn(name = "user_number")
     private Set<ReservationUser> reservationUsers;
 
