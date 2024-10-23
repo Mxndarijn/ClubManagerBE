@@ -6,10 +6,7 @@ import nl.shootingclub.clubmanager.configuration.data.ReservationRepeat;
 import nl.shootingclub.clubmanager.dto.CompetitionParticipateDTO;
 import nl.shootingclub.clubmanager.dto.CreateReservationDTO;
 import nl.shootingclub.clubmanager.dto.EditReservationSeriesDTO;
-import nl.shootingclub.clubmanager.dto.response.CreateReservationResponseDTO;
-import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
-import nl.shootingclub.clubmanager.dto.response.GetReservationResponseDTO;
-import nl.shootingclub.clubmanager.dto.response.ReservationResponseDTO;
+import nl.shootingclub.clubmanager.dto.response.*;
 import nl.shootingclub.clubmanager.model.Association;
 import nl.shootingclub.clubmanager.model.Track;
 import nl.shootingclub.clubmanager.model.User;
@@ -93,13 +90,12 @@ public class AssociationReservationResolver {
     @Observed
     @SchemaMapping(typeName = "AssociationReservationQueries")
     @PreAuthorize("@permissionService.validateAssociationPermission(#associationID, T(nl.shootingclub.clubmanager.configuration.data.AssociationPermissionData).VIEW_RESERVATIONS)")
-    public GetReservationResponseDTO getReservation(@Argument UUID associationID, @Argument UUID reservationID) {
-        GetReservationResponseDTO response = new GetReservationResponseDTO();
-        response.setReservations(Set.of());
+    public GetSpecificReservationResponseDTO getReservation(@Argument UUID associationID, @Argument UUID reservationID) {
+        GetSpecificReservationResponseDTO response = new GetSpecificReservationResponseDTO();
 
         reservationService.getByID(reservationID).ifPresentOrElse(res -> {
             response.setSuccess(true);
-            response.setReservations(Set.of(res));  // Assuming you want to return the found reservation
+            response.setReservation(res);  // Assuming you want to return the found reservation
         }, () -> response.setSuccess(false));
 
         return response;
