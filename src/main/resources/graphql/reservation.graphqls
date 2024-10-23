@@ -7,7 +7,7 @@ type Reservation {
     description: String!
     status: ReservationStatus
     maxSize: Int!
-    reservationUsers: [ReservationUser]!
+    reservationUsers(id: ID): [ReservationUser]!
     tracks: [Track]!
     allowedWeaponTypes: [WeaponType]!
     reservationSeries: ReservationSeries

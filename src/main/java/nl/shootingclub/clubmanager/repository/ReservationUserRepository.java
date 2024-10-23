@@ -13,6 +13,9 @@ import java.util.UUID;
 
 public interface ReservationUserRepository extends JpaRepository<ReservationUser, ReservationUserId> {
 
+
+    Optional<ReservationUser> findByIdReservationIdAndIdUserId(UUID reservationId, UUID userId);
+
     Optional<ReservationUser> findReservationUserByReservationAndUser(Reservation reservation, User user);
 
     Set<ReservationUser> findByUserIdAndReservationStartDateAfterAndReservationEndDateBefore(UUID userId, LocalDateTime startDate, LocalDateTime endDate);

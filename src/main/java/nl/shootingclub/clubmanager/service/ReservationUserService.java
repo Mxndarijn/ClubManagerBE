@@ -25,6 +25,10 @@ public class ReservationUserService {
         return reservationRepository.findReservationUserByReservationAndUser(reservation, user);
     }
 
+    public Optional<ReservationUser> findByIdReservationIdAndIdUserId(UUID reservationID, UUID userID) {
+        return reservationRepository.findByIdReservationIdAndIdUserId(reservationID, userID);
+    }
+
     public ReservationUser saveReservationUser(ReservationUser reservationUser) {
         return reservationUserRepository.save(reservationUser);
     }

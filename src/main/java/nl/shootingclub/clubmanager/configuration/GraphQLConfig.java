@@ -2,6 +2,7 @@ package nl.shootingclub.clubmanager.configuration;
 
 import graphql.schema.idl.TypeRuntimeWiring;
 import nl.shootingclub.clubmanager.configuration.datafetcher.association.*;
+import nl.shootingclub.clubmanager.configuration.datafetcher.association.reservation.AssociationReservationUsersDataFetcher;
 import nl.shootingclub.clubmanager.configuration.datafetcher.user.UserFullNameDataFetcher;
 import nl.shootingclub.clubmanager.configuration.datafetcher.user.UserImageDataFetcher;
 import nl.shootingclub.clubmanager.configuration.datafetcher.user.UserReservationsDataFetcher;
@@ -38,8 +39,9 @@ public class GraphQLConfig {
     private final AssociationUsersDataFetcher associationUsersDataFetcher;
     private final AssociationWelcomeMessageDataFetcher associationWelcomeMessageDataFetcher;
     private final UserReservationsDataFetcher userReservationsDataFetcher;
+    private final AssociationReservationUsersDataFetcher associationReservationUsersDataFetcher;
 
-    public GraphQLConfig(LocalDateTimeScalarConfiguration localDateTimeScalarConfiguration, LongScalarConfiguration longScalarConfiguration, LocalDateScalarConfiguration localDateScalarConfiguration, UserImageDataFetcher userImageDataFetcher, UserFullNameDataFetcher userFullNameDataFetcher, UserAssociationUserDataFetcher userAssociationUserDataFetcher, UserAssociationMemberSinceDataFetcher userAssociationMemberSinceDataFetcher, UserAssociationAssociationRoleDataFetcher userAssociationAssociationRoleDataFetcher, AssociationInvitesDataFetcher associationInvitesDataFetcher, AssociationCompetitionsDataFetcher associationCompetitionsDataFetcher, AssociationContactEmailDataFetcher associationContactEmailDataFetcher, AssociationActiveDataFetcher associationActiveDataFetcher, AssociationUsersDataFetcher associationUsersDataFetcher, AssociationWelcomeMessageDataFetcher associationWelcomeMessageDataFetcher, UserReservationsDataFetcher userReservationsDataFetcher) {
+    public GraphQLConfig(LocalDateTimeScalarConfiguration localDateTimeScalarConfiguration, LongScalarConfiguration longScalarConfiguration, LocalDateScalarConfiguration localDateScalarConfiguration, UserImageDataFetcher userImageDataFetcher, UserFullNameDataFetcher userFullNameDataFetcher, UserAssociationUserDataFetcher userAssociationUserDataFetcher, UserAssociationMemberSinceDataFetcher userAssociationMemberSinceDataFetcher, UserAssociationAssociationRoleDataFetcher userAssociationAssociationRoleDataFetcher, AssociationInvitesDataFetcher associationInvitesDataFetcher, AssociationCompetitionsDataFetcher associationCompetitionsDataFetcher, AssociationContactEmailDataFetcher associationContactEmailDataFetcher, AssociationActiveDataFetcher associationActiveDataFetcher, AssociationUsersDataFetcher associationUsersDataFetcher, AssociationWelcomeMessageDataFetcher associationWelcomeMessageDataFetcher, UserReservationsDataFetcher userReservationsDataFetcher, AssociationReservationUsersDataFetcher associationReservationUsersDataFetcher) {
         this.localDateTimeScalarConfiguration = localDateTimeScalarConfiguration;
         this.longScalarConfiguration = longScalarConfiguration;
         this.localDateScalarConfiguration = localDateScalarConfiguration;
@@ -55,6 +57,7 @@ public class GraphQLConfig {
         this.associationUsersDataFetcher = associationUsersDataFetcher;
         this.associationWelcomeMessageDataFetcher = associationWelcomeMessageDataFetcher;
         this.userReservationsDataFetcher = userReservationsDataFetcher;
+        this.associationReservationUsersDataFetcher = associationReservationUsersDataFetcher;
     }
 
     /**
@@ -90,7 +93,9 @@ public class GraphQLConfig {
                         .dataFetcher("users", associationUsersDataFetcher)
                         .dataFetcher("invites", associationInvitesDataFetcher)
                         .dataFetcher("competitions", associationCompetitionsDataFetcher)
-                );
+                )
+                .type(TypeRuntimeWiring.newTypeWiring("Reservation")
+                .dataFetcher("reservationUsers", associationReservationUsersDataFetcher));
 
     }
 
