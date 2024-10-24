@@ -7,7 +7,6 @@ import jakarta.mail.internet.MimeMessage;
 import nl.shootingclub.clubmanager.configuration.data.HTMLTemplate;
 import nl.shootingclub.clubmanager.configuration.data.Language;
 import nl.shootingclub.clubmanager.configuration.data.json.EmailData;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +22,11 @@ import java.util.stream.Collectors;
 @Service
 public class EmailService {
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+
+    public EmailService(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void sendHTMLMail(String email, HTMLTemplate htmlTemplate, Language language, HashMap<String, String> placeholders) throws MessagingException {
 
@@ -36,7 +38,7 @@ public class EmailService {
                 message.setRecipients(MimeMessage.RecipientType.TO, email);
                 AtomicReference<String> template = new AtomicReference<>(loadFileAsString(htmlTemplate.getLocation(language) + ".html"));
                 placeholders.forEach((k,v) -> {
-                    template.set(template.get().replaceAll(k, v));
+                    template.set(template.get().replaceAll("%%" + k + "%%", v));
                 });
                 String jsonContent = loadFileAsString(htmlTemplate.getLocation(language) + ".json");
                 ObjectMapper objectMapper = new ObjectMapper();

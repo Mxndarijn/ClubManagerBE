@@ -216,6 +216,7 @@ public class AuthenticationResolver {
             }
 
             userService.createUser(user);
+            System.out.println("USER EMAIL VER: " + user.getVerificationCode().toString());
 
             Optional<Authentication> auth = authenticationManager.authenticateOptional(
                     new UsernamePasswordAuthenticationToken(user.getEmail(), registerRequest.getPassword()));
@@ -237,7 +238,9 @@ public class AuthenticationResolver {
             response.setMessage(token);
             new Thread(() -> {
                 try {
-                    emailService.sendHTMLMail(user.getEmail(), HTMLTemplate.REGISTERED, optionalLanguage.get(), new HashMap<>());
+                    emailService.sendHTMLMail(user.getEmail(), HTMLTemplate.REGISTERED, optionalLanguage.get(), new HashMap<>() {{
+                        put("verCode", user.getVerificationCode().toString());
+                    }});
                 } catch (MessagingException e) {
                     System.out.printf("Could not send registered mail to " + user.getEmail());
                 }

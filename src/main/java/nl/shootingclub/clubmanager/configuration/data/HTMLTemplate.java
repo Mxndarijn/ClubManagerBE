@@ -6,7 +6,7 @@ import java.io.File;
 
 @Getter
 public enum HTMLTemplate {
-    REGISTERED("test");
+    REGISTERED("registered");
 
     private final String location;
     HTMLTemplate(String location) {
@@ -15,7 +15,7 @@ public enum HTMLTemplate {
     }
 
     public String getLocation(Language language) {
-        return "mail" + File.separator + language.getLanguage() + File.separator + location;
+        return "mail" + File.separator + language.getLanguage() + File.separator + location + File.separator + location;
 
     }
 }
