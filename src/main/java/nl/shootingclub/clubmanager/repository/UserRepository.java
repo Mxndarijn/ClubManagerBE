@@ -13,4 +13,6 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     @Observed
     Optional<User> findByEmailEquals(String email);
+
+    Optional<User> findByVerificationCode(UUID verificationCode);
 }

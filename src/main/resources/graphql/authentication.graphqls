@@ -5,6 +5,7 @@ type AuthenticationQueries {
 type AuthenticationMutations {
     login(loginRequest: LoginDTOInput!): DefaultBooleanResponseDTO
     register(registerRequest: RegisterDTOInput!): DefaultBooleanResponseDTO
+    verifyEmail(verificationCode: ID!): DefaultBooleanResponseDTO
 }
 
 input LoginDTOInput {

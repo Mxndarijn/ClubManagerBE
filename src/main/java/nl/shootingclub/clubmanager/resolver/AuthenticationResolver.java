@@ -44,6 +44,7 @@ import org.springframework.stereotype.Controller;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Optional;
+import java.util.UUID;
 
 @Controller
 public class AuthenticationResolver {
@@ -157,6 +158,28 @@ public class AuthenticationResolver {
         response.setSuccess(true);
         response.setMessage(token);
 
+        return response;
+    }
+
+    @SchemaMapping(typeName = "AuthenticationMutations")
+    public DefaultBooleanResponseDTO verifyEmail(@Argument UUID verificationCode) {
+        DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
+        Optional<User> optionalUser = userRepository.findByVerificationCode(verificationCode);
+        if(optionalUser.isEmpty()) {
+            response.setSuccess(false);
+            response.setMessage("verification-code-invalid");
+            return response;
+        }
+        User user = optionalUser.get();
+        if(user.isHasEmailVerified()) {
+            response.setSuccess(false);
+            response.setMessage("email-already-verified");
+            return response;
+        }
+        user.setHasEmailVerified(true);
+        userService.saveUser(user);
+        response.setSuccess(true);
+        response.setMessage("ok");
         return response;
     }
 
