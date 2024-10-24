@@ -8,7 +8,6 @@ import nl.shootingclub.clubmanager.dto.DeleteUserAssociationDTO;
 import nl.shootingclub.clubmanager.dto.InputAssociationInviteDTO;
 import nl.shootingclub.clubmanager.dto.response.ChangeUserAssociationResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.DefaultBooleanResponseDTO;
-import nl.shootingclub.clubmanager.dto.response.GetReservationResponseDTO;
 import nl.shootingclub.clubmanager.dto.response.SendAssociationInviteResponseDTO;
 import nl.shootingclub.clubmanager.exceptions.AssociationNotFoundException;
 import nl.shootingclub.clubmanager.exceptions.AssociationRoleNotFoundException;
@@ -17,18 +16,18 @@ import nl.shootingclub.clubmanager.model.*;
 import nl.shootingclub.clubmanager.repository.AssociationRoleRepository;
 import nl.shootingclub.clubmanager.repository.UserAssociationRepository;
 import nl.shootingclub.clubmanager.repository.UserRepository;
-import nl.shootingclub.clubmanager.service.*;
+import nl.shootingclub.clubmanager.service.AssociationInviteService;
+import nl.shootingclub.clubmanager.service.AssociationService;
+import nl.shootingclub.clubmanager.service.PermissionService;
+import nl.shootingclub.clubmanager.service.UserAssociationService;
 import org.springframework.graphql.data.method.annotation.Argument;
-import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.SchemaMapping;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.util.Optional;
-import java.util.UUID;
 
 @Controller
 public class AssociationMemberResolver {
@@ -172,6 +171,7 @@ public class AssociationMemberResolver {
      * @return A DefaultBooleanResponseDTO indicating the success or failure of accepting the invitation.
      */
     @SchemaMapping(typeName = "AssociationMemberMutations")
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.data.AccountPermissionData).ACCEPT_ASSOCIATION_INVITE)")
     public DefaultBooleanResponseDTO acceptAssociationInvite(@Argument InputAssociationInviteDTO inviteId) {
 
         AssociationInviteId id = new AssociationInviteId();
@@ -180,18 +180,22 @@ public class AssociationMemberResolver {
 
         Optional<AssociationInvite> optionalAssociationInvite = associationInviteService.findAssociationInviteByID(id);
         DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
-        if(optionalAssociationInvite.isPresent()) {
-            AssociationInvite invite = optionalAssociationInvite.get();
-            UserAssociation userAssociation = userAssociationService.createUserAssociation(invite.getUser(), invite.getAssociation(), invite.getAssociationRole());
-            associationInviteService.removeAssociationInvite(invite);
-            if(userAssociation != null) {
-                response.setSuccess(true);
-                response.setMessage("ok");
-            }
-
-        } else {
+        if(optionalAssociationInvite.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("no-invite-found");
+            return response;
+        }
+        AssociationInvite invite = optionalAssociationInvite.get();
+        if(!invite.getUser().getId().equals(inviteId.getUserUUID())) {
+            response.setSuccess(false);
+            response.setMessage("not-for-specified-user");
+            return response;
+        }
+        UserAssociation userAssociation = userAssociationService.createUserAssociation(invite.getUser(), invite.getAssociation(), invite.getAssociationRole());
+        associationInviteService.removeAssociationInvite(invite);
+        if(userAssociation != null) {
+            response.setSuccess(true);
+            response.setMessage("ok");
         }
 
         return response;
@@ -203,8 +207,8 @@ public class AssociationMemberResolver {
      * @param inviteId The ID of the association invite to reject.
      * @return A DefaultBooleanResponseDTO indicating the success of the operation and an optional message.
      */
-    //TODO Not safe, wordt niet gecheckt of het id van de invite ook van de user is
     @SchemaMapping(typeName = "AssociationMemberMutations")
+    @PreAuthorize("@permissionService.validatePermission(T(nl.shootingclub.clubmanager.configuration.data.AccountPermissionData).ACCEPT_ASSOCIATION_INVITE)")
     public DefaultBooleanResponseDTO rejectAssociationInvite(@Argument InputAssociationInviteDTO inviteId) {
 
         AssociationInviteId id = new AssociationInviteId();
@@ -213,15 +217,19 @@ public class AssociationMemberResolver {
 
         Optional<AssociationInvite> optionalAssociationInvite = associationInviteService.findAssociationInviteByID(id);
         DefaultBooleanResponseDTO response = new DefaultBooleanResponseDTO();
-        if(optionalAssociationInvite.isPresent()) {
-            AssociationInvite invite = optionalAssociationInvite.get();
-            associationInviteService.removeAssociationInvite(invite);
-            response.setSuccess(true);
-
-        } else {
+        if(optionalAssociationInvite.isEmpty()) {
             response.setSuccess(false);
             response.setMessage("no-invite-found");
+            return response;
         }
+        AssociationInvite invite = optionalAssociationInvite.get();
+        if(!invite.getUser().getId().equals(inviteId.getUserUUID())) {
+            response.setSuccess(false);
+            response.setMessage("not-for-specified-user");
+            return response;
+        }
+        associationInviteService.removeAssociationInvite(invite);
+        response.setSuccess(true);
 
         return response;
     }
