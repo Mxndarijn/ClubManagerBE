@@ -29,6 +29,7 @@ import nl.shootingclub.clubmanager.security.CustomAuthenticationProvider;
 import nl.shootingclub.clubmanager.service.EmailService;
 import nl.shootingclub.clubmanager.service.JwtService;
 import nl.shootingclub.clubmanager.service.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
@@ -65,6 +66,10 @@ public class AuthenticationResolver {
     private final EmailService emailService;
 
     private final HttpServletRequest request;
+
+
+    @Value("${custom.email.needs.verification}")
+    private boolean emailNeedsVerification;
 
     public AuthenticationResolver(HttpServletRequest request, UserService userService, UserRepository userRepository, CustomAuthenticationProvider authenticationManager, PasswordEncoder passwordEncoder, JwtService userAuthProvider, AccountRoleRepository accountRoleRepository, DefaultImageRepository defaultImageRepository, EmailService emailService) {
         this.request = request;
@@ -197,7 +202,7 @@ public class AuthenticationResolver {
                 user.setImage(i);
             }
 
-            Optional<AccountRole> optionalAccountRole = accountRoleRepository.findByName(DefaultRoleAccount.USER.getName());
+            Optional<AccountRole> optionalAccountRole = emailNeedsVerification ? accountRoleRepository.findByName(DefaultRoleAccount.USER_NOT_REGISTERED.getName()) : accountRoleRepository.findByName(DefaultRoleAccount.USER.getName());
             if (optionalAccountRole.isPresent()) {
                 user.setRole(optionalAccountRole.get());
             } else {
@@ -205,6 +210,9 @@ public class AuthenticationResolver {
                 response.setMessage("account-validation-error");
 
                 return response;
+            }
+            if(!emailNeedsVerification) {
+                user.setHasEmailVerified(true);
             }
 
             userService.createUser(user);

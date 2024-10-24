@@ -7,7 +7,6 @@
  import nl.shootingclub.clubmanager.model.data.Image;
  import nl.shootingclub.clubmanager.model.reservation.ReservationUser;
 
- import java.time.LocalDateTime;
  import java.util.HashSet;
  import java.util.Set;
  import java.util.UUID;
@@ -34,11 +33,17 @@ public class User {
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
-    @Column(name = "knsa_membership_number")
-    private Integer knsaMembershipNumber;
+//    @Column(name = "knsa_membership_number")
+//    private Integer knsaMembershipNumber;
+//
+//    @Column(name = "knsa_member_since")
+//    private LocalDateTime knsaMemberSince;
 
-    @Column(name = "knsa_member_since")
-    private LocalDateTime knsaMemberSince;
+     @Column(nullable = false)
+     private boolean hasEmailVerified = false;
+
+     @Column
+     private UUID verificationCode = UUID.randomUUID();
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "image_id", referencedColumnName = "id")
